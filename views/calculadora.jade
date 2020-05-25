@@ -1,0 +1,77 @@
+extends layout
+
+block content
+  div.container
+    div.row
+      .col-lg-4
+        h1 Calculadora
+    div.row
+      .col-lg-4
+        table.Calculadora
+          tr
+            th.Resumen(id="txtResumen", colspan="4")
+          tr
+            th.Pantalla(id="txtPantalla", colspan="4")
+              tr
+                td
+                  input.btnOperar(type="button", id="btnIniciar", value="C")
+                td(colspan="2")
+                  input.btnOperar(type="button", id="btnBorrar", value="< BORRAR")
+                td
+                  input.btnOperar.btnCalc(type="button", value="+")
+              tr
+                td
+                  input.btnDigito.btnNum(type="button", value="7")
+                td
+                  input.btnDigito.btnNum(type="button", value="8")
+                td
+                  input.btnDigito.btnNum(type="button", value="9")
+                td
+                  input.btnOperar.btnCalc(type="button", value="-")
+              tr
+                td
+                  input.btnDigito.btnNum(type="button", value="4")
+                td
+                  input.btnDigito.btnNum(type="button", value="5")
+                td
+                  input.btnDigito.btnNum(type="button", value="6")
+                td
+                  input.btnOperar.btnCalc(type="button", value="*")
+              tr
+                td
+                  input.btnDigito.btnNum(type="button", value="1")
+                td
+                  input.btnDigito.btnNum(type="button", value="2")
+                td
+                  input.btnDigito.btnNum(type="button", value="3")
+                td
+                  input.btnOperar.btnCalc(type="button", value="/")
+              tr
+                td
+                  input.btnDigito.btnNum(type="button", value="0")
+                td
+                  input.btnDigito(type="button", value="±")
+                td
+                  input.btnDigito(type="button", value=",")
+                td
+                  input.btnOperar.btnCalc(type="button", value="=")
+block scripts
+  script(src="/javascripts/calculadora.js")
+  script.
+    var calc = new Calculadora('txtPantalla', 'txtResumen');
+    calc.inicia();
+    $(document).ready(function() {
+      var $btns = $('.btnDigito').not('[value=","]').not('[value="±"]');
+      $btns.on('click', function(ev) {
+        calc.ponDijito(ev.target.value);
+      });
+      //$btns = $('.btnNum');
+      $btns = $('.btnCalc');
+      $btns.one('click', function(ev) {
+        calc.calcula(ev.target.value);
+      });
+      $('[value=","]').click(calc.ponComa);
+      $('[value="±"]').click(calc.cambiaSigno);
+      $('#btnIniciar').click(calc.inicia);
+      $('#btnBorrar').click(calc.borrar);
+    });

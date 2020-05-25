@@ -1,0 +1,245 @@
+const express = require('express');
+const router = express.Router();
+const fs = require('fs')
+
+const DIR_API_REST = '/'
+const USR_FILENAME = __dirname + '/data/usuarios.json'
+const lstServicio = [{
+    url: DIR_API_REST + 'personas',
+    pk: 'id',
+    fich: __dirname + '/data/personas.json',
+    readonly: false
+  },
+  {
+    url: DIR_API_REST + 'peliculas',
+    pk: 'id',
+    fich: __dirname + '/data/peliculas.json',
+    readonly: false
+  },
+  {
+    url: DIR_API_REST + 'tarjetas',
+    pk: 'id',
+    fich: __dirname + '/data/tarjetas.json',
+    readonly: false
+  },
+  {
+    url: DIR_API_REST + 'blog',
+    pk: 'id',
+    fich: __dirname + '/data/blog.json',
+    readonly: false
+  },
+  {
+    url: DIR_API_REST + 'libros',
+    pk: 'idLibro',
+    fich: __dirname + '/data/libros.json',
+    readonly: false
+  },
+  {
+    url: DIR_API_REST + 'biblioteca',
+    pk: 'id',
+    fich: __dirname + '/data/biblioteca.json',
+    readonly: false
+  },
+  {
+    url: DIR_API_REST + 'vehiculos',
+    pk: 'id',
+    fich: __dirname + '/data/vehiculos.json',
+    readonly: false
+  },
+  {
+    url: DIR_API_REST + 'marcas',
+    pk: 'marca',
+    fich: __dirname + '/data/marcas-modelos.json',
+    readonly: false
+  },
+  ]
+
+router.get('/', function(req, res, next) {
+  res.render('api', { title: 'API REST', baseUrl: req.baseUrl, base: `${req.protocol}://${req.headers.host}${req.baseUrl}`, servicios: lstServicio });
+});
+  
+lstServicio.forEach(servicio => {
+    router.get(servicio.url, async function (req, res) {
+      try {
+        let data = await fs.promises.readFile(servicio.fich, 'utf8');
+        let lst = JSON.parse(data)
+        if (Object.keys(req.query).length > 0) {
+          if ('_search' in req.query) {
+            lst = lst.filter(function (item) {
+              return JSON.stringify(Object.values(item)).includes(req.query._search);
+            })
+          } else {
+            const q = Object.keys(req.query).filter(item => !item.startsWith('_'));
+            if (q.length > 0) {
+              lst = lst.filter(function (item) {
+                for (let cmp in q) {
+                  if (item[q[cmp]] != req.query[q[cmp]]) return false;
+                }
+                return true;
+              })
+            }
+          }
+        }
+        let cmp = req.query._sort ? req.query._sort : servicio.pk;
+        let dir = 1;
+        if (cmp.startsWith("-")) {
+          cmp = cmp.substring(1);
+          dir = -1;
+        }
+        lst = lst.sort((a, b) => dir * (a[cmp] == b[cmp] ? 0 : (a[cmp] < b[cmp] ? -1 : 1)));
+        if (req.query._page != undefined || req.query._rows != undefined) {
+          const rows = req.query._rows && !isNaN(+req.query._rows) ? Math.abs(+req.query._rows) : 20;
+          if (req.query._page && req.query._page.toUpperCase() == "COUNT") {
+            res.json({pages: Math.ceil(lst.length / rows), rows: lst.length }).end()
+            return;
+          }
+          const page = req.query._page && !isNaN(+req.query._page) ? Math.abs(+req.query._page) : 0;
+          lst = lst.slice(page * rows, page * rows + rows)
+        }
+        console.log(JSON.stringify(lst))
+        res.json(lst).end()
+      } catch (error) {
+        res.status(500).json(error).end()
+      }
+    })
+    router.get(servicio.url + '/:id', async function (req, res) {
+      try {
+        let data = await fs.promises.readFile(servicio.fich, 'utf8');
+        var lst = JSON.parse(data)
+        var ele = lst.find(ele => ele[servicio.pk] == req.params.id)
+        if (ele) {
+          console.log(ele)
+          res.status(200).json(ele).end()
+        } else {
+          res.status(404).end()
+        }
+      } catch (err) {
+        res.status(500).end();
+        console.log(err.stack);
+      }
+    })
+    router.post(servicio.url, async function (req, res) {
+      if (servicio.readonly && !res.locals.isAutenticated) {
+        res.status(401).end('No autorizado.')
+        return
+      }
+      let data = await fs.promises.readFile(servicio.fich, 'utf8');
+      try {
+        var lst = JSON.parse(data)
+        var ele = req.body
+        if (ele[servicio.pk] == undefined) {
+          res.status(400).end('Falta clave primaria.')
+        } else if (lst.find(item => item[servicio.pk] == ele[servicio.pk]) == undefined) {
+          if (ele[servicio.pk] == 0) {
+            if (lst.length == 0)
+              ele[servicio.pk] = 1;
+            else {
+              let newId = +lst.sort((a, b) => (a[servicio.pk] == b[servicio.pk] ? 0 : (a[servicio.pk] < b[servicio.pk] ? -1 : 1)))[lst.length - 1][servicio.pk];
+              ele[servicio.pk] = newId + 1;
+            }
+          }
+          lst.push(ele)
+          console.log(lst)
+          await fs.promises.writeFile(servicio.fich, JSON.stringify(lst), 'utf8');
+          res.status(201).json(lst).end()
+        } else {
+          res.status(400).end('Clave duplicada.')
+        }
+      } catch (error) {
+        res.status(500).json(error).end()
+      }
+    })
+    router.put(servicio.url, async function (req, res) {
+      if (servicio.readonly && !res.locals.isAutenticated) {
+        res.status(401).end('No autorizado.')
+        return
+      }
+      let data = await fs.promises.readFile(servicio.fich, 'utf8');
+      try {
+        var lst = JSON.parse(data)
+        var ele = req.body
+        var ind = lst.findIndex(row => row[servicio.pk] == ele[servicio.pk])
+        if (ind == -1) {
+          res.status(404).end()
+        } else {
+          lst[ind] = ele
+          console.log(lst)
+          await fs.promises.writeFile(servicio.fich, JSON.stringify(lst), 'utf8');
+          res.status(200).json(lst).end()
+        }
+      } catch (error) {
+        res.status(500).json(error).end()
+      }
+    })
+    router.put(servicio.url + '/:id', async function (req, res) {
+      if (servicio.readonly && !res.locals.isAutenticated) {
+        res.status(401).end('No autorizado.')
+        return
+      }
+      let data = await fs.promises.readFile(servicio.fich, 'utf8');
+      try {
+        var lst = JSON.parse(data)
+        var ele = req.body
+        var ind = lst.findIndex(row => row[servicio.pk] == req.params.id)
+        if (ind == -1) {
+          res.status(404).end()
+        } else {
+          lst[ind] = ele
+          console.log(lst)
+          await fs.promises.writeFile(servicio.fich, JSON.stringify(lst), 'utf8');
+          res.status(200).json(lst).end()
+        }
+      } catch (error) {
+        res.status(500).json(error).end()
+      }
+    })
+    router.patch(servicio.url + '/:id', async function (req, res) {
+      if (servicio.readonly && !res.locals.isAutenticated) {
+        res.status(401).end('No autorizado.')
+        return
+      }
+      let data = await fs.promises.readFile(servicio.fich, 'utf8');
+      try {
+        var lst = JSON.parse(data)
+        var ele = req.body
+        var ind = lst.findIndex(row => row[servicio.pk] == req.params.id)
+        if (ind == -1) {
+          res.status(404).end()
+        } else {
+          lst[ind] = Object.assign(lst[ind], ele)
+          console.log(lst)
+          await fs.promises.writeFile(servicio.fich, JSON.stringify(lst), 'utf8');
+          res.status(200).json(lst).end()
+        }
+      } catch (error) {
+        res.status(500).json(error).end()
+      }
+    })
+    router.delete(servicio.url + '/:id', async function (req, res) {
+      let c = { "name": "admin", "password": "P@$$w0rd" }
+      if (servicio.readonly && !res.locals.isAutenticated) {
+        res.status(401).end('No autorizado.')
+        return
+      }
+      let data = await fs.promises.readFile(servicio.fich, 'utf8');
+      try {
+        var lst = JSON.parse(data)
+        var ind = lst.findIndex(row => row[servicio.pk] == req.params.id)
+        if (ind == -1) {
+          res.status(404).end()
+        } else {
+          lst.splice(ind, 1)
+          console.log(lst)
+          await fs.promises.writeFile(servicio.fich, JSON.stringify(lst), 'utf8');
+          res.status(204).json(lst).end()
+        }
+      } catch (error) {
+        res.status(500).json(error).end()
+      }
+    })
+    router.options(servicio.url + '/:id', function (req, res) {
+      res.status(200).end()
+    })
+  })
+  
+module.exports = { router, lstServicio }; 

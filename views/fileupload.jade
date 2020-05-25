@@ -1,0 +1,17 @@
+extends layout
+
+block content
+  .container-fluid
+    h1 Subir ficheros
+    form(action="fileupload" method="post" enctype="multipart/form-data")
+      .input-group
+        input.form-control(type="file", name="filetoupload", required)
+        .input-group-append
+          input.btn.btn-outline-secondary(type="submit", value="Subir fichero")
+    h2.mt-3 Ficheros subidos
+    ul
+      each fich in files
+        li
+          a(href='/files/'+fich)= fich
+          a.ml-2.align-bottom.text-danger(href='/deleteupload?file='+fich)
+            i.fas.fa-times

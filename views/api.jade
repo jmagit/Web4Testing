@@ -1,0 +1,9 @@
+extends layout
+
+block content
+  .container-fluid
+    h1 Listado de Servicios
+    ol
+      each val in servicios
+        li
+          a(href=base+val.url)= base+val.url

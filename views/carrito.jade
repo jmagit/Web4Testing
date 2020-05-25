@@ -1,0 +1,88 @@
+extends layout
+
+block content
+    .container-fluid
+      h1 Compras
+      img(id="trabajandoAJAX" src="images/ajaxloading.gif" alt="Cargando ...")
+      .row
+        div.col-xs-12.col-sm-6(id="listadoCarrito")
+        div.col-xs-12.col-sm-6.order-xs-first(id="listadoProducto")
+          h3 Peliculas
+          .input-group
+            input.form-control(type="text", placeholder="Filtrar por...", id="txtFiltro")
+            .input-group-append
+              button.btn.btn-outline-secondary(type="button", for="txtFiltro", id="btnLimpiaFiltro")
+                span(aria-hidden="true") &times;
+          ul.list-group(id="filtroResult")
+block scripts
+  script(src="vendor/mustache.js")
+  script(src="javascripts/carrito.js")
+  script(id="tmplListadoProducto", type="x-tmpl-mustache").
+    {{#filas}}
+    <li class="list-group-item list-group-item-action" draggable="true" ondragstart="mng.drag(event, {{id}})">
+        <h6>{{titulo}}
+        <button class="btn btn-success btn-xs float-right" onclick="mng.Refresca(carrito.add({{id}}, '{{titulo}}', {{precio}}));">
+          <i class="fas fa-cart-plus"></i>
+        </button></h6>
+        <small><i>{{director}} ({{idioma}}) <b>Precio:</b> {{precio}} €</i></small>
+    </li>
+    {{/filas}}
+  script(id="tmplListadoCarrito", type="x-tmpl-mustache").
+      <h3>Pedido</h3>
+      <table class="table table-striped table-hover" ondrop="mng.drop(event)" ondragover="mng.allowDrop(event)">
+          <tr class="table-info">
+              <th>Producto</th>
+              <th class="text-center">Cantidad</th>
+              <th class="text-right">Importe</th>
+              <th>                        
+                  <button class="btn btn-danger btn-xs" onclick="carrito.vaciar();mng.Refresca();">
+                      <i class="far fa-trash-alt"></i>
+                  </button>
+              </th>
+          </tr>
+          {{#filas}}
+          <tr>
+              <td><h6>{{producto}}</h6><small>Precio: {{precio}}€</small></td>
+              <td class="text-center">{{cantidad}}</td>
+              <td class="text-right">{{importe}} €</td>
+              <td>
+                  <button class="btn btn-danger btn-xs" onclick="carrito.remove({{id}});mng.Refresca();">
+                      <i class="fas fa-trash-alt"></i>
+                  </button>
+              </td>
+          </tr>
+          {{/filas}}
+          <tr class="table-info">
+              <th></th>
+              <th class="text-right">Total:</th>
+              <th class="text-right">{{total}} €</th>
+              <th></th>
+          </tr>
+      </table>
+  script.
+    var mng = new CarritoManager();
+    var delay = null;
+
+    $(document).ready(function () {
+        mng.ListarProductos();
+        mng.Refresca();
+        $('#txtFiltro').keyup(function(ev) {
+            if(delay)
+                clearTimeout(delay);
+            var filtro = ev.target.value;
+            delay = setTimeout(function() {
+                mng.Filtra(ev.target.value);
+                delay = null;
+            }, 500);
+        });
+        $('#btnLimpiaFiltro').click(function(ev) {
+            $('#txtFiltro').val("");
+            mng.Filtra("");
+        });
+        $(document)
+            .ajaxStart(function () {
+                $('#trabajandoAJAX').show();
+            }).ajaxStop(function () {
+                $('#trabajandoAJAX').hide();
+            });
+    });

@@ -1,5 +1,67 @@
 extends layout
 
+mixin tarjeta(titulo, cuerpo, imagen, enlace, boton)
+  div.col-lg-4
+    div.card
+      img.card-img-top(src=imagen, alt=titulo)
+      div.card-body
+        h5.card-title= titulo
+        p.card-text= cuerpo
+      div.card-body.text-right
+        a.btn.btn-secondary(href=enlace role="button") Ver mas »
+
 block content
-  h1= title
-  p Welcome to #{title}
+  div.carousel.slide(id="myCarousel", data-ride="carousel")
+    ol.carousel-indicators
+      li(data-target="#myCarousel", data-slide-to="0", class="active")
+      li(data-target="#myCarousel", data-slide-to="1")
+      li(data-target="#myCarousel", data-slide-to="2")
+    div.carousel-inner
+      div.carousel-item.active
+        svg(class="bd-placeholder-img" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img")
+          rect(width="100%" height="100%" fill="#777")
+        div.container
+          div.carousel-caption.text-left
+            h1= contenido[0].titulo
+            p= contenido[0].descripcion
+            p
+              a(class="btn btn-lg btn-primary" href=contenido[0].enlace role="button")= contenido[0].boton
+      div.carousel-item
+        svg(class="bd-placeholder-img" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img")
+          rect(width="100%" height="100%" fill="#777")
+        div.container
+          div.carousel-caption
+            h1= contenido[1].titulo
+            p= contenido[1].descripcion
+            p
+              a(class="btn btn-lg btn-primary" href=contenido[1].enlace role="button")= contenido[1].boton
+      div.carousel-item
+        svg(class="bd-placeholder-img" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img")
+          rect(width="100%" height="100%" fill="#777")
+        div.container
+          div.carousel-caption.text-right
+            h1= contenido[3].titulo
+            p= contenido[3].descripcion
+            p
+              a(class="btn btn-lg btn-primary" href=contenido[3].enlace role="button")= contenido[3].boton
+      a.carousel-control-prev(href="#myCarousel", role="button", data-slide="prev")
+        span.carousel-control-prev-icon(aria-hidden="true")
+        span.sr-only Previous
+      a(class="carousel-control-next", href="#myCarousel", role="button", data-slide="next")
+        span(class="carousel-control-next-icon", aria-hidden="true")
+        span.sr-only Next
+  div.container
+    div.row
+      each item in contenido
+        +tarjeta(item.titulo, item.descripcion, item.imagen, item.enlace, item.boton)
+  hr
+  div.container
+    div.row
+      div.col-sm
+        h1= title
+    div.row
+      div.col-sm
+        p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec tortor neque, ornare interdum risus finibus, faucibus finibus dolor. Suspendisse potenti. Duis fermentum cursus odio id commodo. Phasellus eu condimentum mi. Proin elementum feugiat libero eget venenatis. Nulla rutrum imperdiet lobortis. Praesent quis magna eu urna sollicitudin accumsan a nec neque. Quisque euismod porta dolor et pellentesque. Nullam in nibh dui. Ut aliquam justo at sem finibus semper. Etiam orci tellus, ultrices non ultricies in, auctor eu tortor. Nulla diam ligula, ullamcorper non pulvinar eget, sollicitudin et elit. Sed sodales hendrerit dui, malesuada accumsan massa egestas at.
+        p Suspendisse in arcu leo. In aliquam luctus luctus. Vestibulum a sollicitudin leo. Mauris eu odio nunc. Interdum et malesuada fames ac ante ipsum primis in faucibus. Integer vitae mi vestibulum, suscipit arcu ut, imperdiet enim. Mauris a ex enim. Phasellus sed tellus augue. Fusce dapibus pellentesque quam in dictum. In sed sapien quis urna sagittis laoreet.
+        p Maecenas non mi augue. Donec porta erat quis magna mollis vestibulum in sed lectus. Aenean maximus convallis sem quis vestibulum. Integer eros enim, finibus ac erat quis, ultrices accumsan est. Nulla quis nisi tortor. Vestibulum ac porta enim. Duis auctor velit pretium, vestibulum neque facilisis, sagittis nulla. Pellentesque molestie orci et nibh facilisis rhoncus. Donec eros enim, mattis et tortor a, efficitur malesuada eros. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Proin fermentum nulla vitae quam dapibus euismod. Quisque non gravida elit. Nunc viverra nec sem at ultricies.
+        p Nullam sit amet fermentum quam, eu posuere enim. Suspendisse potenti. Nam varius suscipit arcu eu accumsan. Nullam gravida imperdiet tortor quis cursus. Nullam imperdiet imperdiet libero ac fermentum. Nam mollis sagittis sodales. Sed a sapien vitae dui malesuada egestas. Duis luctus quam accumsan metus finibus elementum. Curabitur sagittis vehicula elit, eget suscipit orci finibus ut. Ut eu molestie massa, imperdiet pharetra magna. Suspendisse potenti. Sed pulvinar dignissim odio. Integer quis gravida arcu. Nulla maximus pharetra massa, in blandit ipsum dignissim eget.
