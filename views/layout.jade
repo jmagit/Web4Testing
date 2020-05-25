@@ -2,6 +2,44 @@ doctype html
 html
   head
     title= title
+    link(rel='stylesheet', href='https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css', integrity='sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk', crossorigin='anonymous')
     link(rel='stylesheet', href='/stylesheets/style.css')
+    link(rel='stylesheet', href='/vendor/fontawesome/css/all.css')
   body
-    block content
+    header
+      nav.navbar.navbar-expand-md.navbar-dark.bg-dark
+        a.navbar-brand(href="#") Web4Testing
+        button.navbar-toggler(type="button", data-toggle="collapse", data-target="#navbarsExampleDefault", aria-controls="navbarsExampleDefault", aria-expanded="false", aria-label="Toggle navigation")
+          span.navbar-toggler-icon
+        div.collapse.navbar-collapse(id="navbarsExampleDefault")
+          ul.navbar-nav.mr-auto
+            li(class=baseUrl == '/' ? 'nav-item active' : 'nav-item')
+              a.nav-link(href="/") Inicio 
+            li(class=baseUrl == '/calculadora' ? 'nav-item active' : 'nav-item')
+              a.nav-link(href="/calculadora") Calculadora
+            li(class=baseUrl == '/compras' ? 'nav-item active' : 'nav-item')
+              a.nav-link(href="/compras") Compras
+            li(class=baseUrl == '/biblioteca' ? 'nav-item active' : 'nav-item')
+              a.nav-link(href="/biblioteca") Biblioteca
+            li(class=baseUrl == '/alertas' ? 'nav-item active' : 'nav-item')
+              a.nav-link(href="/alertas") Alertas
+            li(class=baseUrl == '/fileupload' ? 'nav-item active' : 'nav-item')
+              a.nav-link(href="/fileupload") Ficheros
+            li(class=baseUrl == '/api' ? 'nav-item active' : 'nav-item')
+              a.nav-link(href="/api") APIs
+          form.form-inline.my-2.my-lg-0
+            input.form-control.form-control-sm.mr-sm-2(type="text" placeholder="Buscar" aria-label="Search")
+            button.btn.btn-outline-success.form-control-sm.my-2.my-sm-0(type="submit") Buscar
+    main(role="main")
+      block content
+    div.bg-dark.text-light
+      footer.container
+        p.float-right
+          a(href="#") Back to top
+        p &copy; 2017-2020 Company, Inc. &middot;  <a href="#">Privacy</a> &middot; <a href="#">Terms</a>
+
+    script(src="https://code.jquery.com/jquery-3.5.1.min.js")
+    script(src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js")
+    script(src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js")
+
+    block scripts

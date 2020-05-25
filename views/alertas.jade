@@ -1,0 +1,92 @@
+extends layout
+
+block content
+  .container-fluid
+    h1 Alertas
+    div(class="alert alert-warning fade show", id="CuadroAlerta", style="display: none;")
+      span(id="txtResultado") Demos
+      button(type="button", class="close", id="btnCerrar")
+        span(aria-hidden="true") &times;
+    .btn-group
+      input.btn.btn-outline-primary(type="button", value="Alerta", id="btnAlert")
+      input.btn.btn-outline-primary(type="button", value="Confirmación", id="btnConfirm")
+      input.btn.btn-outline-primary(type="button", value="Petición", id="btnPrompt")
+    h1 Cuadros emergentes
+    .btn-group
+      input.btn.btn-outline-success(type="button", data-toggle="modal", data-target="#staticBackdrop", value="Mostra cuadro modal")
+      input.btn.btn-outline-success(type="button", data-toggle="modal", data-target="#exampleModal", data-whatever="@mdo", value="Mostra cuadro modeless")
+
+    div.modal.fade(id="staticBackdrop", data-backdrop="static", data-keyboard="false", tabindex="-1", role="dialog", aria-labelledby="staticBackdropLabel", aria-hidden="true")
+      .modal-dialog
+        .modal-content
+          .modal-header
+            h5.modal-title(id="staticBackdropLabel") New message
+            button(type="button", class="close", data-dismiss="modal", aria-label="Close")
+              span(aria-hidden="true") &times;
+          .modal-body
+            p I will not close if you click outside me. Don't even try to press escape key.
+          .modal-footer
+            button(type="button", class="btn btn-secondary", data-dismiss="modal") Close
+            button(type="button", class="btn btn-primary") Understood
+    div(class="modal fade", id="exampleModal", tabindex="-1", role="dialog", aria-labelledby="exampleModalLabel", aria-hidden="true")
+      .modal-dialog
+        .modal-content
+          .modal-header
+            h5.modal-title(id="exampleModalLabel") New message
+            button(type="button", class="close", data-dismiss="modal", aria-label="Close")
+              span(aria-hidden="true") &times;
+          .modal-body
+            form
+              .form-group
+                label.col-form-label(for="recipient-name") Recipient:
+                input.form-control(type="text", id="recipient-name")
+              .form-group
+                label.col-form-label(for="message-text") Message:
+                textarea.form-control(id="message-text")
+          .modal-footer
+            button(type="button", class="btn btn-secondary", data-dismiss="modal") Close
+            button(type="button", class="btn btn-primary") Send message
+
+block scripts
+  script.
+    $(document).ready(function() {
+      $('#btnCerrar').click(function(ev) {
+        $('#CuadroAlerta').hide();
+      });
+      $('#btnAlert').click(function(ev) {
+        alert('Esta es una alerta');
+        $('#txtResultado').text('Se a cerrado la alerta');
+        $('#CuadroAlerta').show();
+      });
+      $('#btnConfirm').click(function(ev) {
+        if (window.confirm("¿Eatas seguro?")) { 
+          $('#txtResultado').text('Respuesta positiva');
+        } else {
+          $('#txtResultado').text('Respuesta negativa');          
+        }
+        $('#CuadroAlerta').show();
+      });
+      $('#btnPrompt').click(function(ev) {
+        var result = window.prompt("Dime algo:");
+        if (result === null) { 
+          $('#txtResultado').text('Has cancelado');
+        } else if (result === '') {
+          $('#txtResultado').text('Has aceptado sin decir nada');          
+        } else {
+          $('#txtResultado').text('Has dicho: ' + result); 
+        }
+        $('#CuadroAlerta').show();
+      });
+      $('#myModal').on('shown.bs.modal', function () {
+        $('#myInput').trigger('focus')
+      })
+      $('#exampleModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget) // Button that triggered the modal
+        var recipient = button.data('whatever') // Extract info from data-* attributes
+        // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+        // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+        var modal = $(this)
+        modal.find('.modal-title').text('New message to ' + recipient)
+        modal.find('.modal-body input').val(recipient)
+      })
+    });

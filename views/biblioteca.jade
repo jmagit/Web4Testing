@@ -1,0 +1,78 @@
+extends layout
+
+block content
+    .container-fluid
+      h1 Biblioteca
+      img(id="trabajandoAJAX" src="images/ajaxloading.gif" alt="Cargando ...")
+      div(id="listado")
+      form.form-horizontal(id="frmPrincipal")
+
+block scripts
+  script(src="vendor/mustache.js")
+  script(src="vendor/jquery.twbsPagination.js")
+  script(src="javascripts/biblioteca.js")
+  script(id="tmplListado", type="x-tmpl-mustache").
+      <table class="table table-striped table-hover">
+          <tr class="table-info">
+              <th>Título</th>
+              <th class="text-right"><input type="button" class="btn btn-success" value="Añadir"
+                      onclick="Biblioteca.añadir()"></th>
+          </tr>
+          {{#filas}}
+          <tr>
+              <td><input type="button" class="btn btn-link" value="{{titulo}}" onclick="Biblioteca.ver({{id}});"></td>
+              <td class="btn-group float-right">
+                  <input type="button" class="btn btn-info" value="Ver" onclick="Biblioteca.ver({{id}});">
+                  <button class="btn btn-success" onclick="Biblioteca.editar({{id}});"><i
+                          class="fas fa-pen"></i></button>
+                  <button class="btn btn-danger" onclick="Biblioteca.borrar({{id}});"><i
+                          class="far fa-trash-alt"></i></button>
+              </td>
+          </tr>
+          {{/filas}}
+      </table>
+  script(id="tmplFormulario", type="x-tmpl-mustache").
+    <div class="form-group">
+        <label for="id" class="col-xs-12 col-sm-4 col-md-2 col-lg-1">Código:</label>
+        <div class="col-xs-12 col-sm-4 col-md-10 col-lg-11">
+            <input class="form-control " type="number" name="id" id="id" required min="1">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="titulo" class="col-xs-12 col-sm-4 col-md-2 col-lg-1">Título:</label>
+        <div class="col-xs-12 col-sm-8 col-md-10 col-lg-11">
+            <input class="form-control" type="text" name="titulo" id="titulo" required minlength=2 maxlength="50">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="autor" class="col-xs-12 col-sm-4 col-md-2 col-lg-1">Autor:</label>
+        <div class="col-xs-12 col-sm-8 col-md-10 col-lg-11">
+            <input class="form-control" type="text" name="autor" data-validacion="minusculas" id="autor" maxlength="50">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="numPag" class="col-xs-12 col-sm-4 col-md-2 col-lg-1">Nº Páginas:</label>
+        <div class="col-xs-12 col-sm-8 col-md-10 col-lg-11">
+            <input class="form-control" type="number" name="numPag" id="numPag" min="50" max="1500">
+        </div>
+    </div>
+    <div class="form-group">
+        <input type="button" class="btn btn-success" value="Enviar" id="btnEnviar">
+        <input type="button" class="btn btn-info" value="Volver" id="btnVolver">
+    </div>
+  script.
+    $(document).ready(function () {
+        Biblioteca.listar();
+        $('#frmPrincipal').hide();
+        $('#frmPrincipal').html(Mustache.render($('#tmplFormulario').html()));
+        $('input[name]').change(function(ev) {
+            Biblioteca.validar(ev.target.name);
+        });
+        $('#btnVolver').click(Biblioteca.volver);
+        $(document)
+            .ajaxStart(function () {
+                $('#trabajandoAJAX').show();
+            }).ajaxStop(function () {
+                $('#trabajandoAJAX').hide();
+            });
+    });
