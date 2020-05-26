@@ -56,26 +56,30 @@ block scripts
       $('#btnAlert').click(function(ev) {
         alert('Esta es una alerta');
         $('#txtResultado').text('Se a cerrado la alerta');
-        $('#CuadroAlerta').show();
+        $('#CuadroAlerta').removeClass().addClass( "alert alert-warning fade show" ).show();
       });
       $('#btnConfirm').click(function(ev) {
         if (window.confirm("¿Eatas seguro?")) { 
           $('#txtResultado').text('Respuesta positiva');
+          $('#CuadroAlerta').removeClass().addClass( "alert alert-success fade show" ).show();
         } else {
           $('#txtResultado').text('Respuesta negativa');          
+          $('#CuadroAlerta').removeClass().addClass( "alert alert-danger fade show" ).show();
         }
-        $('#CuadroAlerta').show();
+        
       });
       $('#btnPrompt').click(function(ev) {
         var result = window.prompt("Dime algo:");
         if (result === null) { 
           $('#txtResultado').text('Has cancelado');
+          $('#CuadroAlerta').removeClass().addClass( "alert alert-warning fade show" ).show();
         } else if (result === '') {
           $('#txtResultado').text('Has aceptado sin decir nada');          
+          $('#CuadroAlerta').removeClass().addClass( "alert alert-danger fade show" ).show();
         } else {
           $('#txtResultado').text('Has dicho: ' + result); 
+          $('#CuadroAlerta').removeClass().addClass( "alert alert-success fade show" ).show();
         }
-        $('#CuadroAlerta').show();
       });
       $('#myModal').on('shown.bs.modal', function () {
         $('#myInput').trigger('focus')

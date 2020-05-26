@@ -3,59 +3,60 @@ const router = express.Router();
 const fs = require('fs')
 
 const DIR_API_REST = '/'
-const USR_FILENAME = __dirname + '/data/usuarios.json'
+const DIR_DATA = 'data/' // __dirname + '/data/'
+const USR_FILENAME = DIR_DATA + 'usuarios.json'
 const lstServicio = [{
     url: DIR_API_REST + 'personas',
     pk: 'id',
-    fich: __dirname + '/data/personas.json',
+    fich: DIR_DATA + 'personas.json',
     readonly: false
   },
   {
     url: DIR_API_REST + 'peliculas',
     pk: 'id',
-    fich: __dirname + '/data/peliculas.json',
+    fich: DIR_DATA + 'peliculas.json',
     readonly: false
   },
   {
     url: DIR_API_REST + 'tarjetas',
     pk: 'id',
-    fich: __dirname + '/data/tarjetas.json',
+    fich: DIR_DATA + 'tarjetas.json',
     readonly: false
   },
   {
     url: DIR_API_REST + 'blog',
     pk: 'id',
-    fich: __dirname + '/data/blog.json',
+    fich: DIR_DATA + 'blog.json',
     readonly: false
   },
   {
     url: DIR_API_REST + 'libros',
     pk: 'idLibro',
-    fich: __dirname + '/data/libros.json',
+    fich: DIR_DATA + 'libros.json',
     readonly: false
   },
   {
     url: DIR_API_REST + 'biblioteca',
     pk: 'id',
-    fich: __dirname + '/data/biblioteca.json',
-    readonly: false
+    fich: DIR_DATA + 'biblioteca.json',
+    readonly: true
   },
   {
     url: DIR_API_REST + 'vehiculos',
     pk: 'id',
-    fich: __dirname + '/data/vehiculos.json',
+    fich: DIR_DATA + 'vehiculos.json',
     readonly: false
   },
   {
     url: DIR_API_REST + 'marcas',
     pk: 'marca',
-    fich: __dirname + '/data/marcas-modelos.json',
+    fich: DIR_DATA + 'marcas-modelos.json',
     readonly: false
   },
   ]
 
 router.get('/', function(req, res, next) {
-  res.render('api', { title: 'API REST', baseUrl: req.baseUrl, base: `${req.protocol}://${req.headers.host}${req.baseUrl}`, servicios: lstServicio });
+  res.render('api', { title: 'API REST', baseUrl: `${req.protocol}://${req.headers.host}`, base: `${req.protocol}://${req.headers.host}${req.baseUrl}`, servicios: lstServicio });
 });
   
 lstServicio.forEach(servicio => {

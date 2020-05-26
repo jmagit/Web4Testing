@@ -1,7 +1,10 @@
 doctype html
-html
+html(lang="es")
   head
     title= title
+    meta(charset="utf-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+    link(rel="icon" type="image/x-icon" href="favicon.ico")
     link(rel='stylesheet', href='https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css', integrity='sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk', crossorigin='anonymous')
     link(rel='stylesheet', href='/stylesheets/style.css')
     link(rel='stylesheet', href='/vendor/fontawesome/css/all.css')
@@ -9,9 +12,9 @@ html
     header
       nav.navbar.navbar-expand-md.navbar-dark.bg-dark
         a.navbar-brand(href="#") Web4Testing
-        button.navbar-toggler(type="button", data-toggle="collapse", data-target="#navbarsExampleDefault", aria-controls="navbarsExampleDefault", aria-expanded="false", aria-label="Toggle navigation")
+        button.navbar-toggler(type="button", data-toggle="collapse", data-target="#navbarsDefault", aria-controls="navbarsDefault", aria-expanded="false", aria-label="Toggle navigation")
           span.navbar-toggler-icon
-        div.collapse.navbar-collapse(id="navbarsExampleDefault")
+        div.collapse.navbar-collapse(id="navbarsDefault")
           ul.navbar-nav.mr-auto
             li(class=baseUrl == '/' ? 'nav-item active' : 'nav-item')
               a.nav-link(href="/") Inicio 
@@ -27,9 +30,48 @@ html
               a.nav-link(href="/fileupload") Ficheros
             li(class=baseUrl == '/api' ? 'nav-item active' : 'nav-item')
               a.nav-link(href="/api") APIs
-          form.form-inline.my-2.my-lg-0
-            input.form-control.form-control-sm.mr-sm-2(type="text" placeholder="Buscar" aria-label="Search")
-            button.btn.btn-outline-success.form-control-sm.my-2.my-sm-0(type="submit") Buscar
+            li(class=baseUrl == '/api' ? 'nav-item active' : 'nav-item')
+              a.nav-link(href="/documentacion") <i class="fas fa-info-circle"></i>
+          form(id="loginForm", class="form-inline my-2 my-lg-0", style="display: none;")
+            .input-group(role="group", aria-label="Login Form")
+              input.form-control-sm(size="8", type="text", id="txtUsuario", name="Usuario", required, minlength="4", placeholder="Usuario")
+              input.form-control-sm(size="8", type="password", id="txtPassword", name="Password", required, minlength="4", placeholder="Contraseña")
+              .input-group-append
+                button(id="btnSendLogin", class="btn btn-outline-success btn-sm", type="button")
+                  i.fas.fa-sign-in-alt
+                button(id="btnRegisterLogin", class="btn btn-outline-success btn-sm", type="button", data-toggle="modal", data-target="#RegisterModal", data-whatever="add")
+                  i.fas.fa-user-plus
+          small(id="loginData", class="my-2 my-lg-0", style="display: none;")
+            span.text-light.mr-2(id="userData")
+            button(id="btnLogout", class="btn btn-outline-success btn-sm", type="submit")
+              i.fas.fa-sign-out-alt
+            button(id="btnEditUser", class="btn btn-outline-success btn-sm", type="button", data-toggle="modal", data-target="#RegisterModal", data-whatever="edit")
+              i.fas.fa-user-edit
+    div(class="modal fade", id="RegisterModal", tabindex="-1", role="dialog", aria-labelledby="RegisterModalLabel", aria-hidden="true")
+      .modal-dialog
+        .modal-content
+          .modal-header
+            h5.modal-title(id="RegisterModalLabel") New message
+            button(type="button", class="close", data-dismiss="modal", aria-label="Close")
+              span(aria-hidden="true") &times;
+          .modal-body
+            form(id="registerForm")
+              .form-group
+                label.col-form-label(for="idUsuario") Usuario:
+                input.form-control(type="email", id="idUsuario", name="idUsuario", required, minlength="4")
+              .form-group
+                label.col-form-label(for="nombre", required) Nombre:
+                input.form-control(type="text", id="nombre", required, name="nombre")
+              .form-group
+                label.col-form-label(for="passwordValue") Contraseña:
+                input.form-control(type="password", id="passwordValue", required, minlength="4", name="password")
+              .form-group
+                label.col-form-label(for="passwordConfirm") Confirmar contraseña:
+                input.form-control(type="password", id="passwordConfirm", required, name="__passwordConfirm", data-validacion="equalTo", data-origen="password")
+          .modal-footer
+            button(id="btnSendRegister", type="button", class="btn btn-primary") Enviar
+            button(type="button", class="btn btn-secondary", data-dismiss="modal") Cerrar
+
     main(role="main")
       block content
     div.bg-dark.text-light
@@ -41,5 +83,85 @@ html
     script(src="https://code.jquery.com/jquery-3.5.1.min.js")
     script(src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js")
     script(src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js")
+    script(src="/javascripts/core.js")
+    script.
+      $(document).ready(function() {
+        if(Web4Testing.AuthService.isAuth) {
+          $('#userData').text('Hola ' + Web4Testing.AuthService.name);
+          $('#loginData').show();
+        } else {
+          $('#loginForm').show();
+        }
+        $('#btnLogout').click(function() {
+          Web4Testing.AuthService.logout();
+          $('#loginData').hide();
+          $('#loginForm').show();
+        });
+        $('#btnSendLogin').click(function() {
+          $('#loginForm').each(function() {
+            var form = this;
+            if(!this.checkValidity()){
+              var msg = "ERRORES:";
+              if(form.Usuario.validationMessage) msg += '\n   Usuario: ' + form.Usuario.validationMessage;
+              if(form.Password.validationMessage) msg += '\n   Contraseña: ' + form.Password.validationMessage;
+              alert(msg);
+              return;
+            }
+            Web4Testing.AuthService.login(form.Usuario.value, form.Password.value).then(
+              function() {
+                $('#userData').text('Hola ' + Web4Testing.AuthService.name);
+                $('#loginData').show();
+                $('#loginForm').hide();
+              },
+              function(msg) {
+                alert(msg);
+              }
+            );
+          });
+        });
+        function asignaUser(item){
+           $('#registerForm').each(function() {
+             var form = this;
+             form.idUsuario.value = item.idUsuario;
+             form.idUsuario.readOnly = Web4Testing.AuthService.isAuth;
+             form.nombre.value = item.nombre;
+             form.passwordValue.value = "";
+             form.passwordConfirm.value = "";
+           });
+        }
+        $('#RegisterModal').on('show.bs.modal', function (event) {
+          var modal = $(this)
+          var button = $(event.relatedTarget)
+          var modo = button.data('whatever') 
+          var user = { idUsuario: "", password: "", nombre: "" }
+          if(modo === "add") {
+            modal.find('.modal-title').text("Registrar usuario")
+            asignaUser(user);
+          } else {
+            modal.find('.modal-title').text("Editar perfil de usuario")
+            Web4Testing.AuthService.getUser().then(
+              function(user) {
+                asignaUser(user);
+              },
+              function(msg) {
+                alert(msg);
+              }
+            );
+          }
+        })
+        $('#btnSendRegister').click(function() {
+          if(Web4Testing.AuthService.isAuth) {
+            Web4Testing.AuthService.enviarRegistroModificado('registerForm', function() { 
+              $('#userData').text('Hola ' + Web4Testing.AuthService.name);
+              $('#RegisterModal').modal('hide');
+               });
+          } else {
+            Web4Testing.AuthService.enviarRegistroNuevo('registerForm', function() { 
+              $('#RegisterModal').modal('hide'); 
+              });
+          }
+        });
+        
+      });
 
     block scripts

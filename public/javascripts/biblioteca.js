@@ -2,6 +2,12 @@ var Biblioteca = new (
     function () {
         var obj = this;
         obj.currentPage = 1;
+        obj.resetForm = function () {
+            $('.msg-error').remove();
+            $('#frmPrincipal').show().each(function (i, item) {
+                this.reset();
+            });
+        };
         obj.get = function () {
             return new Promise(function (resolve, reject) {
                 $.ajax({
@@ -38,29 +44,13 @@ var Biblioteca = new (
                     var numPag = page - 1;
                     var lst = envios.filter(function(element, index) { return (numPag * FxP) <= index && index < (numPag * FxP + FxP); })
                     $("#content").empty().html(Mustache.render($('#tmplListado').html(), { filas: lst }));
-                    // var rslt = $('<table class="table table-striped table-hover"><tr class="info"><th>Título</th><th class="text-right"><input type="button" class="btn btn-success" value="Añadir" onclick="Biblioteca.añadir()"></th></tr></table>');
-                    // $("#content").empty().html(rslt);
-                    // for (var i = numPag * FxP; i < envios.length && i < (numPag * FxP + FxP); ++i) {
-                    //     var tr = $('<tr/>');
-                    //     tr.append($('<td><input type="button" class="btn btn-link" value="' + envios[i].titulo + '" onclick="Biblioteca.ver(' + envios[i].id + ');"></td>'));
-                    //     var td = $('<td class="float-right"/>');
-                    //     td.addClass('btn-group');
-                    //     td.append($('<input type="button" class="btn btn-info" value="Ver" onclick="Biblioteca.ver(' + envios[i].id + ');">'));
-                    //     td.append($('<button class="btn btn-success" onclick="Biblioteca.editar(' + envios[i].id + ');"><i class="fas fa-pen"></i></button>'));
-                    //     td.append($('<button class="btn btn-danger" onclick="Biblioteca.borrar(' + envios[i].id + ');"><i class="far fa-trash-alt"></i></button>'));
-                    //     tr.append(td);
-                    //     rslt.append(tr);
-                    // }
                 });
                 $('#page-selection').trigger(jQuery.Event("page"), obj.currentPage);
             });
         };
         obj.añadir = function () {
             $('#listado').hide();
-            $('#frmPrincipal').show().each(function (i, item) {
-                item.reset();
-            });
-            document.getElementById('frmPrincipal').reset();
+            obj.resetForm();
             $('#btnEnviar').on('click', obj.enviarNuevo);
         };
         obj.editar = function (id) {
@@ -69,11 +59,11 @@ var Biblioteca = new (
                 dataType: 'json',
             }).then(
                 function (resp) {
+                    obj.resetForm();
                     for (var name in resp) {
                         $('[name="' + name + '"]').val(resp[name]);
                     }
                     $('#listado').hide();
-                    $('#frmPrincipal').show();
                     $('#btnEnviar').on('click', obj.enviarModificado);
                 }
             );
@@ -146,7 +136,7 @@ var Biblioteca = new (
                     if ($('#err_' + name).length) {
                         $('#err_' + name).text(item.validationMessage);
                     } else {
-                        cntr.after('<div id="err_' + name + '" class="text-danger">' + item.validationMessage + '</div>');
+                        cntr.after('<div id="err_' + name + '" class="text-danger msg-error">' + item.validationMessage + '</div>');
                         cntr.parent().parent().addClass('has-error');
                     }
                     esValido = false;

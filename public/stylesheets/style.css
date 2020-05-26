@@ -98,3 +98,15 @@ footer {
   margin-top: 2em;
 }
 
+input:invalid {
+  border: 1px solid red;
+}
+
+.octicon {
+  display: none;
+  vertical-align: text-top;
+  fill: currentColor
+}
+a.octicon:hover {
+  display: inline-block;
+}

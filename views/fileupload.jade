@@ -12,6 +12,6 @@ block content
     ul
       each fich in files
         li
-          a(href='/files/'+fich)= fich
+          a(href='/files/'+fich, target="_blank")= fich
           a.ml-2.align-bottom.text-danger(href='/deleteupload?file='+fich)
             i.fas.fa-times

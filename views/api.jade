@@ -2,8 +2,125 @@ extends layout
 
 block content
   .container-fluid
-    h1 Listado de Servicios
-    ol
-      each val in servicios
-        li
-          a(href=base+val.url)= base+val.url
+    div
+      h2 <a id="user-content-servicios-restful" class="anchor" aria-hidden="true" href="#servicios-restful"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Servicios RestFul
+      p Para no crear dependencias de bases de datos los servicios utilizan ficheros como <code>data/personas.json</code>. El fichero se lee completo y se graba completo, no se ha optimizado el proceso. Los resultados de las peticiones se vuelcan a consola para facilitar las comprobaciones.
+      p Los servicios actualmente disponibles son:
+      ol
+        each val in servicios
+          li
+            a(href=base+val.url, target="_blank")= base+val.url
+      p Por ejemplo, la estructura de datos del servicio personas:
+      ul
+        li id: number
+        li nombre: string
+        li apellidos: string
+        li edad: number
+      p <strong>Nota:</strong> <em>En algunos casos es necesario marcar en la cabecera de la petición el <strong>Content-Type</strong> como <strong>application/json</strong>.</em>
+      h3 <a id="user-content-filtrado-paginación-y-ordenación" class="anchor" aria-hidden="true" href="#filtrado-paginación-y-ordenación"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Filtrado, paginación y ordenación
+      p Se han incorporado una serie de parámetros (querystring) para ampliar el control de los resultados del GET:
+      ul
+        li <strong><em>propiedad=valor</em>:</strong> Selecciona solo aquellos que el valor de la propiedad dada coincida con el valor proporcionado. Se pueden utilizar varios pares propiedad=valor, en cuyo caso deben cumplirse todos.
+        li <strong>_search=<em>valor</em>:</strong> Selecciona todos aquellos que en alguna de sus propiedades contenga el valor proporcionado. Invalida las búsquedas por propiedades individuales.
+        li <strong>_sort=<em>propiedad</em>:</strong> Indica la propiedad por la que se ordenaran los resultados, en caso de omitirse se utilizará la propiedad que actúa como primary key. Si el nombre de la propiedad está precedido por un guion (signo negativo) la ordenación será descendente.
+        li <strong>_page=<em>número</em>:</strong> Número de página empezando en 0 (primera página). Si se omite pero aparece el parámetro <em>_rows</em> tomara el valor 0 por defecto.
+        li <strong>_page=count:</strong> Devuelve el número de páginas y filas de la fuente de datos. Si se omite el Número de filas por página tomara 20 por defecto. Ej:<br>
+          code { "pages": 10, "rows": 99 }
+        li <strong>_rows=<em>número</em>:</strong> Número de filas por página, por defecto 20 si se omite pero aparece el parámetro <em>_page</em>.
+      h3 <a id="user-content-para-añadir-nuevos-servicios" class="anchor" aria-hidden="true" href="#para-añadir-nuevos-servicios"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Para añadir nuevos servicios
+      ol
+        li En el subdirectorio <code>/data</code>, añadir un fichero .json con el array de objetos con los valores iniciales del resource. Para generar el fichero se pueden utilizar herramientas de generación automatizada de juegos de datos como <a href="http://www.generatedata.com/?lang=es" rel="nofollow">http://www.generatedata.com/?lang=es</a> o <a href="https://www.mockaroo.com/" rel="nofollow">https://www.mockaroo.com/</a>.
+        li Dar de alta el servicio añadiendo una entrada en el array lstServicio:
+        ul
+          li url: dirección del servicio
+          li pk: propiedad del objeto que actúa como primary key
+          li fich: referencia al fichero que actúa de contenedor
+          li readonly: true cuando requiera autenticación para los métodos de escritura (POST, PUT, DELETE)
+        li Rearrancar el servidor.
+        li Probar: 
+          a(href=base+"/nuevoservicio", target="_blank", rel="nofollow")= base+"/nuevoservicio"
+      h3 <a id="user-content-seguridad" class="anchor" aria-hidden="true" href="#seguridad"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Seguridad
+      p Para evitar conflictos con los navegadores se han habilitado las siguientes cabeceras CORS:
+      ul
+        li Access-Control-Allow-Origin: <em>dominio-origen-de-la-petición</em>
+        li Access-Control-Allow-Headers: Origin, Content-Type, Accept, Authorization, X-Requested-With, X-SRF-TOKEN
+        li Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS'
+        li Access-Control-Allow-Credentials: true
+      h3 <a id="user-content-eco" class="anchor" aria-hidden="true" href="#eco"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>ECO
+      p El servicio ECO se puede usar para probar los clientes REST, hacer llamadas API de muestra y comprobar la información recibida por el servidor.
+      p Por ejemplo: 
+        a(href=baseUrl+"/eco/personas/1?_page=1&amp;_rows=10", target="_blank", rel="nofollow")= baseUrl+"/eco/personas/1?_page=1&amp;_rows=10"
+      pre <code>{
+        |  "url": "/eco/personas/1?_page=1&amp;_rows=10",
+        |  "method": "PATCH",
+        |  "headers": {
+        |      "content-type": "application/json",
+        |      "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIiwicm9sZXMiOlt7InJvbGUiOiJBZG1pbmlzdHJhZG9yZXMifV0sImlhdCI6MTU3MTQ4MzA2NSwiZXhwIjoxNTcxNDg2NjY1fQ.oabnKfOpoxsokbRwfrM8HG6_BaccWQU8OZ0qu7kb4XA",
+        |      "user-agent": "PostmanRuntime/7.18.0",
+        |      "accept": "*/*",
+        |      "cache-control": "no-cache",
+        |      "postman-token": "d97b65ed-8407-4838-9f18-def0f51599d0",
+        |      "host": "localhost:4321",
+        |      "accept-encoding": "gzip, deflate",
+        |      "content-length": "14",
+        |      "cookie": "XSRF-TOKEN=123456790ABCDEF",
+        |      "connection": "keep-alive"
+        |  },
+        |  "autentication": {
+        |      "isAutenticated": true,
+        |      "usr": "admin",
+        |      "name": "Administrador",
+        |      "roles": [
+        |          {
+        |              "role": "Administradores"
+        |          }
+        |      ]
+        |  },
+        |  "cookies": {
+        |      "XSRF-TOKEN": "123456790ABCDEF"
+        |  },
+        |  "params": {
+        |      "0": "/personas/1",
+        |      "1": "personas/1"
+        |  },
+        |  "query": {
+        |      "_page": "1",
+        |      "_rows": "10"
+        |  },
+        |  "body": {
+        |      "edad": 10
+        |  }
+        | }
+        | </code>
+      h2 <a id="user-content-autenticación" class="anchor" aria-hidden="true" href="#autenticación"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Autenticación
+      p Para simular la autenticación con token JWT de cabecera está disponible el servicio <code>#{base}/login</code> con el método POST.
+      ul
+        li <strong>Formularios</strong>
+          ul
+            li action="<a href="#{basel}/login" target="_blank" rel="nofollow">#{base}/login</a>"
+            li method="post"
+            li body="name=admin&amp;password=P@$$w0rd"
+        li <strong>API</strong>
+          ul
+            li Content-Type: application/json
+            li body: { "name": "admin", "password": "P@$$w0rd" }
+      h4 <a id="user-content-respuesta-json" class="anchor" aria-hidden="true" href="#respuesta-json"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Respuesta JSON:
+      pre <code>{
+        |      "success": true,
+        |      "token": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIiwicm9sZXMiOlt7InJvbGUiOiJBZG1pbmlzdHJhZG9yZXMifV0sImlhdCI6MTU3MTQ4MzA2NSwiZXhwIjoxNTcxNDg2NjY1fQ.oabnKfOpoxsokbRwfrM8HG6_BaccWQU8OZ0qu7kb4XA",
+        |      "name": "admin"
+        |  }
+        |  </code>
+      h4 <a id="user-content-envío-del-token-en-la-cabecera" class="anchor" aria-hidden="true" href="#envío-del-token-en-la-cabecera"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Envío del token en la cabecera:
+      p Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiYWRtaW4iLCJleHBpcmVzSW4iOiIxaCIsImlhdCI6MTU0MzY5NjE0MH0.0KTIt4AGDM377AwBnrVS7woWyC-dEW0vUIcPBvJAbfg
+      h4 Cookies
+      p Para otros escenarios que requiera autenticación por cookies se puede añadir el parámetro cookie=true para que envíe la cookie <code>Authorization</code> con una validez de una hora: <a href="#{basel}/login?cookie=true" target="_blank" rel="nofollow">#{base}/login?cookie=true</a>
+      p Para borrar la cookie: <a href="#{base}/logout" target="_blank" rel="nofollow">#{base}/logout</a>
+      p Para obtener la informacion de la autenticación: <a href="#{base}/auth" target="_blank" rel="nofollow">#{base}/auth</a>
+      h3 <a id="user-content-gestión-de-usuarios" class="anchor" aria-hidden="true" href="#gestión-de-usuarios"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Gestión de usuarios
+      p En el fichero data/usuarios.json se mantiene la estructura básica de los usuarios registrados que se puede ampliar.
+      p Mediante peticiones AJAX a <a href="#{base}/register" target="_blank" rel="nofollow">#{base}/register</a> se pueden:
+      ul
+        li Registrar usuario (POST).
+        li Modificar usuario autenticado (PUT)
+        li Consultar usuario autenticado (GET)
