@@ -51,23 +51,23 @@ html(lang="es")
       .modal-dialog
         .modal-content
           .modal-header
-            h5.modal-title(id="RegisterModalLabel") New message
+            h5.modal-title(id="RegisterModalLabel") Titulo
             button(type="button", class="close", data-dismiss="modal", aria-label="Close")
               span(aria-hidden="true") &times;
           .modal-body
             form(id="registerForm")
               .form-group
                 label.col-form-label(for="idUsuario") Usuario:
-                input.form-control(type="email", id="idUsuario", name="idUsuario", required, minlength="4")
+                input.form-control(type="email", id="_usr_idUsuario", name="_usr_idUsuario", required, minlength="4")
               .form-group
                 label.col-form-label(for="nombre", required) Nombre:
-                input.form-control(type="text", id="nombre", required, name="nombre")
+                input.form-control(type="text", id="_usr_nombre", required, name="_usr_nombre")
               .form-group
                 label.col-form-label(for="passwordValue") Contraseña:
-                input.form-control(type="password", id="passwordValue", required, minlength="4", name="password")
+                input.form-control(type="password", id="_usr_passwordValue", required, minlength="4", name="_usr_password")
               .form-group
                 label.col-form-label(for="passwordConfirm") Confirmar contraseña:
-                input.form-control(type="password", id="passwordConfirm", required, name="__passwordConfirm", data-validacion="equalTo", data-origen="password")
+                input.form-control(type="password", id="_usr_passwordConfirm", required, name="__passwordConfirm", data-validacion="equalTo", data-origen="password")
           .modal-footer
             button(id="btnSendRegister", type="button", class="btn btn-primary") Enviar
             button(type="button", class="btn btn-secondary", data-dismiss="modal") Cerrar
@@ -122,11 +122,11 @@ html(lang="es")
         function asignaUser(item){
            $('#registerForm').each(function() {
              var form = this;
-             form.idUsuario.value = item.idUsuario;
-             form.idUsuario.readOnly = Web4Testing.AuthService.isAuth;
-             form.nombre.value = item.nombre;
-             form.passwordValue.value = "";
-             form.passwordConfirm.value = "";
+             form._usr_idUsuario.value = item.idUsuario;
+             form._usr_idUsuario.readOnly = Web4Testing.AuthService.isAuth;
+             form._usr_nombre.value = item.nombre;
+             form._usr_passwordValue.value = "";
+             form._usr_passwordConfirm.value = "";
            });
         }
         $('#RegisterModal').on('show.bs.modal', function (event) {
