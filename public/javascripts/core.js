@@ -110,7 +110,7 @@ Web4Testing.AuthService = new function () {
                 return;
             }
             if (!item.name.startsWith('__'))
-                envio[item.name] = item.value;
+                envio[item.name.replace('_usr_', '')] = item.value;
         });
         if (!esValido)
             return;
@@ -144,7 +144,7 @@ Web4Testing.AuthService = new function () {
                 return;
             }
             if (!item.name.startsWith('__'))
-                envio[item.name] = item.value;
+                envio[item.name.replace('_usr_', '')] = item.value;
         });
         if (!esValido)
             return;
