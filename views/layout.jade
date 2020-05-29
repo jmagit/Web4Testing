@@ -22,8 +22,8 @@ html(lang="es")
               a.nav-link(href="/calculadora") Calculadora
             li(class=baseUrl == '/compras' ? 'nav-item active' : 'nav-item')
               a.nav-link(href="/compras") Compras
-            li(class=baseUrl == '/biblioteca' ? 'nav-item active' : 'nav-item')
-              a.nav-link(href="/biblioteca") Biblioteca
+            li(class=baseUrl == '/contactos' ? 'nav-item active' : 'nav-item')
+              a.nav-link(href="/contactos") Contactos
             li(class=baseUrl == '/alertas' ? 'nav-item active' : 'nav-item')
               a.nav-link(href="/alertas") Alertas
             li(class=baseUrl == '/fileupload' ? 'nav-item active' : 'nav-item')
@@ -37,15 +37,15 @@ html(lang="es")
               input.form-control-sm(size="8", type="text", id="txtUsuario", name="Usuario", required, minlength="4", placeholder="Usuario")
               input.form-control-sm(size="8", type="password", id="txtPassword", name="Password", required, minlength="4", placeholder="Contraseña")
               .input-group-append
-                button(id="btnSendLogin", class="btn btn-outline-success btn-sm", type="button")
+                button(id="btnSendLogin", class="btn btn-outline-light btn-sm", type="button")
                   i.fas.fa-sign-in-alt
-                button(id="btnRegisterLogin", class="btn btn-outline-success btn-sm", type="button", data-toggle="modal", data-target="#RegisterModal", data-whatever="add")
+                button(id="btnRegisterLogin", class="btn btn-outline-light btn-sm", type="button", data-toggle="modal", data-target="#RegisterModal", data-whatever="add")
                   i.fas.fa-user-plus
           small(id="loginData", class="my-2 my-lg-0", style="display: none;")
             span.text-light.mr-2(id="userData")
-            button(id="btnLogout", class="btn btn-outline-success btn-sm", type="submit")
+            button(id="btnLogout", class="btn btn-outline-light btn-sm", type="submit")
               i.fas.fa-sign-out-alt
-            button(id="btnEditUser", class="btn btn-outline-success btn-sm", type="button", data-toggle="modal", data-target="#RegisterModal", data-whatever="edit")
+            button(id="btnEditUser", class="btn btn-outline-light btn-sm", type="button", data-toggle="modal", data-target="#RegisterModal", data-whatever="edit")
               i.fas.fa-user-edit
     div(class="modal fade", id="RegisterModal", tabindex="-1", role="dialog", aria-labelledby="RegisterModalLabel", aria-hidden="true")
       .modal-dialog
