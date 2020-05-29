@@ -3,8 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon -w **/*.* -e js,jade ./bin/www",
-    "test": "node ./bin/www"
+    "start": "node ./bin/www",
+    "restart ": "nodemon -w **/*.* -e js,jade ./bin/www",
+    "test": "nodemon -w **/*.* -e js,jade ./bin/www"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",

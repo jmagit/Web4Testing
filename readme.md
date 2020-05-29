@@ -1,4 +1,5 @@
 # Web4Testing
+
 Versión NodeJS del servidor de pruebas para cursos de FrontEnd y con un sitio web de ejemplo donde aplicar casos de prueba WebDriver.
 
 * Sitio web
@@ -8,6 +9,7 @@ Versión NodeJS del servidor de pruebas para cursos de FrontEnd y con un sitio w
 * Servidor de ficheros
 
 ## Instalación
+
 1. Descargar o clonar el repositorio
 2. Ejecutar `npm install` para descargar las dependencias.
 3. Ejecutar `npm start` o `node server` para levantar el servidor.
@@ -16,19 +18,21 @@ Versión NodeJS del servidor de pruebas para cursos de FrontEnd y con un sitio w
 **Nota:** *Se puede configurar el puerto en el entorno con `SET PORT=3000` antes de levantar el servidor o levantarlo con `node server --port=3000`.*
 
 ## Sitio web
+
 El sitio web cuenta con un juego de páginas donde se exponen diferentes escenarios de pruebas navegación, interacción con páginas, trabajo con formularios, arrastrar y soltar, autenticación, SPA y AJAX.
 Las páginas disponibles son:
 
 * **Inicio**: Pagina muy larga que incorpora animaciones, textos e imagenes
 * **Calculadora**: La calculadora, al disponer de múltiples botones, es ideal para realizar las pruebas de interacciones con el UI y validar los resultados que se van obteniendo.
 * **Carrito de la compra**: El carrito de la compra es un entorno dinámico que permite añadir y quitar productos, comprobar totales e importes filtrar la lista de productos, arrastrar el producto de la lista y soltar en el carrito. Si el producto ya está en la lista, se incrementa la cantidad.
-* **Biblioteca**: Sistema CRUD completo que permite las pruebas de acceso a datos, paginación, trabajo con formularios y validaciones. Las consultas se pueden realizar sin estar autenticado, pero para añadir, modificar y borrar es necesaria la autenticación.
+* **Contactos**: Sistema CRUD completo que permite las pruebas de acceso a datos, paginación, trabajo con formularios y validaciones. Las consultas se pueden realizar sin estar autenticado, pero para añadir, modificar y borrar es necesaria la autenticación.
 * **Alertas**: Entorno de pruebas para los tres tipos nativos de mensajes emergentes ofrecidos por JavaScript: alertas, prompts y confirmaciones, así como los cuadros modales y modeless.
 * **Ficheros**: Entorno de sencillo de pruebas para subir ficheros a un servidor. Permite eliminar los ficheros subidos.
 * **API Rest**: Conjunto de servicios REST completos para servir de back-end y mock de las pruebas de las conexiones AJAX de las aplicaciones front-end. Permite la autenticación JWT.
 * **Atenticación**: Permite el registro de nuevos usuarios a través de formularios emergentes, la autenticación y la edición de los datos de usuario autenticado.
 
 ## Servicios RestFul
+
 Para no crear dependencias de bases de datos los servicios utilizan ficheros como `data/personas.json`. El fichero se lee completo y se graba completo, no se ha optimizado el proceso. Los resultados de las peticiones se vuelcan a consola para facilitar las comprobaciones.
   
 La estructura de datos del servicio personas:

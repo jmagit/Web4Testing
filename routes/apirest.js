@@ -42,6 +42,12 @@ const lstServicio = [{
     readonly: true
   },
   {
+    url: DIR_API_REST + 'contactos',
+    pk: 'id',
+    fich: DIR_DATA + 'contactos.json',
+    readonly: true
+  },
+  {
     url: DIR_API_REST + 'vehiculos',
     pk: 'id',
     fich: DIR_DATA + 'vehiculos.json',
