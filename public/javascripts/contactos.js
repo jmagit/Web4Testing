@@ -11,7 +11,7 @@ var Contactos = new (
         obj.get = function () {
             return new Promise(function (resolve, reject) {
                 $.ajax({
-                    url: '/api/contactos?_sort=nombre',
+                    url: '/api/contactos?_sort=nombre,apellidos&_projection=id,tratamiento,nombre,apellidos,avatar,telefono,email',
                     dataType: 'json',
                 }).then(
                     function (resp) {
