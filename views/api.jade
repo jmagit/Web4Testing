@@ -22,7 +22,8 @@ block content
       ul
         li <strong><em>propiedad=valor</em>:</strong> Selecciona solo aquellos que el valor de la propiedad dada coincida con el valor proporcionado. Se pueden utilizar varios pares propiedad=valor, en cuyo caso deben cumplirse todos.
         li <strong>_search=<em>valor</em>:</strong> Selecciona todos aquellos que en alguna de sus propiedades contenga el valor proporcionado. Invalida las búsquedas por propiedades individuales.
-        li <strong>_sort=<em>propiedad</em>:</strong> Indica la propiedad por la que se ordenaran los resultados, en caso de omitirse se utilizará la propiedad que actúa como primary key. Si el nombre de la propiedad está precedido por un guion (signo negativo) la ordenación será descendente.
+        li <strong>_projection=<em>propiedades</em>:</strong> Devuelve solo aquellas propiedades de la lista suministrada, los nombres de las propiedades deben ir separadas por comas.
+        li <strong>_sort=<em>propiedad</em>:</strong> Indica las propiedades por las que se ordenaran los resultados, en caso de omitirse se utilizará la propiedad que actúa como primary key. Si el nombre de la propiedad está precedido por un guion (signo negativo) la ordenación será descendente, las propiedades se separan con comas.
         li <strong>_page=<em>número</em>:</strong> Número de página empezando en 0 (primera página). Si se omite pero aparece el parámetro <em>_rows</em> tomara el valor 0 por defecto.
         li <strong>_page=count:</strong> Devuelve el número de páginas y filas de la fuente de datos. Si se omite el Número de filas por página tomara 20 por defecto. Ej:<br>
           code { "pages": 10, "rows": 99 }
