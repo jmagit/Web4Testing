@@ -15,7 +15,7 @@ Versión NodeJS del servidor de pruebas para cursos de FrontEnd y con un sitio w
 3. Ejecutar `npm start` o `node server` para levantar el servidor.
 4. Navegar a http://localhost:8181/ para comprobar el correcto funcionamiento de los servicios.
 
-**Nota:** *Se puede configurar el puerto en el entorno con `SET PORT=3000` antes de levantar el servidor o levantarlo con `node server --port=3000`.*
+**Nota:** *Se puede configurar el puerto en el entorno con `SET PORT=3000` antes de levantar el servidor.*
 
 ## Sitio web
 
