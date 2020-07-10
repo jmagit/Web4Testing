@@ -1,1 +1,602 @@
-[{"id":1,"titulo":"Land and Freedom (Tierra y libertad)","autor":"Major Andrzej","numPag":199},{"id":2,"titulo":"Vagabond (Sans toit ni loi)","autor":"Ennis Petrushkevich","numPag":209},{"id":3,"titulo":"Diên Biên Phú","autor":"Ryon Martugin","numPag":585},{"id":4,"titulo":"Better Housekeeping (a.k.a. Good Housekeeping)","autor":"Melosa Diggell","numPag":169},{"id":5,"titulo":"Cold Weather","autor":"Cindie Tudor","numPag":387},{"id":6,"titulo":"By Dawn's Early Light","autor":"Gordan Rosenblatt","numPag":461},{"id":7,"titulo":"Flashback","autor":"Jeannine Adriani","numPag":405},{"id":8,"titulo":"Perfect Fake, A","autor":"Rudolph Hrynczyk","numPag":466},{"id":9,"titulo":"Ninja: Shadow of a Tear","autor":"Lawton Dumsday","numPag":350},{"id":10,"titulo":"Bamba, La","autor":"Ciel Flecknoe","numPag":411},{"id":11,"titulo":"Roadracers","autor":"Erie Wraith","numPag":485},{"id":12,"titulo":"Something to Sing About","autor":"Arron Very","numPag":538},{"id":13,"titulo":"Bill Maher: Victory Begins at Home","autor":"Chantalle Mc Gorley","numPag":337},{"id":14,"titulo":"Parting Glances","autor":"Theodosia Skeene","numPag":428},{"id":15,"titulo":"Hangin' with the Homeboys","autor":"Keenan Howton","numPag":316},{"id":16,"titulo":"Cockpit","autor":"Alfy Guyers","numPag":177},{"id":17,"titulo":"To Do List, The","autor":"Ileana Bareford","numPag":296},{"id":18,"titulo":"War of the Roses, The","autor":"Nichols Flahy","numPag":262},{"id":19,"titulo":"First Sunday","autor":"Gill Gittus","numPag":270},{"id":20,"titulo":"Cinderella","autor":"Eolande Exon","numPag":497},{"id":21,"titulo":"Poolboy: Drowning Out the Fury","autor":"Rafe Gellan","numPag":281},{"id":22,"titulo":"Timbuktu","autor":"Jean Rothon","numPag":301},{"id":23,"titulo":"Ole dole doff","autor":"Avictor Gilchriest","numPag":430},{"id":24,"titulo":"Africa: The Serengeti","autor":"Holly Lyttle","numPag":203},{"id":25,"titulo":"Splinter","autor":"Jasen Belamy","numPag":401},{"id":26,"titulo":"Banger Sisters, The","autor":"Parnell Pibsworth","numPag":305},{"id":27,"titulo":"Princess and the Pony","autor":"Virgina Newbury","numPag":333},{"id":28,"titulo":"Body Snatcher, The","autor":"Josi Roskilly","numPag":451},{"id":29,"titulo":"Magician, The (Ansiktet)","autor":"Brandea Lancetter","numPag":520},{"id":30,"titulo":"Detention","autor":"Bobbi Eefting","numPag":215},{"id":31,"titulo":"Ugly, The","autor":"Joey Junifer","numPag":245},{"id":32,"titulo":"Sea Inside, The (Mar adentro)","autor":"Thomasin Rubroe","numPag":273},{"id":33,"titulo":"Love Sick Love","autor":"Silvain Harcus","numPag":354},{"id":34,"titulo":"Body of Water (Syvälle salattu)","autor":"Niles Treadgall","numPag":481},{"id":35,"titulo":"Beneath","autor":"Cindee Huscroft","numPag":419},{"id":36,"titulo":"Redline","autor":"Rianon Suerz","numPag":326},{"id":37,"titulo":"The Thief","autor":"Geraldine Cuffe","numPag":249},{"id":38,"titulo":"Beautiful Ohio","autor":"Nate McGlaud","numPag":457},{"id":39,"titulo":"Al-risâlah","autor":"Ly Timny","numPag":536},{"id":40,"titulo":"Playmobil: The Secret of Pirate Island","autor":"Bank Andraud","numPag":174},{"id":41,"titulo":"1½ Knights - In Search of the Ravishing Princess Herzelinde","autor":"Sabine Shaughnessy","numPag":509},{"id":42,"titulo":"51 Birch Street","autor":"Kendall Rollinson","numPag":322},{"id":43,"titulo":"Zoolander","autor":"Pennie Jodkowski","numPag":113},{"id":44,"titulo":"Wind Journeys, The (Viajes del viento, Los)","autor":"Ranique Bamsey","numPag":232},{"id":45,"titulo":"Small Circle of Friends, A","autor":"Lucinda Ielden","numPag":514},{"id":46,"titulo":"Defiance","autor":"Gerhard Manach","numPag":348},{"id":47,"titulo":"Becky Sharp","autor":"Philbert Oakey","numPag":185},{"id":48,"titulo":"Mac & Devin Go to High School","autor":"Darcy Lonie","numPag":461},{"id":49,"titulo":"Sweet November","autor":"Daphna Felix","numPag":346},{"id":50,"titulo":"Life Is a Long Quiet River (La vie est un long fleuve tranquille)","autor":"Corella Durdy","numPag":158},{"id":51,"titulo":"Mindscape of Alan Moore, The","autor":"Gael Burnside","numPag":349},{"id":52,"titulo":"Snipes","autor":"Catha Papen","numPag":160},{"id":53,"titulo":"Crime on the Highway","autor":"Morlee Tuffell","numPag":537},{"id":54,"titulo":"Toy, The (Le jouet)","autor":"Astrix Choke","numPag":554},{"id":55,"titulo":"Lady for a Day","autor":"Lisle Fosher","numPag":269},{"id":56,"titulo":"Dead Silent","autor":"Gabriel Ellum","numPag":520},{"id":57,"titulo":"Tevye","autor":"Candra Bastard","numPag":148},{"id":58,"titulo":"Nines, The","autor":"Brooke McClurg","numPag":453},{"id":59,"titulo":"Latitudes","autor":"Rosana Zukerman","numPag":598},{"id":60,"titulo":"Birth of a Nation, The","autor":"Trent Disley","numPag":309},{"id":61,"titulo":"Death Before Dishonor","autor":"Sid Lighterness","numPag":589},{"id":62,"titulo":"Belizaire the Cajun","autor":"Lawton Huygens","numPag":524},{"id":63,"titulo":"Holy Rollers","autor":"Mariette Terbrugge","numPag":556},{"id":64,"titulo":"Tale of Springtime, A (Conte de Printemps)","autor":"Brendis Sainsbury","numPag":555},{"id":65,"titulo":"Sinbad and the Eye of the Tiger","autor":"Fawn Lineen","numPag":536},{"id":66,"titulo":"Cocktail","autor":"Celestyn Preist","numPag":475},{"id":67,"titulo":"Snarveien (Detour)","autor":"Emelen Hofler","numPag":276},{"id":68,"titulo":"Revenge of the Nerds II: Nerds in Paradise","autor":"Gerladina Gon","numPag":476},{"id":69,"titulo":"Possession","autor":"Nickola Addicott","numPag":148},{"id":70,"titulo":"Squeeze","autor":"Marketa Pitman","numPag":499},{"id":71,"titulo":"Attack!","autor":"Cinderella Nye","numPag":438},{"id":72,"titulo":"Charlie Chan at the Race Track","autor":"Alley Monnoyer","numPag":220},{"id":73,"titulo":"Insignificance","autor":"Mira Rabjohn","numPag":150},{"id":74,"titulo":"Bionicle: The Legend Reborn","autor":"Stepha Parell","numPag":182},{"id":75,"titulo":"Return, The","autor":"Arley Gobel","numPag":360},{"id":76,"titulo":"Good Wife, The","autor":"Elva McSporon","numPag":426},{"id":77,"titulo":"Defenseless","autor":"Kristopher Swayland","numPag":131},{"id":78,"titulo":"Home Alone: The Holiday Heist","autor":"Lowe Sherar","numPag":299},{"id":79,"titulo":"Long Kiss Goodnight, The","autor":"Freda Ditchfield","numPag":407},{"id":80,"titulo":"Evilenko","autor":"Debera Ancell","numPag":447},{"id":81,"titulo":"Freshman, The","autor":"Gerhardine Platfoot","numPag":415},{"id":82,"titulo":"Longtime Companion","autor":"Dimitry Nelhams","numPag":423},{"id":83,"titulo":"Vampires, Les","autor":"Worthington Carrodus","numPag":473},{"id":84,"titulo":"Last Ride, The","autor":"Danielle Dalloway","numPag":311},{"id":85,"titulo":"Rebound","autor":"Hewe Anstead","numPag":171},{"id":86,"titulo":"Killing of Sister George, The","autor":"Jeramie Olliver","numPag":398},{"id":87,"titulo":"The Time of Their Lives","autor":"Evered Ketteman","numPag":600},{"id":88,"titulo":"Planes","autor":"Everard Slocom","numPag":148},{"id":89,"titulo":"Bread, My Sweet, The (a.k.a. Wedding for Bella, A)","autor":"Yves Crippill","numPag":227},{"id":90,"titulo":"Keith","autor":"Eilis Beacroft","numPag":561},{"id":91,"titulo":"Happily N'Ever After","autor":"Brier Poser","numPag":468},{"id":92,"titulo":"Jobs","autor":"Sibelle Macbeth","numPag":588},{"id":93,"titulo":"Something for Everyone","autor":"Julietta Goggen","numPag":187},{"id":94,"titulo":"Slasher House","autor":"Etheline Easterby","numPag":178},{"id":95,"titulo":"Fantasia","autor":"Trix Scoon","numPag":147},{"id":96,"titulo":"Luna Papa","autor":"Cindie Lattka","numPag":191},{"id":97,"titulo":"Sorrow and Joy (Sorg og glæde)","autor":"Roma Garms","numPag":517},{"id":98,"titulo":"Paraíso Travel","autor":"Barret Harby","numPag":468},{"id":99,"titulo":"Like Water","autor":"Ranice Roddick","numPag":492},{"id":100,"titulo":"Mammoth (Mammut)","autor":"Barry Channing","numPag":252}]
+[
+    {
+        "id": 1,
+        "titulo": "Land and Freedom (Tierra y libertad)",
+        "autor": "Major Andrzej",
+        "numPag": 199
+    },
+    {
+        "id": 2,
+        "titulo": "Vagabond (Sans toit ni loi)",
+        "autor": "Ennis Petrushkevich",
+        "numPag": 209
+    },
+    {
+        "id": 3,
+        "titulo": "Diên Biên Phú",
+        "autor": "Ryon Martugin",
+        "numPag": 585
+    },
+    {
+        "id": 4,
+        "titulo": "Better Housekeeping (a.k.a. Good Housekeeping)",
+        "autor": "Melosa Diggell",
+        "numPag": 169
+    },
+    {
+        "id": 5,
+        "titulo": "Cold Weather",
+        "autor": "Cindie Tudor",
+        "numPag": 387
+    },
+    {
+        "id": 6,
+        "titulo": "By Dawn's Early Light",
+        "autor": "Gordan Rosenblatt",
+        "numPag": 461
+    },
+    {
+        "id": 7,
+        "titulo": "Flashback",
+        "autor": "Jeannine Adriani",
+        "numPag": 405
+    },
+    {
+        "id": 8,
+        "titulo": "Perfect Fake, A",
+        "autor": "Rudolph Hrynczyk",
+        "numPag": 466
+    },
+    {
+        "id": 9,
+        "titulo": "Ninja: Shadow of a Tear",
+        "autor": "Lawton Dumsday",
+        "numPag": 350
+    },
+    {
+        "id": 10,
+        "titulo": "Bamba, La",
+        "autor": "Ciel Flecknoe",
+        "numPag": 411
+    },
+    {
+        "id": 11,
+        "titulo": "Roadracers",
+        "autor": "Erie Wraith",
+        "numPag": 485
+    },
+    {
+        "id": 12,
+        "titulo": "Something to Sing About",
+        "autor": "Arron Very",
+        "numPag": 538
+    },
+    {
+        "id": 13,
+        "titulo": "Bill Maher: Victory Begins at Home",
+        "autor": "Chantalle Mc Gorley",
+        "numPag": 337
+    },
+    {
+        "id": 14,
+        "titulo": "Parting Glances",
+        "autor": "Theodosia Skeene",
+        "numPag": 428
+    },
+    {
+        "id": 15,
+        "titulo": "Hangin' with the Homeboys",
+        "autor": "Keenan Howton",
+        "numPag": 316
+    },
+    {
+        "id": 16,
+        "titulo": "Cockpit",
+        "autor": "Alfy Guyers",
+        "numPag": 177
+    },
+    {
+        "id": 17,
+        "titulo": "To Do List, The",
+        "autor": "Ileana Bareford",
+        "numPag": 296
+    },
+    {
+        "id": 18,
+        "titulo": "War of the Roses, The",
+        "autor": "Nichols Flahy",
+        "numPag": 262
+    },
+    {
+        "id": 19,
+        "titulo": "First Sunday",
+        "autor": "Gill Gittus",
+        "numPag": 270
+    },
+    {
+        "id": 20,
+        "titulo": "Cinderella",
+        "autor": "Eolande Exon",
+        "numPag": 497
+    },
+    {
+        "id": 21,
+        "titulo": "Poolboy: Drowning Out the Fury",
+        "autor": "Rafe Gellan",
+        "numPag": 281
+    },
+    {
+        "id": 22,
+        "titulo": "Timbuktu",
+        "autor": "Jean Rothon",
+        "numPag": 301
+    },
+    {
+        "id": 23,
+        "titulo": "Ole dole doff",
+        "autor": "Avictor Gilchriest",
+        "numPag": 430
+    },
+    {
+        "id": 24,
+        "titulo": "Africa: The Serengeti",
+        "autor": "Holly Lyttle",
+        "numPag": 203
+    },
+    {
+        "id": 25,
+        "titulo": "Splinter",
+        "autor": "Jasen Belamy",
+        "numPag": 401
+    },
+    {
+        "id": 26,
+        "titulo": "Banger Sisters, The",
+        "autor": "Parnell Pibsworth",
+        "numPag": 305
+    },
+    {
+        "id": 27,
+        "titulo": "Princess and the Pony",
+        "autor": "Virgina Newbury",
+        "numPag": 333
+    },
+    {
+        "id": 28,
+        "titulo": "Body Snatcher, The",
+        "autor": "Josi Roskilly",
+        "numPag": 451
+    },
+    {
+        "id": 29,
+        "titulo": "Magician, The (Ansiktet)",
+        "autor": "Brandea Lancetter",
+        "numPag": 520
+    },
+    {
+        "id": 30,
+        "titulo": "Detention",
+        "autor": "Bobbi Eefting",
+        "numPag": 215
+    },
+    {
+        "id": 31,
+        "titulo": "Ugly, The",
+        "autor": "Joey Junifer",
+        "numPag": 245
+    },
+    {
+        "id": 32,
+        "titulo": "Sea Inside, The (Mar adentro)",
+        "autor": "Thomasin Rubroe",
+        "numPag": 273
+    },
+    {
+        "id": 33,
+        "titulo": "Love Sick Love",
+        "autor": "Silvain Harcus",
+        "numPag": 354
+    },
+    {
+        "id": 34,
+        "titulo": "Body of Water (Syvälle salattu)",
+        "autor": "Niles Treadgall",
+        "numPag": 481
+    },
+    {
+        "id": 35,
+        "titulo": "Beneath",
+        "autor": "Cindee Huscroft",
+        "numPag": 419
+    },
+    {
+        "id": 36,
+        "titulo": "Redline",
+        "autor": "Rianon Suerz",
+        "numPag": 326
+    },
+    {
+        "id": 37,
+        "titulo": "The Thief",
+        "autor": "Geraldine Cuffe",
+        "numPag": 249
+    },
+    {
+        "id": 38,
+        "titulo": "Beautiful Ohio",
+        "autor": "Nate McGlaud",
+        "numPag": 457
+    },
+    {
+        "id": 39,
+        "titulo": "Al-risâlah",
+        "autor": "Ly Timny",
+        "numPag": 536
+    },
+    {
+        "id": 40,
+        "titulo": "Playmobil: The Secret of Pirate Island",
+        "autor": "Bank Andraud",
+        "numPag": 174
+    },
+    {
+        "id": 41,
+        "titulo": "1½ Knights - In Search of the Ravishing Princess Herzelinde",
+        "autor": "Sabine Shaughnessy",
+        "numPag": 509
+    },
+    {
+        "id": 42,
+        "titulo": "51 Birch Street",
+        "autor": "Kendall Rollinson",
+        "numPag": 322
+    },
+    {
+        "id": 43,
+        "titulo": "Zoolander",
+        "autor": "Pennie Jodkowski",
+        "numPag": 113
+    },
+    {
+        "id": 44,
+        "titulo": "Wind Journeys, The (Viajes del viento, Los)",
+        "autor": "Ranique Bamsey",
+        "numPag": 232
+    },
+    {
+        "id": 45,
+        "titulo": "Small Circle of Friends, A",
+        "autor": "Lucinda Ielden",
+        "numPag": 514
+    },
+    {
+        "id": 46,
+        "titulo": "Defiance",
+        "autor": "Gerhard Manach",
+        "numPag": 348
+    },
+    {
+        "id": 47,
+        "titulo": "Becky Sharp",
+        "autor": "Philbert Oakey",
+        "numPag": 185
+    },
+    {
+        "id": 48,
+        "titulo": "Mac & Devin Go to High School",
+        "autor": "Darcy Lonie",
+        "numPag": 461
+    },
+    {
+        "id": 49,
+        "titulo": "Sweet November",
+        "autor": "Daphna Felix",
+        "numPag": 346
+    },
+    {
+        "id": 50,
+        "titulo": "Life Is a Long Quiet River (La vie est un long fleuve tranquille)",
+        "autor": "Corella Durdy",
+        "numPag": 158
+    },
+    {
+        "id": 51,
+        "titulo": "Mindscape of Alan Moore, The",
+        "autor": "Gael Burnside",
+        "numPag": 349
+    },
+    {
+        "id": 52,
+        "titulo": "Snipes",
+        "autor": "Catha Papen",
+        "numPag": 160
+    },
+    {
+        "id": 53,
+        "titulo": "Crime on the Highway",
+        "autor": "Morlee Tuffell",
+        "numPag": 537
+    },
+    {
+        "id": 54,
+        "titulo": "Toy, The (Le jouet)",
+        "autor": "Astrix Choke",
+        "numPag": 554
+    },
+    {
+        "id": 55,
+        "titulo": "Lady for a Day",
+        "autor": "Lisle Fosher",
+        "numPag": 269
+    },
+    {
+        "id": 56,
+        "titulo": "Dead Silent",
+        "autor": "Gabriel Ellum",
+        "numPag": 520
+    },
+    {
+        "id": 57,
+        "titulo": "Tevye",
+        "autor": "Candra Bastard",
+        "numPag": 148
+    },
+    {
+        "id": 58,
+        "titulo": "Nines, The",
+        "autor": "Brooke McClurg",
+        "numPag": 453
+    },
+    {
+        "id": 59,
+        "titulo": "Latitudes",
+        "autor": "Rosana Zukerman",
+        "numPag": 598
+    },
+    {
+        "id": 60,
+        "titulo": "Birth of a Nation, The",
+        "autor": "Trent Disley",
+        "numPag": 309
+    },
+    {
+        "id": 61,
+        "titulo": "Death Before Dishonor",
+        "autor": "Sid Lighterness",
+        "numPag": 589
+    },
+    {
+        "id": 62,
+        "titulo": "Belizaire the Cajun",
+        "autor": "Lawton Huygens",
+        "numPag": 524
+    },
+    {
+        "id": 63,
+        "titulo": "Holy Rollers",
+        "autor": "Mariette Terbrugge",
+        "numPag": 556
+    },
+    {
+        "id": 64,
+        "titulo": "Tale of Springtime, A (Conte de Printemps)",
+        "autor": "Brendis Sainsbury",
+        "numPag": 555
+    },
+    {
+        "id": 65,
+        "titulo": "Sinbad and the Eye of the Tiger",
+        "autor": "Fawn Lineen",
+        "numPag": 536
+    },
+    {
+        "id": 66,
+        "titulo": "Cocktail",
+        "autor": "Celestyn Preist",
+        "numPag": 475
+    },
+    {
+        "id": 67,
+        "titulo": "Snarveien (Detour)",
+        "autor": "Emelen Hofler",
+        "numPag": 276
+    },
+    {
+        "id": 68,
+        "titulo": "Revenge of the Nerds II: Nerds in Paradise",
+        "autor": "Gerladina Gon",
+        "numPag": 476
+    },
+    {
+        "id": 69,
+        "titulo": "Possession",
+        "autor": "Nickola Addicott",
+        "numPag": 148
+    },
+    {
+        "id": 70,
+        "titulo": "Squeeze",
+        "autor": "Marketa Pitman",
+        "numPag": 499
+    },
+    {
+        "id": 71,
+        "titulo": "Attack!",
+        "autor": "Cinderella Nye",
+        "numPag": 438
+    },
+    {
+        "id": 72,
+        "titulo": "Charlie Chan at the Race Track",
+        "autor": "Alley Monnoyer",
+        "numPag": 220
+    },
+    {
+        "id": 73,
+        "titulo": "Insignificance",
+        "autor": "Mira Rabjohn",
+        "numPag": 150
+    },
+    {
+        "id": 74,
+        "titulo": "Bionicle: The Legend Reborn",
+        "autor": "Stepha Parell",
+        "numPag": 182
+    },
+    {
+        "id": 75,
+        "titulo": "Return, The",
+        "autor": "Arley Gobel",
+        "numPag": 360
+    },
+    {
+        "id": 76,
+        "titulo": "Good Wife, The",
+        "autor": "Elva McSporon",
+        "numPag": 426
+    },
+    {
+        "id": 77,
+        "titulo": "Defenseless",
+        "autor": "Kristopher Swayland",
+        "numPag": 131
+    },
+    {
+        "id": 78,
+        "titulo": "Home Alone: The Holiday Heist",
+        "autor": "Lowe Sherar",
+        "numPag": 299
+    },
+    {
+        "id": 79,
+        "titulo": "Long Kiss Goodnight, The",
+        "autor": "Freda Ditchfield",
+        "numPag": 407
+    },
+    {
+        "id": 80,
+        "titulo": "Evilenko",
+        "autor": "Debera Ancell",
+        "numPag": 447
+    },
+    {
+        "id": 81,
+        "titulo": "Freshman, The",
+        "autor": "Gerhardine Platfoot",
+        "numPag": 415
+    },
+    {
+        "id": 82,
+        "titulo": "Longtime Companion",
+        "autor": "Dimitry Nelhams",
+        "numPag": 423
+    },
+    {
+        "id": 83,
+        "titulo": "Vampires, Les",
+        "autor": "Worthington Carrodus",
+        "numPag": 473
+    },
+    {
+        "id": 84,
+        "titulo": "Last Ride, The",
+        "autor": "Danielle Dalloway",
+        "numPag": 311
+    },
+    {
+        "id": 85,
+        "titulo": "Rebound",
+        "autor": "Hewe Anstead",
+        "numPag": 171
+    },
+    {
+        "id": 86,
+        "titulo": "Killing of Sister George, The",
+        "autor": "Jeramie Olliver",
+        "numPag": 398
+    },
+    {
+        "id": 87,
+        "titulo": "The Time of Their Lives",
+        "autor": "Evered Ketteman",
+        "numPag": 600
+    },
+    {
+        "id": 88,
+        "titulo": "Planes",
+        "autor": "Everard Slocom",
+        "numPag": 148
+    },
+    {
+        "id": 89,
+        "titulo": "Bread, My Sweet, The (a.k.a. Wedding for Bella, A)",
+        "autor": "Yves Crippill",
+        "numPag": 227
+    },
+    {
+        "id": 90,
+        "titulo": "Keith",
+        "autor": "Eilis Beacroft",
+        "numPag": 561
+    },
+    {
+        "id": 91,
+        "titulo": "Happily N'Ever After",
+        "autor": "Brier Poser",
+        "numPag": 468
+    },
+    {
+        "id": 92,
+        "titulo": "Jobs",
+        "autor": "Sibelle Macbeth",
+        "numPag": 588
+    },
+    {
+        "id": 93,
+        "titulo": "Something for Everyone",
+        "autor": "Julietta Goggen",
+        "numPag": 187
+    },
+    {
+        "id": 94,
+        "titulo": "Slasher House",
+        "autor": "Etheline Easterby",
+        "numPag": 178
+    },
+    {
+        "id": 95,
+        "titulo": "Fantasia",
+        "autor": "Trix Scoon",
+        "numPag": 147
+    },
+    {
+        "id": 96,
+        "titulo": "Luna Papa",
+        "autor": "Cindie Lattka",
+        "numPag": 191
+    },
+    {
+        "id": 97,
+        "titulo": "Sorrow and Joy (Sorg og glæde)",
+        "autor": "Roma Garms",
+        "numPag": 517
+    },
+    {
+        "id": 98,
+        "titulo": "Paraíso Travel",
+        "autor": "Barret Harby",
+        "numPag": 468
+    },
+    {
+        "id": 99,
+        "titulo": "Like Water",
+        "autor": "Ranice Roddick",
+        "numPag": 492
+    },
+    {
+        "id": 100,
+        "titulo": "Mammoth (Mammut)",
+        "autor": "Barry Channing",
+        "numPag": 252
+    }
+]
