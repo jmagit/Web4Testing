@@ -57,7 +57,7 @@ Se han incorporado una serie de parámetros (querystring) para ampliar el contro
 }`
 * **_rows=*número*:** Número de filas por página, por defecto 20 si se omite pero aparece el parámetro *_page*.
 ### Para añadir nuevos servicios
-1. En el subdirectorio `/data`, añadir un fichero .json con el array de objetos con los valores iniciales del resource. Para generar el fichero se pueden utilizar herramientas de generación automatizada de juegos de datos como http://www.generatedata.com/?lang=es o https://www.mockaroo.com/.
+1. En el subdirectorio `/data`, añadir un fichero .json con el array de objetos con los valores iniciales del resource. Para generar el fichero se pueden utilizar herramientas de generación automatizada de juegos de datos como <http://www.generatedata.com/?lang=es> o <https://www.mockaroo.com/>.
 2. Dar de alta el servicio añadiendo una entrada en el array lstServicio:
     * url: dirección del servicio
     * pk: propiedad del objeto que actúa como primary key
@@ -76,7 +76,7 @@ Para evitar conflictos con los navegadores se han habilitado las siguientes cabe
 ### ECO
 El servicio ECO se puede usar para probar los clientes REST, hacer llamadas API de muestra y comprobar la información recibida por el servidor.
 
-Por ejemplo: http://localhost:8181/eco/personas/1?_page=1&_rows=10
+Por ejemplo: <http://localhost:8181/eco/personas/1?_page=1&_rows=10>
 
     {
         "url": "/eco/personas/1?_page=1&_rows=10",
@@ -121,12 +121,13 @@ Por ejemplo: http://localhost:8181/eco/personas/1?_page=1&_rows=10
     }
 
 ## Autenticación
-Para simular la autenticación con token JWT de cabecera está disponible el servicio `http://localhost:8181/login` con el método POST.
+Para simular la autenticación con token JWT de cabecera está disponible el servicio `http://localhost:8181/api/login` con el método POST.
 * **Formularios**
-    * action="http://localhost:8181/login"
+    * action="http://localhost:8181/api/login"
     * method="post"
     * body="name=admin&password=P@$$w0rd"
 * **API**
+    * POST http://localhost:8181/api/login
     * Content-Type: application/json
     * body: { "name": "admin", "password": "P@$$w0rd" }
 #### Respuesta JSON:
@@ -139,14 +140,14 @@ Para simular la autenticación con token JWT de cabecera está disponible el ser
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiYWRtaW4iLCJleHBpcmVzSW4iOiIxaCIsImlhdCI6MTU0MzY5NjE0MH0.0KTIt4AGDM377AwBnrVS7woWyC-dEW0vUIcPBvJAbfg
 
 ### Cookies
-Para otros escenarios que requiera autenticación por cookies se puede añadir el parámetro `cookie=true` para que envíe la cookie `Authorization` con una validez de una hora: http://localhost:8181/api/login?cookie=true
-Para borrar la cookie: http://localhost:8181/api/logout
-Para obtener la informacion de la autenticación: http://localhost:8181/api/auth
+* Para otros escenarios que requiera autenticación por cookies se puede añadir el parámetro `cookie=true` para que envíe la cookie `Authorization` con una validez de una hora: <http://localhost:8181/api/login?cookie=true>
+* Para borrar la cookie: <http://localhost:8181/api/logout>
+* Para obtener la informacion de la autenticación: <http://localhost:8181/api/auth>
 
 ### Gestión de usuarios
 En el fichero data/usuarios.json se mantiene la estructura básica de los usuarios registrados que se puede ampliar.
 
-Mediante peticiones AJAX a http://localhost:8181/register se pueden:
+Mediante peticiones AJAX a <http://localhost:8181/api/register> se pueden:
 * Registrar usuario (POST).
 * Modificar usuario autenticado (PUT)
 * Consultar usuario autenticado (GET)

@@ -2,6 +2,10 @@ extends layout
 
 block content
     .container-fluid
+      div(class="alert alert-danger fade show", id="alertError", style="display: none;")
+        span(id="txtError") Errores
+        button(type="button", class="close", id="btnCerrarError")
+          span(aria-hidden="true") &times;
       h1 Contactos
       img(id="trabajandoAJAX" src="images/ajaxloading.gif" alt="Cargando ...")
       div(id="listado")
@@ -187,6 +191,9 @@ block scripts
             Contactos.validar(ev.target.name);
         });
         $('#btnVolver').click(Contactos.volver);
+        $('#btnCerrarError').click(function(ev) {
+            $('#alertError').hide();
+        });
         $(document)
             .ajaxStart(function () {
                 $('#trabajandoAJAX').show();

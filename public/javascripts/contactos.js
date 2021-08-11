@@ -88,8 +88,7 @@ var Contactos = new (
                     obj.volver();
                 },
                 function (jqXHR, textStatus, errorThrown) {
-                    $('errorMsg').html(
-                        '<p class="error">ERROR: ' + jqXHR.status + ': ' + jqXHR.statusText + '</p>');
+                    obj.ponError('ERROR: ' + jqXHR.status + ': ' + jqXHR.statusText);
                 }
             );
         };
@@ -166,8 +165,7 @@ var Contactos = new (
                     obj.volver();
                 },
                 function (jqXHR, textStatus, errorThrown) {
-                    $('errorMsg').html(
-                        '<p class="error">ERROR: ' + jqXHR.status + ': ' + jqXHR.statusText + '</p>');
+                    obj.ponError('ERROR: ' + jqXHR.status + ': ' + jqXHR.statusText);
                 }
             );
         };
@@ -200,8 +198,7 @@ var Contactos = new (
                         obj.volver();
                     },
                     function (jqXHR, textStatus, errorThrown) {
-                        $('errorMsg').html(
-                            '<p class="error">ERROR: ' + jqXHR.status + ': ' + jqXHR.statusText + '</p>');
+                        obj.ponError('ERROR: ' + jqXHR.status + ': ' + jqXHR.statusText);
                     }
                 );
                 // }
@@ -213,5 +210,9 @@ var Contactos = new (
             $('#listado').show();
             $('#frmPrincipal').hide();
         };
+        obj.ponError = function (msg) {
+            $('#txtError').text(msg);
+            $('#alertError').show();
+        };        
     }
 )();
