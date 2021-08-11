@@ -51,6 +51,7 @@ Web4Testing.AuthService = new function () {
         if (localStorage) {
             localStorage.removeItem('AuthService');
         }
+        $.get('/api/logout').then()
     }
     obj.getUser = function () {
         return new Promise(function (resolve, reject) {
