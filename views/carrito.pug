@@ -2,6 +2,10 @@ extends layout
 
 block content
     .container-fluid
+      div(class="alert alert-danger fade show", id="CuadroAlerta", style="display: none;")
+        span(id="txtResultado") Errores
+        button(type="button", class="close", id="btnCerrar")
+          span(aria-hidden="true") &times;
       h1 Compras
       img(id="trabajandoAJAX" src="images/ajaxloading.gif" alt="Cargando ...")
       .row
@@ -66,6 +70,10 @@ block scripts
     $(document).ready(function () {
         mng.ListarProductos();
         mng.Refresca();
+        mng.PonError = function (msg) {
+            $('#txtResultado').text(msg);
+            $('#CuadroAlerta').show();
+        };
         $('#txtFiltro').keyup(function(ev) {
             if(delay)
                 clearTimeout(delay);
@@ -78,6 +86,9 @@ block scripts
         $('#btnLimpiaFiltro').click(function(ev) {
             $('#txtFiltro').val("");
             mng.Filtra("");
+        });
+        $('#btnCerrar').click(function(ev) {
+            $('#CuadroAlerta').hide();
         });
         $(document)
             .ajaxStart(function () {
