@@ -65,59 +65,67 @@ function CarritoManager() {
     function PintaCarrito() {
         var tmpl = $('#tmplListadoCarrito').html();
         // var rslt = Mustache.render(tmpl, { filas: carrito.lineas, total: carrito.lineas.reduce(function(sum, f) {return sum + f.importe;})});
-        var rslt = Mustache.render(tmpl, { filas: carrito.lineas, total: carrito.lineas.length === 0 ? 0 :
-            carrito.lineas.map(function(f) {return f.importe;}).reduce(function(sum, f) {return sum + f;}) });
+        var rslt = Mustache.render(tmpl, {
+            filas: carrito.lineas, total: carrito.lineas.length === 0 ? 0 :
+                carrito.lineas.map(function (f) { return f.importe; }).reduce(function (sum, f) { return sum + f; })
+        });
         $('#listadoCarrito').html(rslt);
     }
 
-    obj.Refresca = function() {
+    obj.Refresca = function () {
         PintaCarrito();
     };
     obj.ListarProductos = function () {
         if (listaProductos)
             PintaProductos(listaProductos);
         else
-            $.ajax({
-                url: 'api/peliculas?_sort=titulo',
-                dataType: 'json',
-            }).then(
-                function (resp) {
-                    listaProductos = resp;
-                    PintaProductos(listaProductos);
-                },
-                function (jqXHR, textStatus, errorThrown) {
-                    // reject(jqXHR, textStatus, errorThrown);
+            fetch('api/peliculas?_sort=titulo').then(function (response) {
+                if (response.ok) {
+                    response.json().then(function (data) {
+                        listaProductos = data;
+                        PintaProductos(listaProductos);
+                    }).catch(function (error) {
+                        obj.PonError('Error en los datos recibidos: ' + error.message);
+                    });
+                } else {
+                    obj.PonError('Error ' + response.status + ': ' + response.statusText);
                 }
-            );
+            }).catch(function (error) {
+                obj.PonError('Hubo un problema con la petición Fetch:' + error.message);
+            });
     };
 
     obj.drag = function (ev, id) {
         ev.dataTransfer.setData("id_producto", id);
     };
-    
+
     obj.allowDrop = function (ev) {
         ev.preventDefault();
     };
-    
+
     obj.drop = function (ev) {
         ev.preventDefault();
         var id = ev.dataTransfer.getData("id_producto");
-        var prod = listaProductos.find(function(item) { return item.id == id; });
-        if(prod) {
+        var prod = listaProductos.find(function (item) { return item.id == id; });
+        if (prod) {
             carrito.add(prod.id, prod.titulo, prod.precio);
             mng.Refresca();
         }
     };
 
-    obj.Filtra = function(texto) {
-        if(!listaProductos) return;
-        if(!texto || texto == "") {
+    obj.Filtra = function (texto) {
+        if (!listaProductos) return;
+        if (!texto || texto == "") {
             PintaProductos(listaProductos);
             return;
         }
-        var rslt = listaProductos.filter(function(item){
+        var rslt = listaProductos.filter(function (item) {
             return item.titulo.toUpperCase().indexOf(texto.toUpperCase()) >= 0;
         });
         PintaProductos(rslt);
+    };
+
+    obj.PonError = function (msg) {
+        console.error(msg);
     };
 }

@@ -15,7 +15,16 @@ block content
     .btn-group
       input.btn.btn-outline-success(type="button", data-toggle="modal", data-target="#staticBackdrop", value="Mostra cuadro modal")
       input.btn.btn-outline-success(type="button", data-toggle="modal", data-target="#exampleModal", data-whatever="@mdo", value="Mostra cuadro modeless")
-
+    h1 Temporizadores
+    div.alert.alert-success
+      p
+        b Entrada: 
+        span(id="currentDate")
+        | &nbsp;
+        span.badge.badge-pill.badge-info(id="crono") 0 seconds
+        | &nbsp;
+        button.btn.btn-primary(type='button', id='btnParar')
+          | Parar           
     div.modal.fade(id="staticBackdrop", data-backdrop="static", data-keyboard="false", tabindex="-1", role="dialog", aria-labelledby="staticBackdropLabel", aria-hidden="true")
       .modal-dialog
         .modal-content
@@ -50,6 +59,17 @@ block content
 block scripts
   script.
     $(document).ready(function() {
+      $('#currentDate').text(new Date().toJSON())
+      let seconds = 0
+      let intervalo = setInterval(() => { 
+          $('#crono').text(++seconds + ' seconds') 
+          if(seconds % 60 === 0)
+            $('#currentDate').text(new Date().toJSON())
+        }, 1000)
+      $('#btnParar').click(function(ev) {
+        clearInterval(intervalo);
+      });
+
       $('#btnCerrar').click(function(ev) {
         $('#CuadroAlerta').hide();
       });
