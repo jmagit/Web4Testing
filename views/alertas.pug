@@ -11,6 +11,7 @@ block content
       input.btn.btn-outline-primary(type="button", value="Alerta", id="btnAlert")
       input.btn.btn-outline-primary(type="button", value="Confirmación", id="btnConfirm")
       input.btn.btn-outline-primary(type="button", value="Petición", id="btnPrompt")
+    input.btn.btn-outline-danger(type="button", value="Excepción no controlada", id="btnExcepcion")
     h1 Cuadros emergentes
     .btn-group
       input.btn.btn-outline-success(type="button", data-toggle="modal", data-target="#staticBackdrop", value="Mostra cuadro modal")
@@ -100,6 +101,9 @@ block scripts
           $('#txtResultado').text('Has dicho: ' + result); 
           $('#CuadroAlerta').removeClass().addClass( "alert alert-success fade show" ).show();
         }
+      });
+      $('#btnExcepcion').click(function(ev) {
+        throw new Error('Excepción no controlada')
       });
       $('#myModal').on('shown.bs.modal', function () {
         $('#myInput').trigger('focus')

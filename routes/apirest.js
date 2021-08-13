@@ -167,7 +167,7 @@ lstServicio.forEach(servicio => {
         lst.push(ele)
         console.log(lst)
         await fs.promises.writeFile(servicio.fich, JSON.stringify(lst), 'utf8');
-        res.status(201).json(lst).end()
+        res.status(201).header('Location', `${req.baseUrl}/${servicio.url}/${ele[servicio.pk]}`).json([]).end()
       } else {
         res.status(400).end('Clave duplicada.')
       }
