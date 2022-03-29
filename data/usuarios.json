@@ -4,9 +4,8 @@
         "password": "P@$$w0rd",
         "nombre": "Administrador",
         "roles": [
-            {
-                "role": "Administradores"
-            }
+            "Usuarios",
+            "Administradores"
         ]
     },
     {
@@ -14,9 +13,8 @@
         "password": "P@$$w0rd",
         "nombre": "Administrador",
         "roles": [
-            {
-                "role": "Administradores"
-            }
+            "Usuarios",
+            "Administradores"
         ]
     },
     {
@@ -24,9 +22,16 @@
         "password": "P@$$w0rd",
         "nombre": "Usuario registrado",
         "roles": [
-            {
-                "role": "Usuarios"
-            }
+            "Usuarios"
+        ]
+    },
+    {
+        "idUsuario": "emp@kk.kk",
+        "password": "P@$$w0rd",
+        "nombre": "Empleado",
+        "roles": [
+            "Usuarios",
+            "Empleados"
         ]
     }
 ]
