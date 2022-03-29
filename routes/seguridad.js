@@ -93,7 +93,8 @@ router.post(DIR_API_AUTH + 'login', function (req, res) {
                 rslt = {
                     success: true,
                     token: AUTHENTICATION_SCHEME + token,
-                    name: ele[PROP_NAME]
+                    name: ele[PROP_NAME],
+                    roles: ele.roles
                 }
                 if(req.query.cookie && req.query.cookie.toLowerCase() === "true")
                     res.cookie('Authorization', token, { maxAge: 3600000 })

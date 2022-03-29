@@ -56,7 +56,9 @@ Se han incorporado una serie de parámetros (querystring) para ampliar el contro
   "rows": 99
 }`
 * **_rows=*número*:** Número de filas por página, por defecto 20 si se omite pero aparece el parámetro *_page*.
+
 ### Para añadir nuevos servicios
+
 1. En el subdirectorio `/data`, añadir un fichero .json con el array de objetos con los valores iniciales del resource. Para generar el fichero se pueden utilizar herramientas de generación automatizada de juegos de datos como <http://www.generatedata.com/?lang=es> o <https://www.mockaroo.com/>.
 2. Dar de alta el servicio añadiendo una entrada en el array lstServicio:
     * url: dirección del servicio
@@ -67,6 +69,7 @@ Se han incorporado una serie de parámetros (querystring) para ampliar el contro
 4. Probar: http://localhost:8181/api/nuevoservicio
 
 ### Seguridad
+
 Para evitar conflictos con los navegadores se han habilitado las siguientes cabeceras CORS:
 * Access-Control-Allow-Origin: _dominio-origen-de-la-petición_
 * Access-Control-Allow-Headers: Origin, Content-Type, Accept, Authorization, X-Requested-With, X-SRF-TOKEN
@@ -74,6 +77,7 @@ Para evitar conflictos con los navegadores se han habilitado las siguientes cabe
 * Access-Control-Allow-Credentials: true
 
 ### ECO
+
 El servicio ECO se puede usar para probar los clientes REST, hacer llamadas API de muestra y comprobar la información recibida por el servidor.
 
 Por ejemplo: <http://localhost:8181/eco/personas/1?_page=1&_rows=10>
@@ -83,12 +87,12 @@ Por ejemplo: <http://localhost:8181/eco/personas/1?_page=1&_rows=10>
         "method": "PATCH",
         "headers": {
             "content-type": "application/json",
-            "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIiwicm9sZXMiOlt7InJvbGUiOiJBZG1pbmlzdHJhZG9yZXMifV0sImlhdCI6MTU3MTQ4MzA2NSwiZXhwIjoxNTcxNDg2NjY1fQ.oabnKfOpoxsokbRwfrM8HG6_BaccWQU8OZ0qu7kb4XA",
+            "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIiwicm9sZXMiOlsiVXN1YXJpb3MiLCJBZG1pbmlzdHJhZG9yZXMiXSwiaWF0IjoxNjQ4NTc4NTYxLCJleHAiOjE2NDg1ODIxNjF9.WF-z8UHEOtqh0NSttxkV4VSp8evKEKLvW1fIh4CwEJ0",
             "user-agent": "PostmanRuntime/7.18.0",
             "accept": "*/*",
             "cache-control": "no-cache",
             "postman-token": "d97b65ed-8407-4838-9f18-def0f51599d0",
-            "host": "localhost:8181",
+            "host": "localhost:4321",
             "accept-encoding": "gzip, deflate",
             "content-length": "14",
             "cookie": "XSRF-TOKEN=123456790ABCDEF",
@@ -99,9 +103,8 @@ Por ejemplo: <http://localhost:8181/eco/personas/1?_page=1&_rows=10>
             "usr": "admin",
             "name": "Administrador",
             "roles": [
-                {
-                    "role": "Administradores"
-                }
+                "Usuarios",
+                "Administradores"
             ]
         },
         "cookies": {
@@ -130,14 +133,23 @@ Para simular la autenticación con token JWT de cabecera está disponible el ser
     * POST http://localhost:8181/api/login
     * Content-Type: application/json
     * body: { "name": "admin", "password": "P@$$w0rd" }
+
 #### Respuesta JSON:
+
     {
         "success": true,
-        "token": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIiwicm9sZXMiOlt7InJvbGUiOiJBZG1pbmlzdHJhZG9yZXMifV0sImlhdCI6MTU3MTQ4MzA2NSwiZXhwIjoxNTcxNDg2NjY1fQ.oabnKfOpoxsokbRwfrM8HG6_BaccWQU8OZ0qu7kb4XA",
-        "name": "admin"
+        "token": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIiwicm9sZXMiOlsiVXN1YXJpb3MiLCJBZG1pbmlzdHJhZG9yZXMiXSwiaWF0IjoxNjQ4NTc4NTYxLCJleHAiOjE2NDg1ODIxNjF9.WF-z8UHEOtqh0NSttxkV4VSp8evKEKLvW1fIh4CwEJ0",
+        "name": "admin",
+        "roles": [
+            "Usuarios",
+            "Administradores"
+        ]
     }
+
 #### Envío del token en la cabecera:
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiYWRtaW4iLCJleHBpcmVzSW4iOiIxaCIsImlhdCI6MTU0MzY5NjE0MH0.0KTIt4AGDM377AwBnrVS7woWyC-dEW0vUIcPBvJAbfg
+
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIiwicm9sZXMiOlsiVXN1YXJpb3MiLCJBZG1pbmlzdHJhZG9yZXMiXSwiaWF0IjoxNjQ4NTc4NTYxLCJleHAiOjE2NDg1ODIxNjF9.WF-z8UHEOtqh0NSttxkV4VSp8evKEKLvW1fIh4CwEJ0
+
 
 ### Cookies
 * Para otros escenarios que requiera autenticación por cookies se puede añadir el parámetro `cookie=true` para que envíe la cookie `Authorization` con una validez de una hora: <http://localhost:8181/api/login?cookie=true>
