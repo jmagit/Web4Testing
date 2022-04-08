@@ -25,7 +25,7 @@ block scripts
     {{#filas}}
     <li class="list-group-item list-group-item-action" draggable="true" ondragstart="mng.drag(event, {{id}})">
         <h6>{{titulo}}
-        <button class="btn btn-success btn-xs float-right" onclick="mng.Refresca(carrito.add({{id}}, '{{titulo}}', {{precio}}));">
+        <button class="btn btn-success btn-xs float-right" aria-label="añadir al carrito" onclick="mng.Refresca(carrito.add({{id}}, '{{titulo}}', {{precio}}));">
           <i class="fas fa-cart-plus"></i>
         </button></h6>
         <small><i>{{director}} ({{idioma}}) <b>Precio:</b> {{precio}} €</i></small>
@@ -39,7 +39,7 @@ block scripts
               <th class="text-center">Cantidad</th>
               <th class="text-right">Importe</th>
               <th>                        
-                  <button class="btn btn-danger btn-xs" onclick="carrito.vaciar();mng.Refresca();">
+                  <button class="btn btn-danger btn-xs" aria-label="eliminar del carrito" onclick="carrito.vaciar();mng.Refresca();">
                       <i class="far fa-trash-alt"></i>
                   </button>
               </th>

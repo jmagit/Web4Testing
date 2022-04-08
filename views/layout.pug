@@ -11,7 +11,7 @@ html(lang="es")
   body
     header
       nav.navbar.navbar-expand-md.navbar-dark.bg-dark
-        a.navbar-brand(href="#") Web4Testing
+        a.navbar-brand(href="/") Web4Testing
         button.navbar-toggler(type="button", data-toggle="collapse", data-target="#navbarsDefault", aria-controls="navbarsDefault", aria-expanded="false", aria-label="Toggle navigation")
           span.navbar-toggler-icon
         div.collapse.navbar-collapse(id="navbarsDefault")
@@ -30,22 +30,22 @@ html(lang="es")
               a.nav-link(href="/fileupload") Ficheros
             li(class=baseUrl == '/api' ? 'nav-item active' : 'nav-item')
               a.nav-link(href="/api") APIs
-            li(class=baseUrl == '/api' ? 'nav-item active' : 'nav-item')
-              a.nav-link(href="/documentacion") <i class="fas fa-info-circle"></i>
+            li(class=baseUrl == '/documentacion' ? 'nav-item active' : 'nav-item')
+              a.nav-link(href="/documentacion", title="documentación") <i class="fas fa-info-circle"></i>
           form(id="loginForm", class="form-inline my-2 my-lg-0", style="display: none;")
             .input-group(role="group", aria-label="Login Form")
               input.form-control-sm(size="8", type="text", id="txtUsuario", name="Usuario", required, minlength="4", placeholder="Usuario")
               input.form-control-sm(size="8", type="password", id="txtPassword", name="Password", required, minlength="4", placeholder="Contraseña")
               .input-group-append
-                button(id="btnSendLogin", class="btn btn-outline-light btn-sm", type="button")
+                button(id="btnSendLogin", class="btn btn-outline-light btn-sm", type="button", aria-label="enviar login")
                   i.fas.fa-sign-in-alt
-                button(id="btnRegisterLogin", class="btn btn-outline-light btn-sm", type="button", data-toggle="modal", data-target="#RegisterModal", data-whatever="add")
+                button(id="btnRegisterLogin", class="btn btn-outline-light btn-sm", type="button", data-toggle="modal", data-target="#RegisterModal", data-whatever="add", aria-label="registrar usuario")
                   i.fas.fa-user-plus
           small(id="loginData", class="my-2 my-lg-0", style="display: none;")
             span.text-light.mr-2(id="userData")
-            button(id="btnLogout", class="btn btn-outline-light btn-sm", type="submit")
+            button(id="btnLogout", class="btn btn-outline-light btn-sm", type="submit", aria-label="enviar logout")
               i.fas.fa-sign-out-alt
-            button(id="btnEditUser", class="btn btn-outline-light btn-sm", type="button", data-toggle="modal", data-target="#RegisterModal", data-whatever="edit")
+            button(id="btnEditUser", class="btn btn-outline-light btn-sm", type="button", data-toggle="modal", data-target="#RegisterModal", data-whatever="edit", aria-label="editar perfil")
               i.fas.fa-user-edit
     div(class="modal fade", id="RegisterModal", tabindex="-1", role="dialog", aria-labelledby="RegisterModalLabel", aria-hidden="true")
       .modal-dialog

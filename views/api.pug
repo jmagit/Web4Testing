@@ -56,7 +56,7 @@ block content
         |  "method": "PATCH",
         |  "headers": {
         |      "content-type": "application/json",
-        |      "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIiwicm9sZXMiOlt7InJvbGUiOiJBZG1pbmlzdHJhZG9yZXMifV0sImlhdCI6MTU3MTQ4MzA2NSwiZXhwIjoxNTcxNDg2NjY1fQ.oabnKfOpoxsokbRwfrM8HG6_BaccWQU8OZ0qu7kb4XA",
+        |      "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIiwicm9sZXMiOlsiVXN1YXJpb3MiLCJBZG1pbmlzdHJhZG9yZXMiXSwiaWF0IjoxNjQ4NTc4NTYxLCJleHAiOjE2NDg1ODIxNjF9.WF-z8UHEOtqh0NSttxkV4VSp8evKEKLvW1fIh4CwEJ0",
         |      "user-agent": "PostmanRuntime/7.18.0",
         |      "accept": "*/*",
         |      "cache-control": "no-cache",
@@ -106,18 +106,26 @@ block content
             li Content-Type: application/json
             li body: { "name": "admin", "password": "P@$$w0rd" }
       h4 <a id="user-content-respuesta-json" class="anchor" aria-hidden="true" href="#respuesta-json"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Respuesta JSON:
-      pre <code>{
+      pre <code>
+        |  {
         |      "success": true,
-        |      "token": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIiwicm9sZXMiOlt7InJvbGUiOiJBZG1pbmlzdHJhZG9yZXMifV0sImlhdCI6MTU3MTQ4MzA2NSwiZXhwIjoxNTcxNDg2NjY1fQ.oabnKfOpoxsokbRwfrM8HG6_BaccWQU8OZ0qu7kb4XA",
-        |      "name": "admin"
+        |      "token": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIiwicm9sZXMiOlsiVXN1YXJpb3MiLCJBZG1pbmlzdHJhZG9yZXMiXSwiaWF0IjoxNjQ4NTc4NTYxLCJleHAiOjE2NDg1ODIxNjF9.WF-z8UHEOtqh0NSttxkV4VSp8evKEKLvW1fIh4CwEJ0",
+        |      "name": "admin",
+        |      "roles": [
+        |        "Usuarios",
+        |        "Administradores"
+        |      ]
         |  }
         |  </code>
       h4 <a id="user-content-envío-del-token-en-la-cabecera" class="anchor" aria-hidden="true" href="#envío-del-token-en-la-cabecera"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Envío del token en la cabecera:
-      p Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiYWRtaW4iLCJleHBpcmVzSW4iOiIxaCIsImlhdCI6MTU0MzY5NjE0MH0.0KTIt4AGDM377AwBnrVS7woWyC-dEW0vUIcPBvJAbfg
+      pre <code>
+        |  GET http://localhost:4321/auth
+        |  Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIiwicm9sZXMiOlsiVXN1YXJpb3MiLCJBZG1pbmlzdHJhZG9yZXMiXSwiaWF0IjoxNjQ4NTc4NTYxLCJleHAiOjE2NDg1ODIxNjF9.WF-z8UHEOtqh0NSttxkV4VSp8evKEKLvW1fIh4CwEJ0
+        |  </code>
       h4 Cookies
       p Para otros escenarios que requiera autenticación por cookies se puede añadir el parámetro cookie=true para que envíe la cookie <code>Authorization</code> con una validez de una hora: <a href="#{basel}/login?cookie=true" target="_blank" rel="nofollow">#{base}/login?cookie=true</a>
       p Para borrar la cookie: <a href="#{base}/logout" target="_blank" rel="nofollow">#{base}/logout</a>
-      p Para obtener la informacion de la autenticación: <a href="#{base}/auth" target="_blank" rel="nofollow">#{base}/auth</a>
+      p Para obtener la información de la autenticación: <a href="#{base}/auth" target="_blank" rel="nofollow">#{base}/auth</a>
       h3 <a id="user-content-gestión-de-usuarios" class="anchor" aria-hidden="true" href="#gestión-de-usuarios"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Gestión de usuarios
       p En el fichero data/usuarios.json se mantiene la estructura básica de los usuarios registrados que se puede ampliar.
       p Mediante peticiones AJAX a <a href="#{base}/register" target="_blank" rel="nofollow">#{base}/register</a> se pueden:
@@ -125,3 +133,15 @@ block content
         li Registrar usuario (POST).
         li Modificar usuario autenticado (PUT)
         li Consultar usuario autenticado (GET)
+      p La contraseñas sigue el patrón /^(?=.\d)(?=.[a-z])(?=.[A-Z])(?=.\W).{8,}$/ (al menos 8 caracteres con minúsculas, mayúsculas, dígitos y símbolos ). Para el encriptado de contraseñas en la persistencia se utiliza bcrypt (función de hashing de contraseñas basada en el cifrado Blowfish), utilizado al Registrar usuario y se ignora la contraseña en el resto de los casos. Para cambiar la contraseña se ha habilitado el método PUT #{base}/register/password que requiere el usuario autenticado y la contraseña anterior como medida de seguridad:
+      pre <code>
+        |  PUT http://localhost:4321/register/password
+        |  Content-Type: application/json
+        |  Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIiwicm9sZXMiOlsiVXN1YXJpb3MiLCJBZG1pbmlzdHJhZG9yZXMiXSwiaWF0IjoxNjQ5MzM5MDgwLCJleHAiOjE2NDkzNDI2ODB9.1XAvQTzCSgEjs6NVhA0rgFt5NeEb_DMMVIn4DfNOjvg
+        |  
+        |  {
+        |      "oldPassword": "P@$$w0rd",
+        |      "newPassword": "Pa$$w0rd"
+        |  }
+        |  </code>
+        
