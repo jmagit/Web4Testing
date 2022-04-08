@@ -34,10 +34,10 @@ var Contactos = new (
                     totalPages: Math.ceil(envios.length / FxP),
                     visiblePages: 10,
                     startPage: obj.currentPage,
-                    first: '<i class="fas fa-angle-double-left"></i>',
-                    prev: '<i class="fas fa-angle-left"></i>',
-                    next: '<i class="fas fa-angle-right"></i>',
-                    last: '<i class="fas fa-angle-double-right"></i>',
+                    first: '<i class="fas fa-angle-double-left"></i><span hidden>inicio</span>',
+                    prev: '<i class="fas fa-angle-left"></i><span hidden>anterior</span>',
+                    next: '<i class="fas fa-angle-right"></i><span hidden>siguiente</span>',
+                    last: '<i class="fas fa-angle-double-right"></i><span hidden>último</span>',
                     paginationClass: 'pagination justify-content-end',
                 }).on('page', function (event, page) {
                     obj.currentPage = page;

@@ -36,13 +36,16 @@ Las páginas disponibles son:
 Para no crear dependencias de bases de datos los servicios utilizan ficheros como `data/personas.json`. El fichero se lee completo y se graba completo, no se ha optimizado el proceso. Los resultados de las peticiones se vuelcan a consola para facilitar las comprobaciones.
   
 La estructura de datos del servicio personas:
+
 * id: number
 * nombre: string
 * apellidos: string
 * edad: number
 
 **Nota:** *En algunos casos es necesario marcar en la cabecera de la petición el **Content-Type** como **application/json**.*
+
 ### Filtrado, paginación y ordenación
+
 Se han incorporado una serie de parámetros (querystring) para ampliar el control de los resultados del GET:
 
 * ***propiedad=valor*:** Selecciona solo aquellos que el valor de la propiedad dada coincida con el valor proporcionado. Se pueden utilizar varios pares propiedad=valor, en cuyo caso deben cumplirse todos.
@@ -71,6 +74,7 @@ Se han incorporado una serie de parámetros (querystring) para ampliar el contro
 ### Seguridad
 
 Para evitar conflictos con los navegadores se han habilitado las siguientes cabeceras CORS:
+
 * Access-Control-Allow-Origin: _dominio-origen-de-la-petición_
 * Access-Control-Allow-Headers: Origin, Content-Type, Accept, Authorization, X-Requested-With, X-SRF-TOKEN
 * Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS'
@@ -80,7 +84,7 @@ Para evitar conflictos con los navegadores se han habilitado las siguientes cabe
 
 El servicio ECO se puede usar para probar los clientes REST, hacer llamadas API de muestra y comprobar la información recibida por el servidor.
 
-Por ejemplo: <http://localhost:8181/eco/personas/1?_page=1&_rows=10>
+Por ejemplo: http://localhost:4321/eco/personas/1?_page=1&_rows=10
 
     {
         "url": "/eco/personas/1?_page=1&_rows=10",
@@ -124,17 +128,20 @@ Por ejemplo: <http://localhost:8181/eco/personas/1?_page=1&_rows=10>
     }
 
 ## Autenticación
-Para simular la autenticación con token JWT de cabecera está disponible el servicio `http://localhost:8181/api/login` con el método POST.
-* **Formularios**
-    * action="http://localhost:8181/api/login"
-    * method="post"
-    * body="name=admin&password=P@$$w0rd"
-* **API**
-    * POST http://localhost:8181/api/login
-    * Content-Type: application/json
-    * body: { "name": "admin", "password": "P@$$w0rd" }
 
-#### Respuesta JSON:
+### JWT
+
+Para simular la autenticación con token JWT de cabecera está disponible el servicio `http://localhost:4321/login` con el método POST.
+
+* **Formularios**
+  * action="http://localhost:4321/login"
+  * method="post"
+  * body="name=admin&password=P@$$w0rd"
+* **API**
+  * Content-Type: application/json
+  * body: { "name": "admin", "password": "P@$$w0rd" }
+
+#### Respuesta JSON
 
     {
         "success": true,
@@ -146,30 +153,47 @@ Para simular la autenticación con token JWT de cabecera está disponible el ser
         ]
     }
 
-#### Envío del token en la cabecera:
+#### Envío del token en la cabecera
 
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIiwicm9sZXMiOlsiVXN1YXJpb3MiLCJBZG1pbmlzdHJhZG9yZXMiXSwiaWF0IjoxNjQ4NTc4NTYxLCJleHAiOjE2NDg1ODIxNjF9.WF-z8UHEOtqh0NSttxkV4VSp8evKEKLvW1fIh4CwEJ0
-
-
-### Cookies
-* Para otros escenarios que requiera autenticación por cookies se puede añadir el parámetro `cookie=true` para que envíe la cookie `Authorization` con una validez de una hora: <http://localhost:8181/api/login?cookie=true>
-* Para borrar la cookie: <http://localhost:8181/api/logout>
-* Para obtener la informacion de la autenticación: <http://localhost:8181/api/auth>
+    GET http://localhost:4321/auth
+    Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIiwicm9sZXMiOlsiVXN1YXJpb3MiLCJBZG1pbmlzdHJhZG9yZXMiXSwiaWF0IjoxNjQ4NTc4NTYxLCJleHAiOjE2NDg1ODIxNjF9.WF-z8UHEOtqh0NSttxkV4VSp8evKEKLvW1fIh4CwEJ0
 
 ### Gestión de usuarios
+
 En el fichero data/usuarios.json se mantiene la estructura básica de los usuarios registrados que se puede ampliar.
 
-Mediante peticiones AJAX a <http://localhost:8181/api/register> se pueden:
+Mediante peticiones AJAX a http://localhost:4321/register se pueden:
+
 * Registrar usuario (POST).
 * Modificar usuario autenticado (PUT)
 * Consultar usuario autenticado (GET)
 
+La contraseñas sigue el patrón /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/ (al menos 8 caracteres con minúsculas, mayúsculas, dígitos y símbolos ). Para el encriptado de contraseñas en la persistencia se utiliza bcrypt (función de hashing de contraseñas basada en el cifrado Blowfish), utilizado al Registrar usuario y se ignora la contraseña en el resto de los casos. Para cambiar la contraseña se ha habilitado el método PUT http://localhost:4321/register/password que requiere el usuario autenticado y la contraseña anterior como medida de seguridad:
+
+    PUT http://localhost:4321/register/password
+    Content-Type: application/json
+    Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIiwicm9sZXMiOlsiVXN1YXJpb3MiLCJBZG1pbmlzdHJhZG9yZXMiXSwiaWF0IjoxNjQ5MzM5MDgwLCJleHAiOjE2NDkzNDI2ODB9.1XAvQTzCSgEjs6NVhA0rgFt5NeEb_DMMVIn4DfNOjvg
+
+    {
+        "oldPassword": "P@$$w0rd",
+        "newPassword": "Pa$$w0rd"
+    }
+
+### Cookies
+
+* Para otros escenarios que requiera autenticación por cookies se puede añadir el parámetro `cookie=true` para que envíe la cookie `Authorization` con una validez de una hora: <http://localhost:8181/api/login?cookie=true>
+* Para borrar la cookie: <http://localhost:8181/api/logout>
+* Para obtener la información de la autenticación: <http://localhost:8181/api/auth>
+
+
 ## Servidor de Ficheros
+
 Se ha habilitado el subdirectorio `/public` para los ficheros que se deben servir directamente. Está mapeado a la raíz del servidor.
+
 ### Subir ficheros
+
 Se pueden subir ficheros al servidor, mediante peticiones POST AJAX a http://localhost:8181/fileupload, requieren la cabecera **'Content-Type':'multipart/form-data'**.
 
 Los ficheros se almacenan en el subdirectorio `/uploads` y son accesibles mediante la ruta http://localhost:8181/files.
 
 Las peticiones GET a http://localhost:8181/fileupload mostrarán un formulario para subir ficheros.
-

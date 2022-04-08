@@ -6,16 +6,18 @@ Web4Testing.AuthService = new function () {
     obj.isAuth = false;
     obj.authToken = '';
     obj.name = '';
+    obj.roles = [];
 
     if (localStorage && localStorage.AuthService) {
         var rslt = JSON.parse(localStorage.AuthService);
         obj.isAuth = rslt.isAuth;
         obj.authToken = rslt.authToken;
         obj.name = rslt.name;
+        obj.roles = rslt.roles;
     }
     function cacheaEnLocalStorage() {
         if (localStorage) {
-            localStorage.AuthService = JSON.stringify({ isAuth: obj.isAuth, authToken: obj.authToken, name: obj.name });
+            localStorage.AuthService = JSON.stringify({ isAuth: obj.isAuth, authToken: obj.authToken, name: obj.name, roles: obj.roles });
         }
     }
 
@@ -35,6 +37,7 @@ Web4Testing.AuthService = new function () {
                     obj.isAuth = true;
                     obj.authToken = resp.token;
                     obj.name = resp.name;
+                    obj.roles = resp.roles;
                     cacheaEnLocalStorage();
                     resolve(resp);
                 },
