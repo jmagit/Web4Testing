@@ -145,7 +145,7 @@ lstServicio.forEach(servicio => {
     }
   })
   router.post(servicio.url, async function (req, res) {
-    if (servicio.readonly && !res.locals.isAutenticated) {
+    if (servicio.readonly && !res.locals.isAuthenticated) {
       res.status(401).end('No autorizado.')
       return
     }
@@ -176,7 +176,7 @@ lstServicio.forEach(servicio => {
     }
   })
   router.put(servicio.url, async function (req, res) {
-    if (servicio.readonly && !res.locals.isAutenticated) {
+    if (servicio.readonly && !res.locals.isAuthenticated) {
       res.status(401).end('No autorizado.')
       return
     }
@@ -198,7 +198,7 @@ lstServicio.forEach(servicio => {
     }
   })
   router.put(servicio.url + '/:id', async function (req, res) {
-    if (servicio.readonly && !res.locals.isAutenticated) {
+    if (servicio.readonly && !res.locals.isAuthenticated) {
       res.status(401).end('No autorizado.')
       return
     }
@@ -220,7 +220,7 @@ lstServicio.forEach(servicio => {
     }
   })
   router.patch(servicio.url + '/:id', async function (req, res) {
-    if (servicio.readonly && !res.locals.isAutenticated) {
+    if (servicio.readonly && !res.locals.isAuthenticated) {
       res.status(401).end('No autorizado.')
       return
     }
@@ -243,7 +243,7 @@ lstServicio.forEach(servicio => {
   })
   router.delete(servicio.url + '/:id', async function (req, res) {
     let c = { "name": "admin", "password": "P@$$w0rd" }
-    if (servicio.readonly && !res.locals.isAutenticated) {
+    if (servicio.readonly && !res.locals.isAuthenticated) {
       res.status(401).end('No autorizado.')
       return
     }

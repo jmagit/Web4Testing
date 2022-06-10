@@ -102,8 +102,8 @@ Por ejemplo: http://localhost:4321/eco/personas/1?_page=1&_rows=10
             "cookie": "XSRF-TOKEN=123456790ABCDEF",
             "connection": "keep-alive"
         },
-        "autentication": {
-            "isAutenticated": true,
+        "authentication": {
+            "isAuthenticated": true,
             "usr": "admin",
             "name": "Administrador",
             "roles": [
@@ -197,3 +197,13 @@ Se pueden subir ficheros al servidor, mediante peticiones POST AJAX a http://loc
 Los ficheros se almacenan en el subdirectorio `/uploads` y son accesibles mediante la ruta http://localhost:8181/files.
 
 Las peticiones GET a http://localhost:8181/fileupload mostrarán un formulario para subir ficheros.
+
+## Docker
+
+Esta disponible el fichero **Dockerfile** para crear una imagen Docker del servidor, utiliza como base la versión *node:alpine* por ser la de ocupación mínima.
+
+Para construir la imagen:  
+    `docker build --rm -f "Dockerfile" -t web-for-testing:latest .`
+
+Para crear el contenedor:  
+    `docker run -d --name web-for-testing -p 8181:8181 web-for-testing`

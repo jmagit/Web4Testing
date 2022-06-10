@@ -33,7 +33,7 @@ app.all('/eco(/*)?', function (req, res) {
     url: req.url,
     method: req.method,
     headers: req.headers,
-    autentication: res.locals,
+    authentication: res.locals,
     cookies: req.cookies,
     params: req.params,
     query: req.query,
