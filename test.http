@@ -1,0 +1,21 @@
+get http://localhost:8181/api/personas
+
+###
+
+get http://localhost:8181/api/personas/2
+
+
+###
+
+put http://localhost:8181/api/personas/2
+Content-Type: application/json
+
+{ "id": 2, "nombre": "Pepito", "apellidos": "Grillo", "edad": 67 }
+
+###
+
+patch http://localhost:8181/api/personas/2
+Content-Type: application/json
+
+{ "nombre": "Pepito" }
+
