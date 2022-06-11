@@ -146,7 +146,11 @@ lstServicio.forEach(servicio => {
   })
   router.post(servicio.url, async function (req, res) {
     if (servicio.readonly && !res.locals.isAuthenticated) {
-      res.status(401).end('No autorizado.')
+      res.status(401).json({ message : 'No autorizado.'})
+      return
+    }
+    if(!req.is('json') || !req.body) {
+      res.sendStatus(406)
       return
     }
     let data = await fs.promises.readFile(servicio.fich, 'utf8');
@@ -154,7 +158,7 @@ lstServicio.forEach(servicio => {
       var lst = JSON.parse(data)
       var ele = req.body
       if (ele[servicio.pk] == undefined) {
-        res.status(400).end('Falta clave primaria.')
+        res.status(400).json({ message : 'Falta clave primaria.'})
       } else if (lst.find(item => item[servicio.pk] == ele[servicio.pk]) == undefined) {
         if (ele[servicio.pk] == 0) {
           if (lst.length == 0)
@@ -167,9 +171,9 @@ lstServicio.forEach(servicio => {
         lst.push(ele)
         console.log(lst)
         await fs.promises.writeFile(servicio.fich, JSON.stringify(lst), 'utf8');
-        res.status(201).header('Location', `${req.baseUrl}/${servicio.url}/${ele[servicio.pk]}`).json([]).end()
+        res.status(201).header('Location', `${req.protocol}://${req.hostname}:${req.connection.localPort}${req.originalUrl}/${ele[servicio.pk]}`).end()
       } else {
-        res.status(400).end('Clave duplicada.')
+        res.status(400).json({ message : 'Clave duplicada.'})
       }
     } catch (error) {
       res.status(500).json(error).end()
@@ -177,7 +181,11 @@ lstServicio.forEach(servicio => {
   })
   router.put(servicio.url, async function (req, res) {
     if (servicio.readonly && !res.locals.isAuthenticated) {
-      res.status(401).end('No autorizado.')
+      res.status(401).json({ message : 'No autorizado.'})
+      return
+    }
+    if(!req.is('json') || !req.body) {
+      res.sendStatus(406)
       return
     }
     let data = await fs.promises.readFile(servicio.fich, 'utf8');
@@ -191,7 +199,7 @@ lstServicio.forEach(servicio => {
         lst[ind] = ele
         console.log(lst)
         await fs.promises.writeFile(servicio.fich, JSON.stringify(lst), 'utf8');
-        res.status(200).json(lst).end()
+        res.status(200).json(lst[ind]).end()
       }
     } catch (error) {
       res.status(500).json(error).end()
@@ -199,7 +207,16 @@ lstServicio.forEach(servicio => {
   })
   router.put(servicio.url + '/:id', async function (req, res) {
     if (servicio.readonly && !res.locals.isAuthenticated) {
-      res.status(401).end('No autorizado.')
+      res.status(401).json({ message : 'No autorizado.'})
+      return
+    }
+    
+    if(!req.is('json') || !req.body) {
+      res.sendStatus(406)
+      return
+    }
+    if(req.body[servicio.pk] != req.params.id) {
+      res.status(400).json({ message : "Invalid identifier"})
       return
     }
     let data = await fs.promises.readFile(servicio.fich, 'utf8');
@@ -213,7 +230,7 @@ lstServicio.forEach(servicio => {
         lst[ind] = ele
         console.log(lst)
         await fs.promises.writeFile(servicio.fich, JSON.stringify(lst), 'utf8');
-        res.status(200).json(lst).end()
+        res.status(200).json(lst[ind]).end()
       }
     } catch (error) {
       res.status(500).json(error).end()
@@ -221,7 +238,15 @@ lstServicio.forEach(servicio => {
   })
   router.patch(servicio.url + '/:id', async function (req, res) {
     if (servicio.readonly && !res.locals.isAuthenticated) {
-      res.status(401).end('No autorizado.')
+      res.status(401).json({ message : 'No autorizado.'})
+      return
+    }
+    if(!req.is('json') || !req.body) {
+      res.sendStatus(406)
+      return
+    }
+    if(req.body[servicio.pk] && req.body[servicio.pk] != req.params.id) {
+      res.status(400).json({ message : "Invalid identifier"})
       return
     }
     let data = await fs.promises.readFile(servicio.fich, 'utf8');
@@ -232,19 +257,18 @@ lstServicio.forEach(servicio => {
       if (ind == -1) {
         res.status(404).end()
       } else {
-        lst[ind] = Object.assign(lst[ind], ele)
+        lst[ind] = Object.assign({}, lst[ind], ele)
         console.log(lst)
         await fs.promises.writeFile(servicio.fich, JSON.stringify(lst), 'utf8');
-        res.status(200).json(lst).end()
+        res.status(200).json(lst[ind]).end()
       }
     } catch (error) {
       res.status(500).json(error).end()
     }
   })
   router.delete(servicio.url + '/:id', async function (req, res) {
-    let c = { "name": "admin", "password": "P@$$w0rd" }
     if (servicio.readonly && !res.locals.isAuthenticated) {
-      res.status(401).end('No autorizado.')
+      res.status(401).json({ message : 'No autorizado.'})
       return
     }
     let data = await fs.promises.readFile(servicio.fich, 'utf8');
@@ -257,7 +281,7 @@ lstServicio.forEach(servicio => {
         lst.splice(ind, 1)
         console.log(lst)
         await fs.promises.writeFile(servicio.fich, JSON.stringify(lst), 'utf8');
-        res.status(204).json(lst).end()
+        res.sendStatus(204)
       }
     } catch (error) {
       res.status(500).json(error).end()
