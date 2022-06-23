@@ -1,5 +1,5 @@
 // if (!Web4Testing)
-Web4Testing = new Object();
+var Web4Testing = new Object();
 
 Web4Testing.AuthService = new function () {
     var obj = this;

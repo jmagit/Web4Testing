@@ -96,7 +96,7 @@ lstServicio.forEach(servicio => {
           }
           return { cmp, dir }
         })
-      compara = function(a, b, index) {
+      const compara = function(a, b, index) {
         let rslt = orderBy[index].dir * (a[orderBy[index].cmp] == b[orderBy[index].cmp] ? 0 : (a[orderBy[index].cmp] < b[orderBy[index].cmp] ? -1 : 1))
         if(rslt !== 0) return rslt;
         if(index + 1 === orderBy.length) return rslt;

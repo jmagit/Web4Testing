@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const fs = require('fs')
 const formidable = require("formidable");
+formidable.maxFileSize = 8000000; // Sensible: 10 MB es más que el límite recomendado de 8 MB
 
 const DIR_UPLOADS = 'uploads/' // __dirname + "/uploads/"
 
