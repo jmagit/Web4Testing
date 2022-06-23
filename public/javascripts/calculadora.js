@@ -1,5 +1,5 @@
 // "use strict";
-function Calculadora(laPantalla, elResumen){
+function Calculadora(laPantalla, elResumen) {
 	var ref = this;
 	var acumulado = 0;
 	var operador = '+';
@@ -8,20 +8,20 @@ function Calculadora(laPantalla, elResumen){
 	var idResumen = document.getElementById(elResumen);
 	// var idPantalla = $('#' + laPantalla);
 	// var idResumen = $('#' + elResumen);
-	
+
 	ref.pantalla = "0";
 	ref.resumen = "";
 
 	function pintaPantalla() {
-		if(idPantalla)
-			idPantalla.textContent = ref.pantalla.replace('.',',');
+		if (idPantalla)
+			idPantalla.textContent = ref.pantalla.replace('.', ',');
 	}
 	function pintaResumen() {
-		if(idResumen)
-			idResumen.textContent = ref.resumen.replace('.',',');
+		if (idResumen)
+			idResumen.textContent = ref.resumen.replace('.', ',');
 	}
-	
-	ref.inicia = function() {
+
+	ref.inicia = function () {
 		acumulado = 0;
 		operador = '+';
 		ref.pantalla = "0";
@@ -30,10 +30,10 @@ function Calculadora(laPantalla, elResumen){
 		pintaPantalla();
 		pintaResumen();
 	};
-	ref.ponDijito = function(value) {
-		if (typeof(value)!=="string")
+	ref.ponDijito = function (value) {
+		if (typeof (value) !== "string")
 			value = value.toString();
-		if(value.length != 1 && (value < "0" || value > "9"))
+		if (value.length != 1 && (value < "0" || value > "9"))
 			return;
 		if (limpiar || ref.pantalla == "0") {
 			ref.pantalla = value;
@@ -42,62 +42,65 @@ function Calculadora(laPantalla, elResumen){
 			ref.pantalla += value;
 		pintaPantalla();
 	};
-	ref.ponOperando = function(value) {
-		if(!Number.isNaN(parseInt(value))) {
+	ref.ponOperando = function (value) {
+		if (!Number.isNaN(parseInt(value))) {
 			ref.pantalla = value;
 			pintaPantalla();
 		}
 	};
-	ref.ponComa = function() {
+	ref.ponComa = function () {
 		if (limpiar) {
 			ref.pantalla = "0.";
 			limpiar = false;
-		} else if (ref.pantalla.indexOf(".") === -1)
+		} else if (ref.pantalla.indexOf(".") === -1) {
 			ref.pantalla += '.';
-		else
+		} else
 			console.warn('Ya está la coma');
 		pintaPantalla();
 	};
-	ref.borrar = function() {
+	ref.borrar = function () {
 		if (limpiar || ref.pantalla.length == 1) {
 			ref.pantalla = "0";
 			limpiar = true;
 		} else
 			ref.pantalla = ref.pantalla.substr(0,
-					ref.pantalla.length - 1);
+				ref.pantalla.length - 1);
 		pintaPantalla();
 	};
-	ref.cambiaSigno = function() {
+	ref.cambiaSigno = function () {
 		ref.pantalla = (-ref.pantalla).toString();
-		if(limpiar) {
+		if (limpiar) {
 			acumulado = -acumulado;
 		}
 		pintaPantalla();
 	};
-	ref.calcula = function(value) {
-		if("+-*/=".indexOf(value) == -1) return;
-		
+	ref.calcula = function (value) {
+		if ("+-*/=".indexOf(value) == -1) return;
+
 		var operando = parseFloat(ref.pantalla);
 		switch (operador) {
-		case '+':
-			acumulado += operando;
-			break;
-		case '-':
-			acumulado -= operando;
-			break;
-		case '*':
-			acumulado *= operando;
-			break;
-		case '/':
-			acumulado /= operando;
-			break;
-		case '=':
-			break;
+			case '+':
+				acumulado += operando;
+				break;
+			case '-':
+				acumulado -= operando;
+				break;
+			case '*':
+				acumulado *= operando;
+				break;
+			case '/':
+				acumulado /= operando;
+				break;
+			case '=':
+				break;
 		}
 		// Con eval()
 		// acumulado = eval (acumulado + operador + ref.pantalla);
 		ref.resumen = value == "=" ? "" : (ref.resumen + ref.pantalla + value);
-		ref.pantalla = acumulado.toString();
+		// Number: double-precision IEEE 754 floating point.
+		// 9.9 + 1.3, 0.1 + 0.2, 1.0 - 0.9
+		ref.pantalla = parseFloat(acumulado.toPrecision(15)).toString();
+		// ref.pantalla = acumulado.toString();
 		pintaPantalla();
 		pintaResumen();
 		operador = value;

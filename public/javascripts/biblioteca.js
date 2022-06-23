@@ -4,7 +4,7 @@ var Biblioteca = new (
         obj.currentPage = 1;
         obj.resetForm = function () {
             $('.msg-error').remove();
-            $('#frmPrincipal').show().each(function (i, item) {
+            $('#frmPrincipal').show().each(function () {
                 this.reset();
             });
         };
@@ -77,10 +77,10 @@ var Biblioteca = new (
                     method: 'DELETE',
                     dataType: 'json',
             }).then(
-                function (resp) {
+                function () {
                     obj.volver();
                 },
-                function (jqXHR, textStatus, errorThrown) {
+                function (jqXHR) {
                     $('errorMsg').html(
                         '<p class="error">ERROR: ' + jqXHR.status + ': ' + jqXHR.statusText + '</p>');
                 }
@@ -124,14 +124,6 @@ var Biblioteca = new (
                             item.setCustomValidity('');
                         break;
                 }
-                // switch (name) {
-                //     case 'titulo':
-                //         if (cntr.val().toUpperCase() != cntr.val())
-                //             item.setCustomValidity('Tiene que estar en mayusculas');
-                //         else
-                //             item.setCustomValidity('');
-                //         break;
-                // }
                 if (item.validationMessage) {
                     if ($('#err_' + name).length) {
                         $('#err_' + name).text(item.validationMessage);
@@ -171,7 +163,7 @@ var Biblioteca = new (
                     $('#btnEnviar').off('click', obj.enviarNuevo);
                     obj.volver();
                 },
-                function (jqXHR, textStatus, errorThrown) {
+                function (jqXHR) {
                     $('errorMsg').html(
                         '<p class="error">ERROR: ' + jqXHR.status + ': ' + jqXHR.statusText + '</p>');
                 }
@@ -179,10 +171,7 @@ var Biblioteca = new (
         };
 
         obj.enviarModificado = function () {
-            $('#frmPrincipal').each(function (i, item) {
-                // if(!item.checkValidity()) {
-                //     alert("Error en el formulario.");
-                // } else {
+            $('#frmPrincipal').each(function () {
                 var datos = $('#frmPrincipal').serializeArray();
                 var envio = {};
                 var esValido = true;
@@ -205,7 +194,7 @@ var Biblioteca = new (
                         $('#btnEnviar').off('click', obj.enviarModificado);
                         obj.volver();
                     },
-                    function (jqXHR, textStatus, errorThrown) {
+                    function (jqXHR) {
                         $('errorMsg').html(
                             '<p class="error">ERROR: ' + jqXHR.status + ': ' + jqXHR.statusText + '</p>');
                     }
