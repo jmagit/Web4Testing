@@ -7,8 +7,8 @@ function LineaPedido(idProducto, nombreProducto, cantidad, precio) {
     this.importe = cantidad * precio;
 }
 
-var carrito = new (function () {
-    var obj = this;
+const carrito = new (function () {
+    let obj = this;
     obj.lineas = [];
     if (localStorage && localStorage['CarritoCompra'])
         obj.lineas = JSON.parse(localStorage['CarritoCompra']);
@@ -21,11 +21,11 @@ var carrito = new (function () {
      * 
      */
     obj.add = function (idProducto, nombreProducto, precio) {
-        var ln = new LineaPedido(idProducto, nombreProducto, 1, precio);
+        let ln = new LineaPedido(idProducto, nombreProducto, 1, precio);
         if (obj.lineas.length == 0) {
             ln.id = 1;
         } else {
-            var old = obj.lineas.find(function (item) { return item.idProducto == idProducto; });
+            let old = obj.lineas.find(function (item) { return item.idProducto == idProducto; });
             if (old) {
                 old.cantidad += 1;
                 old.precio = precio;
@@ -39,7 +39,7 @@ var carrito = new (function () {
         guardaCarrito();
     };
     obj.remove = function (id) {
-        var ind = obj.lineas.findIndex(function (item) { return item.id == id; });
+        let ind = obj.lineas.findIndex(function (item) { return item.id == id; });
         if (ind !== -1) {
             obj.lineas.splice(ind, 1);
             guardaCarrito();
@@ -54,18 +54,18 @@ var carrito = new (function () {
 })();
 
 function CarritoManager() {
-    var obj = this;
-    var listaProductos;
+    let obj = this;
+    let listaProductos;
 
     function PintaProductos(lst) {
-        var tmpl = $('#tmplListadoProducto').html();
-        var rslt = Mustache.render(tmpl, { filas: lst });
+        let tmpl = $('#tmplListadoProducto').html();
+        let rslt = Mustache.render(tmpl, { filas: lst });
         $('#filtroResult').html(rslt);
     }
     function PintaCarrito() {
-        var tmpl = $('#tmplListadoCarrito').html();
-        // var rslt = Mustache.render(tmpl, { filas: carrito.lineas, total: carrito.lineas.reduce(function(sum, f) {return sum + f.importe;})});
-        var rslt = Mustache.render(tmpl, {
+        let tmpl = $('#tmplListadoCarrito').html();
+        // let rslt = Mustache.render(tmpl, { filas: carrito.lineas, total: carrito.lineas.reduce(function(sum, f) {return sum + f.importe;})});
+        let rslt = Mustache.render(tmpl, {
             filas: carrito.lineas, total: carrito.lineas.length === 0 ? 0 :
                 carrito.lineas.map(function (f) { return f.importe; }).reduce(function (sum, f) { return sum + f; })
         });
@@ -105,8 +105,8 @@ function CarritoManager() {
 
     obj.drop = function (ev) {
         ev.preventDefault();
-        var id = ev.dataTransfer.getData("id_producto");
-        var prod = listaProductos.find(function (item) { return item.id == id; });
+        let id = ev.dataTransfer.getData("id_producto");
+        let prod = listaProductos.find(function (item) { return item.id == id; });
         if (prod) {
             carrito.add(prod.id, prod.titulo, prod.precio);
             mng.Refresca();
@@ -119,7 +119,7 @@ function CarritoManager() {
             PintaProductos(listaProductos);
             return;
         }
-        var rslt = listaProductos.filter(function (item) {
+        let rslt = listaProductos.filter(function (item) {
             return item.titulo.toUpperCase().indexOf(texto.toUpperCase()) >= 0;
         });
         PintaProductos(rslt);

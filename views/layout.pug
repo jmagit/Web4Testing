@@ -99,9 +99,9 @@ html(lang="es")
         });
         $('#btnSendLogin').click(function() {
           $('#loginForm').each(function() {
-            var form = this;
+            let form = this;
             if(!this.checkValidity()){
-              var msg = "ERRORES:";
+              let msg = "ERRORES:";
               if(form.Usuario.validationMessage) msg += '\n   Usuario: ' + form.Usuario.validationMessage;
               if(form.Password.validationMessage) msg += '\n   Contraseña: ' + form.Password.validationMessage;
               alert(msg);
@@ -121,7 +121,7 @@ html(lang="es")
         });
         function asignaUser(item){
            $('#registerForm').each(function() {
-             var form = this;
+             let form = this;
              form._usr_idUsuario.value = item.idUsuario;
              form._usr_idUsuario.readOnly = Web4Testing.AuthService.isAuth;
              form._usr_nombre.value = item.nombre;
@@ -130,10 +130,10 @@ html(lang="es")
            });
         }
         $('#RegisterModal').on('show.bs.modal', function (event) {
-          var modal = $(this)
-          var button = $(event.relatedTarget)
-          var modo = button.data('whatever') 
-          var user = { idUsuario: "", password: "", nombre: "" }
+          let modal = $(this)
+          let button = $(event.relatedTarget)
+          let modo = button.data('whatever') 
+          let user = { idUsuario: "", password: "", nombre: "" }
           if(modo === "add") {
             modal.find('.modal-title').text("Registrar usuario")
             asignaUser(user);

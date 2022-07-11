@@ -19,3 +19,70 @@ Content-Type: application/json
 
 { "nombre": "Pepito" }
 
+###
+
+OPTIONS  http://localhost:8181/api/login
+
+###
+
+POST http://localhost:8181/api/login
+Content-Type: application/json
+#x-xsrf-token: 123456790ABCDEF
+
+{
+    "name": "admin", 
+    "password": "P@$$w0rd" 
+}
+###
+GET http://localhost:8181/api/auth
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsIm5hbWUiOiJBZG1pbmlaaaJhZG9yIiwicm9sZXMiOlsiVXN1YXJpb3MiLCJBZG1pbmlzdHJhZG9yZXMiXSwiaWF0IjoxNjQ5MzM0MDQzLCJleHAiOjE2NDkzMzc2NDN9._KrvnPd7CnvcwoQiwO0ztIRMvFVVVM2Nrbex_2OGKxo
+
+###
+
+GET http://localhost:8181/api/register
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJra0BrayIsIm5hbWUiOiJkZW1vIiwicm9sZXMiOlsiVXN1YXJpb3MiXSwiaWF0IjoxNjU3MzkzNDk5LCJleHAiOjE2NTczOTcwOTl9.eIij3lAGiQKxsR6stMGPFAHw95kkHD7-m4y2Y9gz8wI
+
+###
+POST http://localhost:8181/api/register
+Content-Type: application/json
+
+{
+  "idUsuario": "kk@kk",
+  "password": "P@$$w0rd",
+  "nombre": "demo",
+  "roles": [
+    "Usuarios"
+  ]
+}
+###
+
+POST http://localhost:8181/api/login
+Content-Type: application/json
+
+{
+    "name": "kk@kk", 
+    "password": "P@$$w0rd" 
+}
+###
+PUT http://localhost:8181/api/register
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJra0BrayIsIm5hbWUiOiJkZW1vIiwicm9sZXMiOlsiVXN1YXJpb3MiXSwiaWF0IjoxNjU3MzkzNDk5LCJleHAiOjE2NTczOTcwOTl9.eIij3lAGiQKxsR6stMGPFAHw95kkHD7-m4y2Y9gz8wI
+
+{
+  "idUsuario": "kk@kk",
+  "password": "sss",
+  "nombre": "demoss",
+  "roles": [
+    "Usuarios"
+  ]
+}
+
+###
+PUT http://localhost:8181/api/register/password
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJra0BrayIsIm5hbWUiOiJkZW1vIiwicm9sZXMiOlsiVXN1YXJpb3MiXSwiaWF0IjoxNjU3MzkzNDk5LCJleHAiOjE2NTczOTcwOTl9.eIij3lAGiQKxsR6stMGPFAHw95kkHD7-m4y2Y9gz8wI
+
+{
+  "oldPassword": "P@$sw0rd",
+  "newPassword": "P@$$w0rd"
+}

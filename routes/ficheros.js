@@ -7,12 +7,15 @@ formidable.maxFileSize = 8000000; // Sensible: 10 MB es más que el límite reco
 const DIR_UPLOADS = 'uploads/' // __dirname + "/uploads/"
 
 router.use('/files', express.static('uploads'))
+
 router.get('/fileupload', async function (req, res) {
   const files = await fs.promises.readdir(DIR_UPLOADS);
   res.render('fileupload', { title: 'Ficheros', baseUrl: req.path, files: files });
 })
+
 router.post('/fileupload', function (req, res) {
-  let form = new formidable.IncomingForm();
+  const form = new Formidable();
+  form.maxFileSize = 2000000; // 2mb
   form.uploadDir = DIR_UPLOADS;
   form.parse(req, async function (err, fields, files) {
     try {
@@ -26,12 +29,12 @@ router.post('/fileupload', function (req, res) {
     }
   });
 })
+
 router.get('/deleteupload', async function (req, res) {
   const file = req.query.file;
-  if(file)
+  if (file)
     await fs.promises.unlink(DIR_UPLOADS + file);
   res.redirect('/fileupload');
 })
-
 
 module.exports = router; 

@@ -4,13 +4,12 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var ficherosRouter = require('./routes/ficheros');
-var seguridadRouter = require('./routes/seguridad');
-var apiRouter = require('./routes/apirest');
+const indexRouter = require('./routes/index');
+const ficherosRouter = require('./routes/ficheros');
+const seguridadRouter = require('./routes/seguridad');
+const apiRouter = require('./routes/apirest');
 
-var app = express();
+const app = express();
 app.disable("x-powered-by");
 
 // view engine setup
@@ -23,10 +22,9 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
 app.use('/', ficherosRouter);
 app.use('/', seguridadRouter);
-app.use('/users', usersRouter);
+app.use('/', indexRouter);
 app.use('/api', apiRouter.router);
 
 app.all('/eco(/*)?', function (req, res) {
@@ -53,6 +51,8 @@ app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
+  // CSRF token errors
+  if (err.code === 'EBADCSRFTOKEN') err.status = 403
 
   // render the error page
   res.status(err.status || 500);

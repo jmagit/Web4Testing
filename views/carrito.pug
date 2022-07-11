@@ -64,8 +64,8 @@ block scripts
           </tr>
       </table>
   script.
-    var mng = new CarritoManager();
-    var delay = null;
+    let mng = new CarritoManager();
+    let delay = null;
 
     $(document).ready(function () {
         mng.ListarProductos();
@@ -77,7 +77,7 @@ block scripts
         $('#txtFiltro').keyup(function(ev) {
             if(delay)
                 clearTimeout(delay);
-            var filtro = ev.target.value;
+            let filtro = ev.target.value;
             delay = setTimeout(function() {
                 mng.Filtra(ev.target.value);
                 delay = null;

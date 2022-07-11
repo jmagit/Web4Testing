@@ -1,15 +1,15 @@
 // if (!Web4Testing)
-var Web4Testing = new Object();
+const Web4Testing = new Object();
 
 Web4Testing.AuthService = new function () {
-    var obj = this;
+    let obj = this;
     obj.isAuth = false;
     obj.authToken = '';
     obj.name = '';
     obj.roles = [];
 
     if (localStorage && localStorage.AuthService) {
-        var rslt = JSON.parse(localStorage.AuthService);
+        let rslt = JSON.parse(localStorage.AuthService);
         obj.isAuth = rslt.isAuth;
         obj.authToken = rslt.authToken;
         obj.name = rslt.name;
@@ -20,12 +20,18 @@ Web4Testing.AuthService = new function () {
             localStorage.AuthService = JSON.stringify({ isAuth: obj.isAuth, authToken: obj.authToken, name: obj.name, roles: obj.roles });
         }
     }
-
+    obj.getXSRFHeader = function() {
+        let matches = document.cookie.match(new RegExp(
+          "(?:^|; )XSRF-TOKEN=([^;]*)"
+        ));
+        return matches ? {'X-XSRF-TOKEN': decodeURIComponent(matches[1]) } : {};
+    }
     obj.login = function (usr, pwd) {
         return new Promise(function (resolve, reject) {
             $.ajax({
                 url: '/api/login?cookie=true',
                 method: 'POST',
+                headers: obj.getXSRFHeader(),
                 dataType: 'json',
                 data: { name: usr, "password": pwd }
             }).then(
@@ -78,8 +84,8 @@ Web4Testing.AuthService = new function () {
         });
     }
     obj.validar = function (idForm, name) {
-        var cntr = $('#' + idForm + ' [name="' + name + '"');
-        var esValido = true;
+        let cntr = $('#' + idForm + ' [name="' + name + '"');
+        let esValido = true;
         cntr.each(function (i, item) {
             switch (item.dataset.validacion) {
                 case 'equalTo':
@@ -105,9 +111,9 @@ Web4Testing.AuthService = new function () {
         return esValido;
     };
     obj.enviarRegistroNuevo = function (idForm, cierraModal) {
-        var datos = $('#' + idForm).serializeArray();
-        var envio = {};
-        var esValido = true;
+        let datos = $('#' + idForm).serializeArray();
+        let envio = {};
+        let esValido = true;
         datos.forEach(function (item) {
             if (!obj.validar(idForm, item.name)) {
                 esValido = false;
@@ -121,17 +127,18 @@ Web4Testing.AuthService = new function () {
         $.ajax({
             url: '/api/register',
             method: 'POST',
+            headers: obj.getXSRFHeader(),
             dataType: 'json',
             data: envio
         }).then(
             function () {
                 cierraModal();
-                alert('Usuario registrado. Ya puede iniciar sesion.');
+                alert('Usuario registrado. Ya puede iniciar sesión.');
             },
             function (jqXHR, textStatus, errorThrown) {
                 if (jqXHR.status < 400) {
                     cierraModal();
-                    alert('Usuario registrado. Ya puede iniciar sesion.');
+                    alert('Usuario registrado. Ya puede iniciar sesión.');
                 } else
                     alert('ERROR: ' + jqXHR.status + ': ' + jqXHR.statusText);
             }
@@ -139,9 +146,9 @@ Web4Testing.AuthService = new function () {
     };
 
     obj.enviarRegistroModificado = function (idForm, cierraModal) {
-        var datos = $('#' + idForm).serializeArray();
-        var envio = {};
-        var esValido = true;
+        let datos = $('#' + idForm).serializeArray();
+        let envio = {};
+        let esValido = true;
         datos.forEach(function (item) {
             if (!obj.validar(idForm, item.name)) {
                 esValido = false;
@@ -155,6 +162,7 @@ Web4Testing.AuthService = new function () {
         $.ajax({
             url: '/api/register',
             method: 'PUT',
+            headers: obj.getXSRFHeader(),
             dataType: 'json',
             data: envio
         }).then(

@@ -1,10 +1,10 @@
-var Contactos = new (
+const Contactos = new (
     function () {
-        var obj = this;
+        let obj = this;
         obj.currentPage = 1;
         obj.resetForm = function () {
             $('.msg-error').remove();
-            $('#frmPrincipal').show().each(function (i, item) {
+            $('#frmPrincipal').show().each(function (_i, _item) {
                 this.reset();
             });
         };
@@ -26,7 +26,7 @@ var Contactos = new (
 
         obj.listar = function () {
             obj.get().then(function (envios) {
-                var FxP = 6;
+                let FxP = 6;
                 $('#listado').empty()
                     .append($('<div id="content"></div>'))
                     .append($('<nav id="page-selection"></nav>'));
@@ -39,10 +39,10 @@ var Contactos = new (
                     next: '<i class="fas fa-angle-right"></i><span hidden>siguiente</span>',
                     last: '<i class="fas fa-angle-double-right"></i><span hidden>último</span>',
                     paginationClass: 'pagination justify-content-end',
-                }).on('page', function (event, page) {
+                }).on('page', function (_event, page) {
                     obj.currentPage = page;
-                    var numPag = page - 1;
-                    var lst = envios.filter(function (element, index) { return (numPag * FxP) <= index && index < (numPag * FxP + FxP); })
+                    let numPag = page - 1;
+                    let lst = envios.filter(function (_element, index) { return (numPag * FxP) <= index && index < (numPag * FxP + FxP); })
                     $("#content").empty().html(Mustache.render($('#tmplListado').html(), { filas: lst }));
                 });
                 $('#page-selection').trigger(jQuery.Event("page"), obj.currentPage);
@@ -60,14 +60,13 @@ var Contactos = new (
             }).then(
                 function (resp) {
                     obj.resetForm();
-                    for (var name in resp) {
+                    for (let name in resp) {
                         $('[name="' + name + '"]').each(function () {
-                            if (this.type === 'radio') {
-                                if (this.value === resp[name]) this.checked = true;
-                            } else if (this.type === 'checkbox') {
-                                if (resp[name]) this.checked = true;
-                            } else
-                                $(this).val(resp[name]);
+                            switch(this.type){
+                                case 'radio': this.checked = (this.value === resp[name]); break;
+                                case 'checkbox': if (resp[name]) this.checked = true; break;
+                                default: $(this).val(resp[name]); break;
+                            }
                         });
                     }
                     $('#listado').hide();
@@ -84,10 +83,10 @@ var Contactos = new (
                 method: 'DELETE',
                 dataType: 'json',
             }).then(
-                function (resp) {
+                function (_resp) {
                     obj.volver();
                 },
-                function (jqXHR, textStatus, errorThrown) {
+                function (jqXHR, _textStatus, _errorThrown) {
                     obj.ponError('ERROR: ' + jqXHR.status + ': ' + jqXHR.statusText);
                 }
             );
@@ -108,21 +107,15 @@ var Contactos = new (
         };
 
         obj.validar = function (name) {
-            var cntr = $('[name="' + name + '"');
-            var esValido = true;
-            cntr.each(function (i, item) {
+            let cntr = $('[name="' + name + '"');
+            let esValido = true;
+            cntr.each(function (_i, item) {
                 switch (item.dataset.validacion) {
                     case 'mayusculas':
-                        if (cntr.val().toUpperCase() != cntr.val())
-                            item.setCustomValidity('Tiene que estar en mayusculas');
-                        else
-                            item.setCustomValidity('');
+                        item.setCustomValidity(cntr.val().toUpperCase() != cntr.val() ? 'Tiene que estar en mayúsculas' : '');
                         break;
                     case 'minusculas':
-                        if (cntr.val().toLowerCase() != cntr.val())
-                            item.setCustomValidity('Tiene que estar en minusculas');
-                        else
-                            item.setCustomValidity('');
+                        item.setCustomValidity(cntr.val().toLowerCase() != cntr.val() ? 'Tiene que estar en minúsculas' : '');
                         break;
                 }
                 if (item.validationMessage) {
@@ -142,9 +135,9 @@ var Contactos = new (
         };
 
         obj.enviarNuevo = function () {
-            var datos = $('#frmPrincipal').serializeArray();
-            var envio = {};
-            var esValido = true;
+            let datos = $('#frmPrincipal').serializeArray();
+            let envio = {};
+            let esValido = true;
             datos.forEach(function (item) {
                 if (!obj.validar(item.name)) {
                     esValido = false;
@@ -164,20 +157,20 @@ var Contactos = new (
                     $('#btnEnviar').off('click', obj.enviarNuevo);
                     obj.volver();
                 },
-                function (jqXHR, textStatus, errorThrown) {
+                function (jqXHR, _textStatus, _errorThrown) {
                     obj.ponError('ERROR: ' + jqXHR.status + ': ' + jqXHR.statusText);
                 }
             );
         };
 
         obj.enviarModificado = function () {
-            $('#frmPrincipal').each(function (i, item) {
+            $('#frmPrincipal').each(function (_i, _item) {
                 // if(!item.checkValidity()) {
                 //     alert("Error en el formulario.");
                 // } else {
-                var datos = $('#frmPrincipal').serializeArray();
-                var envio = {};
-                var esValido = true;
+                let datos = $('#frmPrincipal').serializeArray();
+                let envio = {};
+                let esValido = true;
                 datos.forEach(function (item) {
                     if (!obj.validar(item.name)) {
                         esValido = false;
@@ -197,7 +190,7 @@ var Contactos = new (
                         $('#btnEnviar').off('click', obj.enviarModificado);
                         obj.volver();
                     },
-                    function (jqXHR, textStatus, errorThrown) {
+                    function (jqXHR, _textStatus, _errorThrown) {
                         obj.ponError('ERROR: ' + jqXHR.status + ': ' + jqXHR.statusText);
                     }
                 );
