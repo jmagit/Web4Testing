@@ -58,10 +58,10 @@ block content
 block scripts
   script(src="/javascripts/calculadora.js")
   script.
-    var calc = new Calculadora('txtPantalla', 'txtResumen');
+    const calc = new Calculadora('txtPantalla', 'txtResumen');
     calc.inicia();
     $(document).ready(function() {
-      var $btns = $('.btnDigito').not('[value=","]').not('[value="±"]');
+      const $btns = $('.btnDigito').not('[value=","]').not('[value="±"]');
       $btns.on('click', function(ev) {
         calc.ponDijito(ev.target.value);
       });

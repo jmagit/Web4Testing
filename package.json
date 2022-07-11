@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node ./bin/www",
     "restart ": "nodemon -w **/*.* -e js,pug ./bin/www",
-    "test": "nodemon -w **/*.* -e js,pug ./bin/www"
+    "test": "nodemon -w **/*.* -e js,pug ./bin/www",
+    "sonar": "sonar-scanner.bat -D\"sonar.projectKey=web4testing\" -D\"sonar.sources=.\" -D\"sonar.host.url=http://localhost:9000\" -D\"sonar.login=sqp_a79694bfb805627e9edd0feb1d852b7c846f04db\""
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
@@ -18,5 +19,9 @@
     "jstransformer-markdown-it": "^2.1.0",
     "morgan": "~1.9.1",
     "pug": "^3.0.2"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.13",
+    "@types/node": "^18.0.3"
   }
 }

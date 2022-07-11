@@ -1,13 +1,11 @@
 // "use strict";
 function Calculadora(laPantalla, elResumen) {
-	var ref = this;
-	var acumulado = 0;
-	var operador = '+';
-	var limpiar = true;
-	var idPantalla = document.getElementById(laPantalla);
-	var idResumen = document.getElementById(elResumen);
-	// var idPantalla = $('#' + laPantalla);
-	// var idResumen = $('#' + elResumen);
+	let ref = this;
+	let acumulado = 0;
+	let operador = '+';
+	let limpiar = true;
+	let idPantalla = document.getElementById(laPantalla);
+	let idResumen = document.getElementById(elResumen);
 
 	ref.pantalla = "0";
 	ref.resumen = "";
@@ -63,8 +61,7 @@ function Calculadora(laPantalla, elResumen) {
 			ref.pantalla = "0";
 			limpiar = true;
 		} else
-			ref.pantalla = ref.pantalla.substr(0,
-				ref.pantalla.length - 1);
+			ref.pantalla = ref.pantalla.substring(0, ref.pantalla.length - 1);
 		pintaPantalla();
 	};
 	ref.cambiaSigno = function () {
@@ -77,7 +74,7 @@ function Calculadora(laPantalla, elResumen) {
 	ref.calcula = function (value) {
 		if ("+-*/=".indexOf(value) == -1) return;
 
-		var operando = parseFloat(ref.pantalla);
+		let operando = parseFloat(ref.pantalla);
 		switch (operador) {
 			case '+':
 				acumulado += operando;
@@ -95,12 +92,12 @@ function Calculadora(laPantalla, elResumen) {
 				break;
 		}
 		// Con eval()
-		// acumulado = eval (acumulado + operador + ref.pantalla);
+		// --> acumulado = eval (acumulado + operador + ref.pantalla);
 		ref.resumen = value == "=" ? "" : (ref.resumen + ref.pantalla + value);
 		// Number: double-precision IEEE 754 floating point.
 		// 9.9 + 1.3, 0.1 + 0.2, 1.0 - 0.9
 		ref.pantalla = parseFloat(acumulado.toPrecision(15)).toString();
-		// ref.pantalla = acumulado.toString();
+		// --> ref.pantalla = acumulado.toString();
 		pintaPantalla();
 		pintaResumen();
 		operador = value;

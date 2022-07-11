@@ -1,6 +1,6 @@
 const express = require('express');
+const fs = require('fs/promises')
 const router = express.Router();
-const fs = require('fs')
 
 const DIR_API_REST = '/'
 const DIR_DATA = 'data/' // __dirname + '/data/'
@@ -68,13 +68,11 @@ router.get('/', function (req, res, next) {
 lstServicio.forEach(servicio => {
   router.get(servicio.url, async function (req, res) {
     try {
-      let data = await fs.promises.readFile(servicio.fich, 'utf8');
+      let data = await fs.readFile(servicio.fich, 'utf8');
       let lst = JSON.parse(data)
       if (Object.keys(req.query).length > 0) {
         if ('_search' in req.query) {
-          lst = lst.filter(function (item) {
-            return JSON.stringify(Object.values(item)).includes(req.query._search);
-          })
+          lst = lst.filter(item => JSON.stringify(Object.values(item)).includes(req.query._search))
         } else {
           const q = Object.keys(req.query).filter(item => !item.startsWith('_'));
           if (q.length > 0) {
@@ -98,8 +96,7 @@ lstServicio.forEach(servicio => {
         })
       const compara = function(a, b, index) {
         let rslt = orderBy[index].dir * (a[orderBy[index].cmp] == b[orderBy[index].cmp] ? 0 : (a[orderBy[index].cmp] < b[orderBy[index].cmp] ? -1 : 1))
-        if(rslt !== 0) return rslt;
-        if(index + 1 === orderBy.length) return rslt;
+        if(rslt !== 0 || index + 1 === orderBy.length) return rslt;
         return compara(a, b, index + 1);
       }
       lst = lst.sort((a, b) => compara(a, b, 0));
@@ -116,17 +113,16 @@ lstServicio.forEach(servicio => {
         const cmps = req.query._projection.split(',');
         lst = lst.map(item => { let e = {}; cmps.forEach(c => e[c] = item[c]); return e; });
       }
-      console.log(JSON.stringify(lst))
-      res.json(lst).end()
+      res.json(lst)
     } catch (error) {
-      res.status(500).json(error).end()
+      res.status(500).json(error)
     }
   })
   router.get(servicio.url + '/:id', async function (req, res) {
     try {
-      let data = await fs.promises.readFile(servicio.fich, 'utf8');
-      var lst = JSON.parse(data)
-      var ele = lst.find(ele => ele[servicio.pk] == req.params.id)
+      let data = await fs.readFile(servicio.fich, 'utf8');
+      let lst = JSON.parse(data)
+      let ele = lst.find(ele => ele[servicio.pk] == req.params.id)
       if (ele) {
         if ('_projection' in req.query) {
           const cmps = req.query._projection.split(',');
@@ -153,10 +149,10 @@ lstServicio.forEach(servicio => {
       res.sendStatus(406)
       return
     }
-    let data = await fs.promises.readFile(servicio.fich, 'utf8');
+    let data = await fs.readFile(servicio.fich, 'utf8');
     try {
-      var lst = JSON.parse(data)
-      var ele = req.body
+      let lst = JSON.parse(data)
+      let ele = req.body
       if (ele[servicio.pk] == undefined) {
         res.status(400).json({ message : 'Falta clave primaria.'})
       } else if (lst.find(item => item[servicio.pk] == ele[servicio.pk]) == undefined) {
@@ -170,7 +166,7 @@ lstServicio.forEach(servicio => {
         }
         lst.push(ele)
         console.log(lst)
-        await fs.promises.writeFile(servicio.fich, JSON.stringify(lst), 'utf8');
+        await fs.writeFile(servicio.fich, JSON.stringify(lst), 'utf8');
         res.status(201).header('Location', `${req.protocol}://${req.hostname}:${req.connection.localPort}${req.originalUrl}/${ele[servicio.pk]}`).end()
       } else {
         res.status(400).json({ message : 'Clave duplicada.'})
@@ -188,17 +184,17 @@ lstServicio.forEach(servicio => {
       res.sendStatus(406)
       return
     }
-    let data = await fs.promises.readFile(servicio.fich, 'utf8');
+    let data = await fs.readFile(servicio.fich, 'utf8');
     try {
-      var lst = JSON.parse(data)
-      var ele = req.body
-      var ind = lst.findIndex(row => row[servicio.pk] == ele[servicio.pk])
+      let lst = JSON.parse(data)
+      let ele = req.body
+      let ind = lst.findIndex(row => row[servicio.pk] == ele[servicio.pk])
       if (ind == -1) {
         res.status(404).end()
       } else {
         lst[ind] = ele
         console.log(lst)
-        await fs.promises.writeFile(servicio.fich, JSON.stringify(lst), 'utf8');
+        await fs.writeFile(servicio.fich, JSON.stringify(lst), 'utf8');
         res.status(200).json(lst[ind]).end()
       }
     } catch (error) {
@@ -219,17 +215,17 @@ lstServicio.forEach(servicio => {
       res.status(400).json({ message : "Invalid identifier"})
       return
     }
-    let data = await fs.promises.readFile(servicio.fich, 'utf8');
+    let data = await fs.readFile(servicio.fich, 'utf8');
     try {
-      var lst = JSON.parse(data)
-      var ele = req.body
-      var ind = lst.findIndex(row => row[servicio.pk] == req.params.id)
+      let lst = JSON.parse(data)
+      let ele = req.body
+      let ind = lst.findIndex(row => row[servicio.pk] == req.params.id)
       if (ind == -1) {
         res.status(404).end()
       } else {
         lst[ind] = ele
         console.log(lst)
-        await fs.promises.writeFile(servicio.fich, JSON.stringify(lst), 'utf8');
+        await fs.writeFile(servicio.fich, JSON.stringify(lst), 'utf8');
         res.status(200).json(lst[ind]).end()
       }
     } catch (error) {
@@ -249,17 +245,17 @@ lstServicio.forEach(servicio => {
       res.status(400).json({ message : "Invalid identifier"})
       return
     }
-    let data = await fs.promises.readFile(servicio.fich, 'utf8');
+    let data = await fs.readFile(servicio.fich, 'utf8');
     try {
-      var lst = JSON.parse(data)
-      var ele = req.body
-      var ind = lst.findIndex(row => row[servicio.pk] == req.params.id)
+      let lst = JSON.parse(data)
+      let ele = req.body
+      let ind = lst.findIndex(row => row[servicio.pk] == req.params.id)
       if (ind == -1) {
         res.status(404).end()
       } else {
         lst[ind] = Object.assign({}, lst[ind], ele)
         console.log(lst)
-        await fs.promises.writeFile(servicio.fich, JSON.stringify(lst), 'utf8');
+        await fs.writeFile(servicio.fich, JSON.stringify(lst), 'utf8');
         res.status(200).json(lst[ind]).end()
       }
     } catch (error) {
@@ -271,16 +267,16 @@ lstServicio.forEach(servicio => {
       res.status(401).json({ message : 'No autorizado.'})
       return
     }
-    let data = await fs.promises.readFile(servicio.fich, 'utf8');
+    let data = await fs.readFile(servicio.fich, 'utf8');
     try {
-      var lst = JSON.parse(data)
-      var ind = lst.findIndex(row => row[servicio.pk] == req.params.id)
+      let lst = JSON.parse(data)
+      let ind = lst.findIndex(row => row[servicio.pk] == req.params.id)
       if (ind == -1) {
         res.status(404).end()
       } else {
         lst.splice(ind, 1)
         console.log(lst)
-        await fs.promises.writeFile(servicio.fich, JSON.stringify(lst), 'utf8');
+        await fs.writeFile(servicio.fich, JSON.stringify(lst), 'utf8');
         res.sendStatus(204)
       }
     } catch (error) {
