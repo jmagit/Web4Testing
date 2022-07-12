@@ -45,13 +45,13 @@ html(lang="es")
             span.text-light.mr-2(id="userData")
             button(id="btnLogout", class="btn btn-outline-light btn-sm", type="submit", aria-label="enviar logout")
               i.fas.fa-sign-out-alt
-            button(id="btnEditUser", class="btn btn-outline-light btn-sm", type="button", data-toggle="modal", data-target="#RegisterModal", data-whatever="edit", aria-label="editar perfil")
+            button(id="btnEditUser", class="btn btn-outline-light btn-sm", type="button", data-toggle="modal", data-target="#RegisterEditModal", data-whatever="edit", aria-label="editar perfil")
               i.fas.fa-user-edit
     div(class="modal fade", id="RegisterModal", tabindex="-1", role="dialog", aria-labelledby="RegisterModalLabel", aria-hidden="true")
       .modal-dialog
         .modal-content
           .modal-header
-            h5.modal-title(id="RegisterModalLabel") Titulo
+            h5.modal-title(id="RegisterModalLabel") Registrar usuario
             button(type="button", class="close", data-dismiss="modal", aria-label="Close")
               span(aria-hidden="true") &times;
           .modal-body
@@ -70,6 +70,46 @@ html(lang="es")
                 input.form-control(type="password", id="_usr_passwordConfirm", required, name="__passwordConfirm", autocomplete="new-password", data-validacion="equalTo", data-origen="password")
           .modal-footer
             button(id="btnSendRegister", type="button", class="btn btn-primary") Enviar
+            button(type="button", class="btn btn-secondary", data-dismiss="modal") Cerrar
+    div(class="modal fade", id="RegisterEditModal", tabindex="-1", role="dialog", aria-labelledby="RegisterModalLabel", aria-hidden="true")
+      .modal-dialog
+        .modal-content
+          .modal-header
+            h5.modal-title Editar perfil de usuario
+            button(type="button", class="close", data-dismiss="modal", aria-label="Close")
+              span(aria-hidden="true") &times;
+          .modal-body
+            form(id="registerEditForm")
+              .form-group
+                label.col-form-label(for="idUsuario") Usuario:
+                input.form-control(type="email", id="_usr_idUsuario", name="_usr_idUsuario", required, minlength="4")
+              .form-group
+                label.col-form-label(for="nombre", required) Nombre:
+                input.form-control(type="text", id="_usr_nombre", required, name="_usr_nombre", autocomplete="username")
+          .modal-footer
+            button(id="btnSendEditRegister", type="button", class="btn btn-primary") Enviar
+            button(type="button", class="btn btn-secondary", data-dismiss="modal") Cerrar
+            button(id="btnEditPwdUser", class="btn btn-danger", type="button", data-toggle="modal", data-target="#RegisterPwdModal", data-whatever="edit", aria-label="cambiar contraseña") Contraseña
+    div(class="modal fade", id="RegisterPwdModal", tabindex="-1", role="dialog", aria-labelledby="RegisterModalLabel", aria-hidden="true")
+      .modal-dialog
+        .modal-content
+          .modal-header
+            h5.modal-title(id="RegisterModalLabel") Cambiar contraseña
+            button(type="button", class="close", data-dismiss="modal", aria-label="Close")
+              span(aria-hidden="true") &times;
+          .modal-body
+            form(id="registerPwdForm")
+              .form-group
+                label.col-form-label(for="_usr_oldPassword") Contraseña Actual:
+                input.form-control(type="password", id="_usr_oldPassword", required, minlength="4", name="_usr_oldPassword", autocomplete="new-password")
+              .form-group
+                label.col-form-label(for="_usr_newPassword") Nueva Contraseña:
+                input.form-control(type="password", id="_usr_newPassword", required, minlength="4", name="_usr_newPassword", autocomplete="new-password")
+              .form-group
+                label.col-form-label(for="passwordConfirm") Confirmar contraseña:
+                input.form-control(type="password", id="_usr_passwordConfirm", required, name="__passwordConfirm", autocomplete="new-password", data-validacion="equalTo", data-origen="_usr_newPassword")
+          .modal-footer
+            button(id="btnSendPwdRegister", type="button", class="btn btn-primary") Enviar
             button(type="button", class="btn btn-secondary", data-dismiss="modal") Cerrar
 
     main(role="main")
@@ -119,8 +159,8 @@ html(lang="es")
             );
           });
         });
-        function asignaUser(item){
-           $('#registerForm').each(function() {
+        function asignaUser(form, item){
+           $(form).each(function() {
              let form = this;
              form._usr_idUsuario.value = item.idUsuario;
              form._usr_idUsuario.readOnly = Web4Testing.AuthService.isAuth;
@@ -134,32 +174,36 @@ html(lang="es")
           let button = $(event.relatedTarget)
           let modo = button.data('whatever') 
           let user = { idUsuario: "", password: "", nombre: "" }
-          if(modo === "add") {
-            modal.find('.modal-title').text("Registrar usuario")
-            asignaUser(user);
-          } else {
-            modal.find('.modal-title').text("Editar perfil de usuario")
-            Web4Testing.AuthService.getUser().then(
-              function(user) {
-                asignaUser(user);
-              },
-              function(msg) {
-                alert(msg);
-              }
-            );
-          }
+          asignaUser('#registerForm', user);
+        })
+        $('#RegisterEditModal').on('show.bs.modal', function (event) {
+          let modal = $(this)
+          let button = $(event.relatedTarget)
+          let modo = button.data('whatever') 
+          Web4Testing.AuthService.getUser().then(
+            function(user) {
+              asignaUser('#registerEditForm', user);
+            },
+            function(msg) {
+              alert(msg);
+            }
+          );
         })
         $('#btnSendRegister').click(function() {
-          if(Web4Testing.AuthService.isAuth) {
-            Web4Testing.AuthService.enviarRegistroModificado('registerForm', function() { 
-              $('#userData').text('Hola ' + Web4Testing.AuthService.name);
-              $('#RegisterModal').modal('hide');
-               });
-          } else {
             Web4Testing.AuthService.enviarRegistroNuevo('registerForm', function() { 
               $('#RegisterModal').modal('hide'); 
-              });
-          }
+            });
+        });
+        $('#btnSendEditRegister').click(function() {
+            Web4Testing.AuthService.enviarRegistroModificado('registerEditForm', function() { 
+              $('#userData').text('Hola ' + Web4Testing.AuthService.name);
+              $('#RegisterEditModal').modal('hide');
+            });
+        });
+        $('#btnSendPwdRegister').click(function() {
+            Web4Testing.AuthService.enviarRegistroPassword('registerPwdForm', function() { 
+              $('#RegisterPwdModal').modal('hide');
+            });
         });
         
       });

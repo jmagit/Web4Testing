@@ -105,7 +105,7 @@ Web4Testing.AuthService = new function () {
         });
         return esValido;
     };
-    
+
     function capturaFrom(idForm) {
         let datos = $('#' + idForm).serializeArray();
         let esValido = true;
@@ -166,6 +166,30 @@ Web4Testing.AuthService = new function () {
                 if (jqXHR.status < 400) {
                     obj.name = envio.nombre;
                     cacheaEnLocalStorage();
+                    cierraModal();
+                } else
+                    alert('ERROR: ' + jqXHR.status + ': ' + jqXHR.statusText);
+            }
+        );
+    };
+
+    obj.enviarRegistroPassword = function (idForm, cierraModal) {
+        let envio = capturaFrom(idForm);
+        if (!envio) return;
+
+        $.ajax({
+            url: '/api/register/password',
+            method: 'PUT',
+            headers: obj.getXSRFHeader(),
+            dataType: 'json',
+            data: envio
+        }).then(
+            function () {
+                cierraModal();
+                alert('Contraseña modificada.');
+            },
+            function (jqXHR, _textStatus, _errorThrown) {
+                if (jqXHR.status < 400) {
                     cierraModal();
                 } else
                     alert('ERROR: ' + jqXHR.status + ': ' + jqXHR.statusText);

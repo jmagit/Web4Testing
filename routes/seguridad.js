@@ -16,7 +16,7 @@ const PROP_NAME = 'nombre'
 const PASSWORD_PATTERN = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/
 const USR_FILENAME = 'data/usuarios.json'
 
-const VALIDATE_XSRF_TOKEN = true;
+const VALIDATE_XSRF_TOKEN = false;
 
 // parse header/cookies
 router.use(cookieParser())
@@ -56,6 +56,8 @@ if (VALIDATE_XSRF_TOKEN) {
         if(!req.cookies['XSRF-TOKEN'])
             generateXsrfCookie(req, res)
         if ('POST|PUT|DELETE|PATCH'.indexOf(req.method.toUpperCase()) >= 0 && isInvalidXsrfToken(req)) {
+            if(req.cookies['XSRF-TOKEN'] !== generateXsrfToken(req))
+                generateXsrfCookie(req, res)
             res.status(401).json({ message: 'Invalid XSRF-TOKEN' })
             return
         }
@@ -188,9 +190,8 @@ router.put(DIR_API_AUTH + 'register', async function (req, res) {
     if (ind == -1) {
         res.status(404).end()
     } else {
-        ele[PROP_PASSWORD] = lst[ind][PROP_PASSWORD]
-        lst[ind] = ele
-        console.log(lst)
+        if(ele.nombre)
+            lst[ind].nombre = ele.nombre;
         fs.writeFile(USR_FILENAME, JSON.stringify(lst))
             .then(() => { res.sendStatus(200) })
             .catch(err => { res.status(500).end('Error de escritura') })
@@ -210,7 +211,6 @@ router.put(DIR_API_AUTH + 'register/password', async function (req, res) {
         res.status(404).end()
     } else if (PASSWORD_PATTERN.test(ele.newPassword) && await bcrypt.compare(ele.oldPassword, lst[ind][PROP_PASSWORD])) {
         lst[ind][PROP_PASSWORD] = await encriptaPassword(ele.newPassword)
-        console.log(lst)
         fs.writeFile(USR_FILENAME, JSON.stringify(lst))
             .then(() => { res.sendStatus(200) })
             .catch(err => { res.status(500).end('Error de escritura') })
