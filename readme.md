@@ -52,7 +52,18 @@ Se han incorporado una serie de parámetros (querystring) para ampliar el contro
 * **_search=*valor*:** Selecciona todos aquellos que en alguna de sus propiedades contenga el valor proporcionado. Invalida las búsquedas por propiedades individuales.
 * **_projection=*propiedades*:** Devuelve solo aquellas propiedades de la lista suministrada, los nombres de las propiedades deben ir separadas por comas.
 * **_sort=*propiedades*:** Indica las propiedades por las que se ordenaran los resultados, en caso de omitirse se utilizará la propiedad que actúa como primary key. Si el nombre de la propiedad está precedido por un guion (signo negativo) la ordenación será descendente, las propiedades se separan con comas.
-* **_page=*número*:** Número de página empezando en 0 (primera página). Si se omite pero aparece el parámetro *_rows* tomara el valor 0 por defecto.
+* **_page=*número*:** Número de página empezando en 0 (primera página). Si se omite pero aparece el parámetro *_rows* tomara el valor 0 por defecto. La estructura devuelta es:  
+    | Propiedad             | Tipo                  | Descripción                               |
+    | --------------------- | --------------------- | ----------------------------------------- |
+    | content               | array                 | Listado de elementos                      |
+    | totalElements         | integer($int64)       | Número total de elementos                 |
+    | totalPages            | integer($int32)       | Número total de páginas                   |
+    | number                | integer($int32)       | Número de página actual                   |
+    | size                  | integer($int32)       | Tamaño de página en elementos             |
+    | numberOfElements      | integer($int32)       | Número total de elementos en la página    |
+    | empty                 | boolean               | Si la página está vacía                   |
+    | first                 | boolean               | Si la página es la primera                |
+    | last                  | boolean               | Si la página es la última                 |
 * **_page=count:** Devuelve el número de páginas y filas de la fuente de datos. Si se omite el Número de filas por página tomara 20 por defecto. Ej:  
 `{  
   "pages": 10,

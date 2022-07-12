@@ -62,7 +62,12 @@ const lstServicio = [{
 ]
 
 router.get('/', function (req, res, next) {
-  res.render('api', { title: 'API REST', baseUrl: `${req.protocol}://${req.headers.host}`, base: `${req.protocol}://${req.headers.host}${req.baseUrl}`, servicios: lstServicio });
+  res.render('api', { 
+    title: 'API REST', 
+    baseUrl: `${req.protocol}://${req.headers.host}`, 
+    base: `${req.protocol}://${req.headers.host}${req.baseUrl}`, 
+    servicios: lstServicio.sort((a, b) => a.url.localeCompare(b.url)) 
+  });
 });
 
 lstServicio.forEach(servicio => {
@@ -107,11 +112,26 @@ lstServicio.forEach(servicio => {
           return;
         }
         const page = req.query._page && !isNaN(+req.query._page) ? Math.abs(+req.query._page) : 0;
-        lst = lst.slice(page * rows, page * rows + rows)
+        lst = {
+          content: lst.slice(page * rows, page * rows + rows),
+          totalElements: lst.length,
+          totalPages: Math.ceil(lst.length / rows),
+          number: lst.length === 0 ? 0 : page + 1,
+          size: rows,
+        }
+        lst.empty = lst.content.length === 0;
+        lst.first = !lst.empty && page === 0;
+        lst.last = !lst.empty && page === (lst.totalPages - 1);
+        lst.numberOfElements = lst.content.length
       }
       if ('_projection' in req.query) {
         const cmps = req.query._projection.split(',');
-        lst = lst.map(item => { let e = {}; cmps.forEach(c => e[c] = item[c]); return e; });
+        const mapeo = item => { let e = {}; cmps.forEach(c => e[c] = item[c]); return e; }
+        if(lst.content) {
+          lst.content = lst.content.map(mapeo)
+        } else {
+          lst = lst.map(mapeo)
+        }
       }
       res.json(lst)
     } catch (error) {
