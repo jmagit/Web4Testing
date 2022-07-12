@@ -20,11 +20,9 @@ Web4Testing.AuthService = new function () {
             localStorage.AuthService = JSON.stringify({ isAuth: obj.isAuth, authToken: obj.authToken, name: obj.name, roles: obj.roles });
         }
     }
-    obj.getXSRFHeader = function() {
-        let matches = document.cookie.match(new RegExp(
-          "(?:^|; )XSRF-TOKEN=([^;]*)"
-        ));
-        return matches ? {'X-XSRF-TOKEN': decodeURIComponent(matches[1]) } : {};
+    obj.getXSRFHeader = function () {
+        let matches = document.cookie.match(/(?:^|; )XSRF-TOKEN=([^;]*)/);
+        return matches ? { 'X-XSRF-TOKEN': decodeURIComponent(matches[1]) } : {};
     }
     obj.login = function (usr, pwd) {
         return new Promise(function (resolve, reject) {
@@ -47,7 +45,7 @@ Web4Testing.AuthService = new function () {
                     cacheaEnLocalStorage();
                     resolve(resp);
                 },
-                function (jqXHR, textStatus, errorThrown) {
+                function (jqXHR, _textStatus, _errorThrown) {
                     reject("Error de red: " + jqXHR.status + " " + jqXHR.statusText);
                 }
             );
@@ -77,7 +75,7 @@ Web4Testing.AuthService = new function () {
                 function (resp) {
                     resolve(resp);
                 },
-                function (jqXHR, textStatus, errorThrown) {
+                function (jqXHR, _textStatus, _errorThrown) {
                     reject("Error de red: " + jqXHR.status + " " + jqXHR.statusText);
                 }
             );
@@ -86,13 +84,10 @@ Web4Testing.AuthService = new function () {
     obj.validar = function (idForm, name) {
         let cntr = $('#' + idForm + ' [name="' + name + '"');
         let esValido = true;
-        cntr.each(function (i, item) {
+        cntr.each(function (_i, item) {
             switch (item.dataset.validacion) {
                 case 'equalTo':
-                    if ($('#' + idForm + ' [name="' + item.dataset.origen + '"').val() != cntr.val())
-                        item.setCustomValidity('No es igual');
-                    else
-                        item.setCustomValidity('');
+                    item.setCustomValidity($('#' + idForm + ' [name="' + item.dataset.origen + '"').val() != cntr.val() ? 'No es igual' : '');
                     break;
             }
             if (item.validationMessage) {
@@ -110,10 +105,11 @@ Web4Testing.AuthService = new function () {
         });
         return esValido;
     };
-    obj.enviarRegistroNuevo = function (idForm, cierraModal) {
+    
+    function capturaFrom(idForm) {
         let datos = $('#' + idForm).serializeArray();
-        let envio = {};
         let esValido = true;
+        let envio = {};
         datos.forEach(function (item) {
             if (!obj.validar(idForm, item.name)) {
                 esValido = false;
@@ -122,8 +118,13 @@ Web4Testing.AuthService = new function () {
             if (!item.name.startsWith('__'))
                 envio[item.name.replace('_usr_', '')] = item.value;
         });
-        if (!esValido)
-            return;
+        return esValido ? envio : null
+    }
+
+    obj.enviarRegistroNuevo = function (idForm, cierraModal) {
+        let envio = capturaFrom(idForm);
+        if (!envio) return;
+
         $.ajax({
             url: '/api/register',
             method: 'POST',
@@ -135,7 +136,7 @@ Web4Testing.AuthService = new function () {
                 cierraModal();
                 alert('Usuario registrado. Ya puede iniciar sesión.');
             },
-            function (jqXHR, textStatus, errorThrown) {
+            function (jqXHR, _textStatus, _errorThrown) {
                 if (jqXHR.status < 400) {
                     cierraModal();
                     alert('Usuario registrado. Ya puede iniciar sesión.');
@@ -146,19 +147,9 @@ Web4Testing.AuthService = new function () {
     };
 
     obj.enviarRegistroModificado = function (idForm, cierraModal) {
-        let datos = $('#' + idForm).serializeArray();
-        let envio = {};
-        let esValido = true;
-        datos.forEach(function (item) {
-            if (!obj.validar(idForm, item.name)) {
-                esValido = false;
-                return;
-            }
-            if (!item.name.startsWith('__'))
-                envio[item.name.replace('_usr_', '')] = item.value;
-        });
-        if (!esValido)
-            return;
+        let envio = capturaFrom(idForm);
+        if (!envio) return;
+
         $.ajax({
             url: '/api/register',
             method: 'PUT',
@@ -171,7 +162,7 @@ Web4Testing.AuthService = new function () {
                 cacheaEnLocalStorage();
                 cierraModal();
             },
-            function (jqXHR, textStatus, errorThrown) {
+            function (jqXHR, _textStatus, _errorThrown) {
                 if (jqXHR.status < 400) {
                     obj.name = envio.nombre;
                     cacheaEnLocalStorage();

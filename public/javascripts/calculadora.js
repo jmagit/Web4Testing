@@ -1,80 +1,98 @@
-// "use strict";
-function Calculadora(laPantalla, elResumen) {
+// 'use strict';
+function Calculadora(fnPantalla, fnResumen) {
+	if (fnPantalla && typeof (fnPantalla) !== 'function')
+		throw new Error('Falta la función para pintar en la pantalla')
+	if (fnResumen && typeof (fnResumen) !== 'function')
+		throw new Error('Falta la función para pintar el resumen')
 	let ref = this;
 	let acumulado = 0;
 	let operador = '+';
 	let limpiar = true;
-	let idPantalla = document.getElementById(laPantalla);
-	let idResumen = document.getElementById(elResumen);
+	let miPantalla = '0'
+	let miResumen = '';
 
-	ref.pantalla = "0";
-	ref.resumen = "";
+	ref.pantalla = '0';
+	ref.resumen = '';
 
+	ref.onPantallaChange = fnPantalla;
+	ref.onResumenChange = fnResumen;
+	
 	function pintaPantalla() {
-		if (idPantalla)
-			idPantalla.textContent = ref.pantalla.replace('.', ',');
+		ref.pantalla = miPantalla;
+		if (typeof(ref.onPantallaChange) !== 'function') 
+			throw new Error('Falta la función para pintar en la pantalla');
+		ref.onPantallaChange(miPantalla);
 	}
 	function pintaResumen() {
-		if (idResumen)
-			idResumen.textContent = ref.resumen.replace('.', ',');
+		ref.resumen = miResumen;
+		if (typeof (ref.onResumenChange) !== 'function') 
+			throw new Error('Falta la función para pintar el resumen');
+		ref.onResumenChange(miResumen);
 	}
 
 	ref.inicia = function () {
 		acumulado = 0;
 		operador = '+';
-		ref.pantalla = "0";
-		ref.resumen = "";
+		miPantalla = '0';
+		miResumen = '';
 		limpiar = true;
 		pintaPantalla();
 		pintaResumen();
 	};
-	ref.ponDijito = function (value) {
-		if (typeof (value) !== "string")
+	ref.inicia();
+
+	ref.ponDigito = function (value) {
+		if (typeof (value) !== 'string')
 			value = value.toString();
-		if (value.length != 1 && (value < "0" || value > "9"))
+		if (value.length != 1 || value < '0' || value > '9') {
+			console.error('No es un valor numérico.');
 			return;
-		if (limpiar || ref.pantalla == "0") {
-			ref.pantalla = value;
+		}
+		if (limpiar || miPantalla == '0') {
+			miPantalla = value;
 			limpiar = false;
 		} else
-			ref.pantalla += value;
+			miPantalla += value;
 		pintaPantalla();
 	};
 	ref.ponOperando = function (value) {
-		if (!Number.isNaN(parseInt(value))) {
-			ref.pantalla = value;
+		if (!Number.isNaN(parseFloat(value)) && parseFloat(value) == value) {
+			miPantalla = value;
+			limpiar = false;
 			pintaPantalla();
+		} else {
+			console.error('No es un valor numérico.');
 		}
 	};
 	ref.ponComa = function () {
 		if (limpiar) {
-			ref.pantalla = "0.";
+			miPantalla = '0.';
 			limpiar = false;
-		} else if (ref.pantalla.indexOf(".") === -1) {
-			ref.pantalla += '.';
+		} else if (miPantalla.indexOf('.') === -1) {
+			miPantalla += '.';
 		} else
 			console.warn('Ya está la coma');
 		pintaPantalla();
 	};
 	ref.borrar = function () {
-		if (limpiar || ref.pantalla.length == 1) {
-			ref.pantalla = "0";
+		if (limpiar || miPantalla.length == 1 || (miPantalla.length == 2 && miPantalla.startsWith('-'))) {
+			miPantalla = '0';
 			limpiar = true;
 		} else
-			ref.pantalla = ref.pantalla.substring(0, ref.pantalla.length - 1);
+			miPantalla = miPantalla.slice(0, -1);
 		pintaPantalla();
 	};
 	ref.cambiaSigno = function () {
-		ref.pantalla = (-ref.pantalla).toString();
+		miPantalla = (-miPantalla).toString();
 		if (limpiar) {
 			acumulado = -acumulado;
 		}
 		pintaPantalla();
 	};
 	ref.calcula = function (value) {
-		if ("+-*/=".indexOf(value) == -1) return;
+		if ('+-*/='.indexOf(value) == -1) return;
 
-		let operando = parseFloat(ref.pantalla);
+		let operando = parseFloat(miPantalla);
 		switch (operador) {
 			case '+':
 				acumulado += operando;
@@ -88,16 +106,12 @@ function Calculadora(laPantalla, elResumen) {
 			case '/':
 				acumulado /= operando;
 				break;
-			case '=':
-				break;
 		}
-		// Con eval()
-		// --> acumulado = eval (acumulado + operador + ref.pantalla);
-		ref.resumen = value == "=" ? "" : (ref.resumen + ref.pantalla + value);
+		// Con eval() --> acumulado = eval (acumulado + operador + miPantalla);
+		miResumen = value == '=' ? '' : (`${acumulado} ${value}`);
 		// Number: double-precision IEEE 754 floating point.
 		// 9.9 + 1.3, 0.1 + 0.2, 1.0 - 0.9
-		ref.pantalla = parseFloat(acumulado.toPrecision(15)).toString();
-		// --> ref.pantalla = acumulado.toString();
+		miPantalla = parseFloat(acumulado.toPrecision(15)).toString();
 		pintaPantalla();
 		pintaResumen();
 		operador = value;

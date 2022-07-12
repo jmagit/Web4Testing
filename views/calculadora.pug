@@ -1,77 +1,67 @@
 extends layout
 
 block content
-  div.container
-    div.row
-      .col-lg-4
-        h1 Calculadora
-    div.row
-      .col-lg-4
-        table.Calculadora
-          tr
-            th.Resumen(id="txtResumen", colspan="4")
-          tr
-            th.Pantalla(id="txtPantalla", colspan="4")
-              tr
-                td
-                  input.btnOperar(type="button", id="btnIniciar", value="C")
-                td(colspan="2")
-                  input.btnOperar(type="button", id="btnBorrar", value="< BORRAR")
-                td
-                  input.btnOperar.btnCalc(type="button", value="+")
-              tr
-                td
-                  input.btnDigito.btnNum(type="button", value="7")
-                td
-                  input.btnDigito.btnNum(type="button", value="8")
-                td
-                  input.btnDigito.btnNum(type="button", value="9")
-                td
-                  input.btnOperar.btnCalc(type="button", value="-")
-              tr
-                td
-                  input.btnDigito.btnNum(type="button", value="4")
-                td
-                  input.btnDigito.btnNum(type="button", value="5")
-                td
-                  input.btnDigito.btnNum(type="button", value="6")
-                td
-                  input.btnOperar.btnCalc(type="button", value="*")
-              tr
-                td
-                  input.btnDigito.btnNum(type="button", value="1")
-                td
-                  input.btnDigito.btnNum(type="button", value="2")
-                td
-                  input.btnDigito.btnNum(type="button", value="3")
-                td
-                  input.btnOperar.btnCalc(type="button", value="/")
-              tr
-                td
-                  input.btnDigito.btnNum(type="button", value="0")
-                td
-                  input.btnDigito(type="button", value="±")
-                td
-                  input.btnDigito(type="button", value=",")
-                td
-                  input.btnOperar.btnCalc(type="button", value="=")
+  h1 Calculadora
+  .Calculadora
+    output#txtResumen.Resumen
+    output#txtPantalla.Pantalla
+    input#btnIniciar.btnOperar(type='button' value='C')
+    input#btnBorrar.btnOperar.col-2x2(type='button' value='↶ BORRAR')
+    input.btnOperar.btnCalc(type='button' value='+')
+    input.btnDigito.btnNum(type='button' value='7')
+    input.btnDigito.btnNum(type='button' value='8')
+    input.btnDigito.btnNum(type='button' value='9')
+    input.btnOperar.btnCalc(type='button' value='-')
+    input.btnDigito.btnNum(type='button' value='4')
+    input.btnDigito.btnNum(type='button' value='5')
+    input.btnDigito.btnNum(type='button' value='6')
+    input.btnOperar.btnCalc(type='button' value='*')
+    input.btnDigito.btnNum(type='button' value='1' data-valor='1')
+    input.btnDigito.btnNum(type='button' value='2')
+    input.btnDigito.btnNum(type='button' value='3')
+    input.btnOperar.btnCalc(type='button' value='/')
+    input.btnDigito(type='button' value='±')
+    input.btnDigito.btnNum(type='button' value='0' data-valor='0')
+    input.btnDigito(type='button' value=',')
+    input.btnOperar.btnCalc(type='button' value='=')
+
 block scripts
   script(src="/javascripts/calculadora.js")
   script.
-    const calc = new Calculadora('txtPantalla', 'txtResumen');
-    calc.inicia();
     $(document).ready(function() {
-      const $btns = $('.btnDigito').not('[value=","]').not('[value="±"]');
-      $btns.on('click', function(ev) {
-        calc.ponDijito(ev.target.value);
-      });
-      //$btns = $('.btnNum');
-      $btns = $('.btnCalc');
-      $btns.one('click', function(ev) {
-        calc.calcula(ev.target.value);
-      });
-      $('[value=","]').click(calc.ponComa);
-      $('[value="±"]').click(calc.cambiaSigno);
-      $('#btnIniciar').click(calc.inicia);
-      $('#btnBorrar').click(calc.borrar);
+      let txtPantalla = document.querySelector('#txtPantalla');
+      let txtResumen = document.querySelector('#txtResumen');
+      let calc = new Calculadora(
+        value => txtPantalla.textContent = value.replace(/\./g, ','),
+        value => txtResumen.textContent = value.replace(/\./g, ',')
+      );
+      calc.inicia();
+      document.querySelectorAll('.btnNum').forEach(tag => {
+        tag.addEventListener('click', ev => {
+          calc.ponDigito(ev.target.value);
+        })
+      })
+      document.querySelectorAll('.btnCalc').forEach(tag => {
+        tag.addEventListener('click', ev => {
+          calc.calcula(ev.target.value);
+        })
+      })
+      document.querySelector('[value=","]').addEventListener('click', calc.ponComa)
+      document.querySelector('[value="±"]').addEventListener('click', calc.cambiaSigno);
+      document.querySelector('#btnIniciar').addEventListener('click', calc.inicia);
+      document.querySelector('#btnBorrar').addEventListener('click', calc.borrar);
+
+      document.body.addEventListener('keydown', ev => {
+        if(!ev.key) return;
+        if (location.href.endsWith('debug'))
+          console.log('Tecla: ' + ev.key + ' -> ' + ev.keyCode)
+        // Teclas no imprimibles: Delete -> 46, Backspace -> 8
+        if (ev.key === "Delete" || ev.key === "Backspace")
+          document.querySelector('#btnBorrar').click()
+        // if('0123456789+-*/=Cc,'.includes(ev.key))
+        //   document.querySelector(`[value="${ev.key.toUpperCase()}"]`).click()
+        const btn = document.querySelector(`[value="${ev.key.toUpperCase()}"]`);
+        if (btn) btn.click()
+      })
+      document.body.focus()
     });
