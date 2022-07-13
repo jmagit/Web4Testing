@@ -57,16 +57,16 @@ html(lang="es")
           .modal-body
             form(id="registerForm")
               .form-group
-                label.col-form-label(for="idUsuario") Usuario:
+                label.col-form-label(for="_usr_idUsuario") Usuario:
                 input.form-control(type="email", id="_usr_idUsuario", name="_usr_idUsuario", required, minlength="4")
               .form-group
-                label.col-form-label(for="nombre", required) Nombre:
+                label.col-form-label(for="_usr_nombre", required) Nombre:
                 input.form-control(type="text", id="_usr_nombre", required, name="_usr_nombre", autocomplete="username")
               .form-group
-                label.col-form-label(for="passwordValue") Contraseña:
+                label.col-form-label(for="_usr_passwordValue") Contraseña:
                 input.form-control(type="password", id="_usr_passwordValue", required, minlength="4", name="_usr_password", autocomplete="new-password")
               .form-group
-                label.col-form-label(for="passwordConfirm") Confirmar contraseña:
+                label.col-form-label(for="_usr_passwordConfirm") Confirmar contraseña:
                 input.form-control(type="password", id="_usr_passwordConfirm", required, name="__passwordConfirm", autocomplete="new-password", data-validacion="equalTo", data-origen="password")
           .modal-footer
             button(id="btnSendRegister", type="button", class="btn btn-primary") Enviar
@@ -81,11 +81,11 @@ html(lang="es")
           .modal-body
             form(id="registerEditForm")
               .form-group
-                label.col-form-label(for="idUsuario") Usuario:
-                input.form-control(type="email", id="_usr_idUsuario", name="_usr_idUsuario", required, minlength="4")
+                label.col-form-label(for="_edit_idUsuario") Usuario:
+                input.form-control(type="email", id="_edit_idUsuario", name="_usr_idUsuario", required, minlength="4")
               .form-group
-                label.col-form-label(for="nombre", required) Nombre:
-                input.form-control(type="text", id="_usr_nombre", required, name="_usr_nombre", autocomplete="username")
+                label.col-form-label(for="_edit_nombre", required) Nombre:
+                input.form-control(type="text", id="_edit_nombre", required, name="_usr_nombre", autocomplete="username")
           .modal-footer
             button(id="btnSendEditRegister", type="button", class="btn btn-primary") Enviar
             button(type="button", class="btn btn-secondary", data-dismiss="modal") Cerrar
@@ -99,15 +99,16 @@ html(lang="es")
               span(aria-hidden="true") &times;
           .modal-body
             form(id="registerPwdForm")
+              input(type="text", name="__usr_idUsuario", autocomplete="username", style="display: none")
               .form-group
-                label.col-form-label(for="_usr_oldPassword") Contraseña Actual:
-                input.form-control(type="password", id="_usr_oldPassword", required, minlength="4", name="_usr_oldPassword", autocomplete="new-password")
+                label.col-form-label(for="_pwd_oldPassword") Contraseña Actual:
+                input.form-control(type="password", id="_pwd_oldPassword", required, minlength="4", name="_usr_oldPassword", autocomplete="new-password")
               .form-group
-                label.col-form-label(for="_usr_newPassword") Nueva Contraseña:
-                input.form-control(type="password", id="_usr_newPassword", required, minlength="4", name="_usr_newPassword", autocomplete="new-password")
+                label.col-form-label(for="_pwd_newPassword") Nueva Contraseña:
+                input.form-control(type="password", id="_pwd_newPassword", required, minlength="4", name="_usr_newPassword", autocomplete="new-password")
               .form-group
-                label.col-form-label(for="passwordConfirm") Confirmar contraseña:
-                input.form-control(type="password", id="_usr_passwordConfirm", required, name="__passwordConfirm", autocomplete="new-password", data-validacion="equalTo", data-origen="_usr_newPassword")
+                label.col-form-label(for="_pwd_passwordConfirm") Confirmar contraseña:
+                input.form-control(type="password", id="_pwd_passwordConfirm", required, name="__passwordConfirm", autocomplete="new-password", data-validacion="equalTo", data-origen="_usr_newPassword")
           .modal-footer
             button(id="btnSendPwdRegister", type="button", class="btn btn-primary") Enviar
             button(type="button", class="btn btn-secondary", data-dismiss="modal") Cerrar
@@ -164,9 +165,9 @@ html(lang="es")
              let form = this;
              form._usr_idUsuario.value = item.idUsuario;
              form._usr_idUsuario.readOnly = Web4Testing.AuthService.isAuth;
-             form._usr_nombre.value = item.nombre;
-             form._usr_passwordValue.value = "";
-             form._usr_passwordConfirm.value = "";
+             if(form._usr_nombre) form._usr_nombre.value = item.nombre;
+             if(form._usr_passwordValue) form._usr_passwordValue.value = "";
+             if(form._usr_passwordConfirm) form._usr_passwordConfirm.value = "";
            });
         }
         $('#RegisterModal').on('show.bs.modal', function (event) {
@@ -183,6 +184,7 @@ html(lang="es")
           Web4Testing.AuthService.getUser().then(
             function(user) {
               asignaUser('#registerEditForm', user);
+              $('#registerPwdForm [name=__usr_idUsuario').val(user.idUsuario);
             },
             function(msg) {
               alert(msg);

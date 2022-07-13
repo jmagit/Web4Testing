@@ -5,9 +5,9 @@ block content
     h1 Subir ficheros
     form(action="fileupload" method="post" enctype="multipart/form-data")
       .input-group
-        input.form-control(type="file", name="filetoupload", required)
+        input.form-control(type="file", name="filetoupload", multiple="multiple", required)
         .input-group-append
-          input.btn.btn-outline-secondary(type="submit", value="Subir fichero")
+          input.btn.btn-outline-secondary(type="submit", value="Subir ficheros")
     h2.mt-3 Ficheros subidos
     ul
       each fich in files

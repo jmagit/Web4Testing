@@ -2,6 +2,17 @@ const Contactos = new (
     function () {
         let obj = this;
         obj.currentPage = 1;
+        const FxP = 7;
+        let configPage = {
+            totalPages: 0,
+            visiblePages: 10,
+            startPage: obj.currentPage,
+            first: '<i class="fas fa-angle-double-left"></i><span hidden>inicio</span>',
+            prev: '<i class="fas fa-angle-left"></i><span hidden>anterior</span>',
+            next: '<i class="fas fa-angle-right"></i><span hidden>siguiente</span>',
+            last: '<i class="fas fa-angle-double-right"></i><span hidden>último</span>',
+            paginationClass: 'pagination justify-content-end',
+        }
         obj.resetForm = function () {
             $('.msg-error').remove();
             $('#frmPrincipal').show().each(function (_i, _item) {
@@ -11,7 +22,8 @@ const Contactos = new (
         obj.get = function () {
             return new Promise(function (resolve, reject) {
                 $.ajax({
-                    url: '/api/contactos?_sort=nombre,apellidos&_projection=id,tratamiento,nombre,apellidos,avatar,telefono,email',
+                    url: '/api/contactos?_sort=nombre,apellidos&_projection=id,tratamiento,nombre,apellidos,avatar,telefono,email' +
+                        '&_page=' + (obj.currentPage - 1) + '&_rows=' + FxP,
                     dataType: 'json',
                 }).then(
                     function (resp) {
@@ -26,33 +38,27 @@ const Contactos = new (
 
         obj.listar = function () {
             obj.get().then(function (envios) {
-                let FxP = 6;
+                if(configPage.totalPages !== envios.totalPages)
+                    configPage.totalPages = envios.totalPages;
+                configPage.startPage = obj.currentPage;
                 $('#listado').empty()
                     .append($('<div id="content"></div>'))
                     .append($('<nav id="page-selection"></nav>'));
-                $('#page-selection').twbsPagination({
-                    totalPages: Math.ceil(envios.length / FxP),
-                    visiblePages: 10,
-                    startPage: obj.currentPage,
-                    first: '<i class="fas fa-angle-double-left"></i><span hidden>inicio</span>',
-                    prev: '<i class="fas fa-angle-left"></i><span hidden>anterior</span>',
-                    next: '<i class="fas fa-angle-right"></i><span hidden>siguiente</span>',
-                    last: '<i class="fas fa-angle-double-right"></i><span hidden>último</span>',
-                    paginationClass: 'pagination justify-content-end',
-                }).on('page', function (_event, page) {
+                $("#content").empty().html(Mustache.render($('#tmplListado').html(), { filas: envios.content }));
+                $('#page-selection').twbsPagination(configPage).on('page', function (_event, page) {
                     obj.currentPage = page;
-                    let numPag = page - 1;
-                    let lst = envios.filter(function (_element, index) { return (numPag * FxP) <= index && index < (numPag * FxP + FxP); })
-                    $("#content").empty().html(Mustache.render($('#tmplListado').html(), { filas: lst }));
+                    obj.listar()
                 });
-                $('#page-selection').trigger(jQuery.Event("page"), obj.currentPage);
             });
         };
+        $('#page-selection').trigger(jQuery.Event("page"), obj.currentPage);
+
         obj.añadir = function () {
             $('#listado').hide();
             obj.resetForm();
             $('#btnEnviar').on('click', obj.enviarNuevo);
         };
+
         obj.editar = function (id) {
             $.ajax({
                 url: '/api/contactos/' + id,
@@ -62,7 +68,7 @@ const Contactos = new (
                     obj.resetForm();
                     for (let name in resp) {
                         $('[name="' + name + '"]').each(function () {
-                            switch(this.type){
+                            switch (this.type) {
                                 case 'radio': this.checked = (this.value === resp[name]); break;
                                 case 'checkbox': if (resp[name]) this.checked = true; break;
                                 default: $(this).val(resp[name]); break;
@@ -100,7 +106,7 @@ const Contactos = new (
                 function (resp) {
                     resp.fnacimiento = function () {
                         return resp.nacimiento.slice(-2) + '/' + resp.nacimiento.slice(5, 7) + '/' + resp.nacimiento.slice(0, 4)
-                     };
+                    };
                     $("#listado").empty().html(Mustache.render($('#tmplDetalle').html(), { item: resp }));
                 }
             );
@@ -203,9 +209,10 @@ const Contactos = new (
             $('#listado').show();
             $('#frmPrincipal').hide();
         };
+
         obj.ponError = function (msg) {
             $('#txtError').text(msg);
             $('#alertError').show();
-        };        
+        };
     }
 )();

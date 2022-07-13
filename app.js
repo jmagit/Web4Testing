@@ -33,6 +33,7 @@ app.all('/eco(/*)?', function (req, res) {
     method: req.method,
     headers: req.headers,
     authentication: res.locals,
+    "XSRF-TOKEN": VALIDATE_XSRF_TOKEN ? generateXsrfToken(req) : 'disabled',
     cookies: req.cookies,
     params: req.params,
     query: req.query,
