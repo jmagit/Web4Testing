@@ -2,6 +2,7 @@ const express = require('express');
 const fs = require('fs/promises')
 const router = express.Router();
 
+const _DATALOG = false
 const DIR_API_REST = '/'
 const DIR_DATA = 'data/' // __dirname + '/data/'
 const USR_FILENAME = DIR_DATA + 'usuarios.json'
@@ -81,6 +82,10 @@ lstServicio.forEach(servicio => {
         } else {
           const q = Object.keys(req.query).filter(item => !item.startsWith('_'));
           if (q.length > 0) {
+            for (let cmp in q) {
+              if (req.query[q[cmp]] === 'true') req.query[q[cmp]] = true;
+              if (req.query[q[cmp]] === 'false') req.query[q[cmp]] = false;
+            }
             lst = lst.filter(function (item) {
               for (let cmp in q) {
                 if (item[q[cmp]] != req.query[q[cmp]]) return false;
@@ -150,7 +155,7 @@ lstServicio.forEach(servicio => {
           cmps.forEach(c => projection[c] = ele[c]);
           ele = projection;
         }
-        console.log(ele)
+        if (_DATALOG) console.log(ele)
         res.status(200).json(ele).end()
       } else {
         res.status(404).end()
@@ -185,7 +190,7 @@ lstServicio.forEach(servicio => {
           }
         }
         lst.push(ele)
-        console.log(lst)
+        if (_DATALOG) console.log(lst)
         await fs.writeFile(servicio.fich, JSON.stringify(lst), 'utf8');
         res.status(201).header('Location', `${req.protocol}://${req.hostname}:${req.connection.localPort}${req.originalUrl}/${ele[servicio.pk]}`).end()
       } else {
@@ -213,7 +218,7 @@ lstServicio.forEach(servicio => {
         res.status(404).end()
       } else {
         lst[ind] = ele
-        console.log(lst)
+        if (_DATALOG) console.log(lst)
         await fs.writeFile(servicio.fich, JSON.stringify(lst), 'utf8');
         res.status(200).json(lst[ind]).end()
       }
@@ -244,7 +249,7 @@ lstServicio.forEach(servicio => {
         res.status(404).end()
       } else {
         lst[ind] = ele
-        console.log(lst)
+        if (_DATALOG) console.log(lst)
         await fs.writeFile(servicio.fich, JSON.stringify(lst), 'utf8');
         res.status(200).json(lst[ind]).end()
       }
@@ -274,7 +279,7 @@ lstServicio.forEach(servicio => {
         res.status(404).end()
       } else {
         lst[ind] = Object.assign({}, lst[ind], ele)
-        console.log(lst)
+        if (_DATALOG) console.log(lst)
         await fs.writeFile(servicio.fich, JSON.stringify(lst), 'utf8');
         res.status(200).json(lst[ind]).end()
       }
@@ -295,7 +300,7 @@ lstServicio.forEach(servicio => {
         res.status(404).end()
       } else {
         lst.splice(ind, 1)
-        console.log(lst)
+        if (_DATALOG) console.log(lst)
         await fs.writeFile(servicio.fich, JSON.stringify(lst), 'utf8');
         res.sendStatus(204)
       }

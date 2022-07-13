@@ -88,7 +88,7 @@ Para evitar conflictos con los navegadores se han habilitado las siguientes cabe
 
 * Access-Control-Allow-Origin: _dominio-origen-de-la-petición_
 * Access-Control-Allow-Headers: Origin, Content-Type, Accept, Authorization, X-Requested-With, X-SRF-TOKEN
-* Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS'
+* Access-Control-Allow-Methods: GET, POST, PUT, DELETE, PATCH, OPTIONS
 * Access-Control-Allow-Credentials: true
 
 ### ECO
@@ -99,19 +99,17 @@ Por ejemplo: http://localhost:4321/eco/personas/1?_page=1&_rows=10
 
     {
         "url": "/eco/personas/1?_page=1&_rows=10",
-        "method": "PATCH",
+        "method": "GET",
         "headers": {
-            "content-type": "application/json",
-            "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIiwicm9sZXMiOlsiVXN1YXJpb3MiLCJBZG1pbmlzdHJhZG9yZXMiXSwiaWF0IjoxNjQ4NTc4NTYxLCJleHAiOjE2NDg1ODIxNjF9.WF-z8UHEOtqh0NSttxkV4VSp8evKEKLvW1fIh4CwEJ0",
-            "user-agent": "PostmanRuntime/7.18.0",
+            "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIiwicm9sZXMiOlsiVXN1YXJpb3MiLCJBZG1pbmlzdHJhZG9yZXMiXSwiaWF0IjoxNjU3NzA1MDA1LCJleHAiOjE2NTc3MDg2MDV9.XoILsNhjT8sr8-rM30urR5hZsj6Kg19cwoczLb3tM7E",
+            "user-agent": "PostmanRuntime/7.29.0",
             "accept": "*/*",
             "cache-control": "no-cache",
-            "postman-token": "d97b65ed-8407-4838-9f18-def0f51599d0",
+            "postman-token": "5487649e-23a6-4db8-9c12-e8d1c86c2143",
             "host": "localhost:4321",
-            "accept-encoding": "gzip, deflate",
-            "content-length": "14",
-            "cookie": "XSRF-TOKEN=123456790ABCDEF",
-            "connection": "keep-alive"
+            "accept-encoding": "gzip, deflate, br",
+            "connection": "keep-alive",
+            "cookie": "XSRF-TOKEN=5TW6CW/Yimdgr3gqB5C3w+m4hN6kb8DLURthY8uE4DM="
         },
         "authentication": {
             "isAuthenticated": true,
@@ -122,8 +120,9 @@ Por ejemplo: http://localhost:4321/eco/personas/1?_page=1&_rows=10
                 "Administradores"
             ]
         },
+        "XSRF-TOKEN": "5TW6CW/Yimdgr3gqB5C3w+m4hN6kb8DLURthY8uE4DM=",
         "cookies": {
-            "XSRF-TOKEN": "123456790ABCDEF"
+            "XSRF-TOKEN": "5TW6CW/Yimdgr3gqB5C3w+m4hN6kb8DLURthY8uE4DM="
         },
         "params": {
             "0": "/personas/1",
@@ -133,8 +132,13 @@ Por ejemplo: http://localhost:4321/eco/personas/1?_page=1&_rows=10
             "_page": "1",
             "_rows": "10"
         },
-        "body": {
-            "edad": 10
+        "body": {},
+        "path": {
+            "root": "",
+            "dir": "",
+            "base": "..",
+            "ext": "",
+            "name": ".."
         }
     }
 
