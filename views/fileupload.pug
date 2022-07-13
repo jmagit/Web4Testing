@@ -5,9 +5,11 @@ block content
     h1 Subir ficheros
     form(action="fileupload" method="post" enctype="multipart/form-data")
       .input-group
-        input.form-control(type="file", name="filetoupload", multiple="multiple", required)
+        input.form-control-file(type="file", name="filetoupload", multiple="multiple", style="max-width: 85% !important;", required)
         .input-group-append
-          input.btn.btn-outline-secondary(type="submit", value="Subir ficheros")
+          input.btn.btn-sm.btn-outline-secondary(type="submit", value="Subir ficheros")
+    h2.mt-3 Ficheros seleccionados
+    ol#ficheros
     h2.mt-3 Ficheros subidos
     ul
       each fich in files
@@ -15,3 +17,13 @@ block content
           a(href='/files/'+fich, target="_blank")= fich
           a.ml-2.align-bottom.text-danger(href='/deleteupload?file='+fich)
             i.fas.fa-times
+block scripts
+  script.
+    $(document).ready(function () {
+          $('input[type=file]').change(function(ev) {
+            let listado = $('#ficheros').empty()
+            for(let file of ev.target.files) {
+              listado.append($('<li>' + file.name + '</li>'))
+            }
+          });
+    })
