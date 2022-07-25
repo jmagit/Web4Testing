@@ -20,36 +20,63 @@ Web4Testing.AuthService = new function () {
             localStorage.AuthService = JSON.stringify({ isAuth: obj.isAuth, authToken: obj.authToken, name: obj.name, roles: obj.roles });
         }
     }
-    obj.getXSRFHeader = function () {
+    const decodeError = response => {
+        if (response.headers.get('content-type').includes('application/json'))
+            response.json().then(err => {
+                alert('ERROR: ' + response.status + ': ' + (err.title || response.statusText))
+            })
+        else {
+            alert('ERROR: ' + response.status + ': ' + response.statusText)
+        }
+    }
+    obj.getHeaders = function () {
+        let headers = new Headers()
+        headers.append('Content-Type', 'application/json');
+        headers.append('X-Requested-With', 'XMLHttpRequest');
         let matches = document.cookie.match(/(?:^|; )XSRF-TOKEN=([^;]*)/);
-        return matches ? { 'X-XSRF-TOKEN': decodeURIComponent(matches[1]) } : {};
+        if (matches) {
+            headers.append('X-XSRF-TOKEN', decodeURIComponent(matches[1]));
+        }
+        if (obj.isAuth && obj.authToken) {
+            headers.append('Authorization', obj.authToken)
+        }
+        return headers
     }
     obj.login = function (usr, pwd) {
         return new Promise(function (resolve, reject) {
-            $.ajax({
-                url: '/api/login?cookie=true',
+            fetch('/api/login?cookie=true', {
                 method: 'POST',
-                headers: obj.getXSRFHeader(),
-                dataType: 'json',
-                data: { name: usr, "password": pwd }
-            }).then(
-                function (resp) {
-                    if (!resp.success) {
-                        reject("Usuario o contraseña incorrectos.");
-                        return;
+                headers: obj.getHeaders(),
+                body: JSON.stringify({ username: usr, "password": pwd })
+            }).then((response) => {
+                if (response.ok) {
+                    response.json().then(function (resp) {
+                        if (!resp.success) {
+                            reject("Usuario o contraseña incorrectos.");
+                            return;
+                        }
+                        obj.isAuth = true;
+                        obj.authToken = resp.token;
+                        obj.name = resp.name;
+                        obj.roles = resp.roles;
+                        cacheaEnLocalStorage();
+                        resolve(resp);
+                    })
+                } else {
+                    if (response.headers.get('content-type').includes('application/json'))
+                        response.json().then(err => {
+                            reject('ERROR: ' + response.status + ': ' + (err.title || response.statusText))
+                        })
+                    else {
+                        reject('ERROR: ' + response.status + ': ' + response.statusText)
                     }
-                    obj.isAuth = true;
-                    obj.authToken = resp.token;
-                    obj.name = resp.name;
-                    obj.roles = resp.roles;
-                    cacheaEnLocalStorage();
-                    resolve(resp);
-                },
-                function (jqXHR, _textStatus, _errorThrown) {
-                    reject("Error de red: " + jqXHR.status + " " + jqXHR.statusText);
                 }
-            );
-        });
+            }).catch(
+                function (error) {
+                    reject("Error de red: " + error.status + " " + error.statusText);
+                }
+            )
+        })
     }
     obj.logout = function () {
         obj.isAuth = false;
@@ -58,7 +85,10 @@ Web4Testing.AuthService = new function () {
         if (localStorage) {
             localStorage.removeItem('AuthService');
         }
-        $.get('/api/logout').then()
+        fetch('/api/logout', {
+            method: 'GET',
+            headers: obj.getHeaders()
+        }).then()
     }
     obj.getUser = function () {
         return new Promise(function (resolve, reject) {
@@ -66,20 +96,29 @@ Web4Testing.AuthService = new function () {
                 reject("No esta autenticado.");
                 return;
             }
-            $.ajax({
-                url: '/api/register',
+            fetch('/api/register', {
                 method: 'GET',
-                dataType: 'json',
-                headers: { Authorization: obj.authToken }
-            }).then(
-                function (resp) {
-                    resolve(resp);
-                },
-                function (jqXHR, _textStatus, _errorThrown) {
-                    reject("Error de red: " + jqXHR.status + " " + jqXHR.statusText);
+                headers: obj.getHeaders()
+            }).then((response) => {
+                if (response.ok) {
+                    response.json().then(function (resp) {
+                        resolve(resp);
+                    })
+                } else {
+                    if (response.headers.get('content-type').includes('application/json'))
+                        response.json().then(err => {
+                            reject('ERROR: ' + response.status + ': ' + (err.title || response.statusText))
+                        })
+                    else {
+                        reject('ERROR: ' + response.status + ': ' + response.statusText)
+                    }
                 }
-            );
-        });
+            }).catch(
+                function (error) {
+                    reject("Error de red: " + error.status + " " + error.statusText);
+                }
+            )
+        })
     }
     obj.validar = function (idForm, name) {
         let cntr = $('#' + idForm + ' [name="' + name + '"');
@@ -125,75 +164,48 @@ Web4Testing.AuthService = new function () {
         let envio = capturaFrom(idForm);
         if (!envio) return;
 
-        $.ajax({
-            url: '/api/register',
+        fetch('/api/register', {
             method: 'POST',
-            headers: obj.getXSRFHeader(),
-            dataType: 'json',
-            data: envio
-        }).then(
-            function () {
+            headers: obj.getHeaders(),
+            body: JSON.stringify(envio)
+        }).then((response) => {
+            if (response.ok) {
                 cierraModal();
                 alert('Usuario registrado. Ya puede iniciar sesión.');
-            },
-            function (jqXHR, _textStatus, _errorThrown) {
-                if (jqXHR.status < 400) {
-                    cierraModal();
-                    alert('Usuario registrado. Ya puede iniciar sesión.');
-                } else
-                    alert('ERROR: ' + jqXHR.status + ': ' + jqXHR.statusText);
-            }
-        );
+            } else decodeError(response)
+        })
     };
 
     obj.enviarRegistroModificado = function (idForm, cierraModal) {
         let envio = capturaFrom(idForm);
         if (!envio) return;
 
-        $.ajax({
-            url: '/api/register',
+        fetch('/api/register', {
             method: 'PUT',
-            headers: obj.getXSRFHeader(),
-            dataType: 'json',
-            data: envio
-        }).then(
-            function () {
+            headers: obj.getHeaders(),
+            body: JSON.stringify(envio)
+        }).then((response) => {
+            if (response.ok) {
                 obj.name = envio.nombre;
                 cacheaEnLocalStorage();
                 cierraModal();
-            },
-            function (jqXHR, _textStatus, _errorThrown) {
-                if (jqXHR.status < 400) {
-                    obj.name = envio.nombre;
-                    cacheaEnLocalStorage();
-                    cierraModal();
-                } else
-                    alert('ERROR: ' + jqXHR.status + ': ' + jqXHR.statusText);
-            }
-        );
+            } else decodeError(response)
+        })
     };
 
     obj.enviarRegistroPassword = function (idForm, cierraModal) {
         let envio = capturaFrom(idForm);
         if (!envio) return;
 
-        $.ajax({
-            url: '/api/register/password',
+        fetch('/api/register/password', {
             method: 'PUT',
-            headers: obj.getXSRFHeader(),
-            dataType: 'json',
-            data: envio
-        }).then(
-            function () {
+            headers: obj.getHeaders(),
+            body: JSON.stringify(envio)
+        }).then((response) => {
+            if (response.ok) {
                 cierraModal();
                 alert('Contraseña modificada.');
-            },
-            function (jqXHR, _textStatus, _errorThrown) {
-                if (jqXHR.status < 400) {
-                    cierraModal();
-                } else
-                    alert('ERROR: ' + jqXHR.status + ': ' + jqXHR.statusText);
-            }
-        );
+            } else decodeError(response)
+        })
     };
 }

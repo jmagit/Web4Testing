@@ -1,316 +1,209 @@
 const express = require('express');
-const fs = require('fs/promises')
+const DbJSON = require('./dbJSON')
+const { onlyAuthenticated, onlyInRole, readOnly } = require('./seguridad')
+const { generateError, generateErrorByStatus, generateErrorByError, getServiciosConfig } = require('./utils');
+
 const router = express.Router();
+const serviciosConfig = getServiciosConfig();
+const DIR_DATA = './data/'
 
-const _DATALOG = false
-const DIR_API_REST = '/'
-const DIR_DATA = 'data/' // __dirname + '/data/'
-const USR_FILENAME = DIR_DATA + 'usuarios.json'
-const lstServicio = [{
-  url: DIR_API_REST + 'personas',
-  pk: 'id',
-  fich: DIR_DATA + 'personas.json',
-  readonly: false
-},
-{
-  url: DIR_API_REST + 'peliculas',
-  pk: 'id',
-  fich: DIR_DATA + 'peliculas.json',
-  readonly: false
-},
-{
-  url: DIR_API_REST + 'tarjetas',
-  pk: 'id',
-  fich: DIR_DATA + 'tarjetas.json',
-  readonly: false
-},
-{
-  url: DIR_API_REST + 'blog',
-  pk: 'id',
-  fich: DIR_DATA + 'blog.json',
-  readonly: false
-},
-{
-  url: DIR_API_REST + 'libros',
-  pk: 'idLibro',
-  fich: DIR_DATA + 'libros.json',
-  readonly: false
-},
-{
-  url: DIR_API_REST + 'biblioteca',
-  pk: 'id',
-  fich: DIR_DATA + 'biblioteca.json',
-  readonly: true
-},
-{
-  url: DIR_API_REST + 'contactos',
-  pk: 'id',
-  fich: DIR_DATA + 'contactos.json',
-  readonly: true
-},
-{
-  url: DIR_API_REST + 'vehiculos',
-  pk: 'id',
-  fich: DIR_DATA + 'vehiculos.json',
-  readonly: false
-},
-{
-  url: DIR_API_REST + 'marcas',
-  pk: 'marca',
-  fich: DIR_DATA + 'marcas-modelos.json',
-  readonly: false
-},
-]
+const apis = {
+  router, serviciosConfig
+}
 
-router.get('/', function (req, res, next) {
-  res.render('api', { 
-    title: 'API REST', 
-    baseUrl: `${req.protocol}://${req.headers.host}`, 
-    base: `${req.protocol}://${req.headers.host}${req.baseUrl}`, 
-    servicios: lstServicio.sort((a, b) => a.url.localeCompare(b.url)) 
-  });
-});
+const generaFiltro = (req) => {
+  if (!req.query || Object.keys(req.query).length === 0)
+    return null
+  if ('_search' in req.query)
+    return item => JSON.stringify(Object.values(item)).includes(req.query._search)
 
-lstServicio.forEach(servicio => {
-  router.get(servicio.url, async function (req, res) {
-    try {
-      let data = await fs.readFile(servicio.fich, 'utf8');
-      let lst = JSON.parse(data)
-      if (Object.keys(req.query).length > 0) {
-        if ('_search' in req.query) {
-          lst = lst.filter(item => JSON.stringify(Object.values(item)).includes(req.query._search))
-        } else {
-          const q = Object.keys(req.query).filter(item => !item.startsWith('_'));
-          if (q.length > 0) {
-            for (let cmp in q) {
-              if (req.query[q[cmp]] === 'true') req.query[q[cmp]] = true;
-              if (req.query[q[cmp]] === 'false') req.query[q[cmp]] = false;
-            }
-            lst = lst.filter(function (item) {
-              for (let cmp in q) {
-                if (item[q[cmp]] != req.query[q[cmp]]) return false;
-              }
-              return true;
-            })
-          }
-        }
+  const q = Object.keys(req.query).filter(item => !item.startsWith('_'));
+  if (q.length === 0)
+    return null
+  for (let cmp in q) {
+    if (req.query[q[cmp]] === 'true') req.query[q[cmp]] = true;
+    if (req.query[q[cmp]] === 'false') req.query[q[cmp]] = false;
+  }
+  return item => {
+    for (let cmp in q) {
+      if (item[q[cmp]] != req.query[q[cmp]]) return false;
+    }
+    return true;
+  }
+}
+const generaPagina = (req, list, rows) => {
+  const page = req.query._page && !isNaN(+req.query._page) ? Math.abs(+req.query._page) : 0;
+  list = {
+    content: list.slice(page * rows, page * rows + rows),
+    totalElements: list.length,
+    totalPages: Math.ceil(list.length / rows),
+    number: list.length === 0 ? 0 : page + 1,
+    size: rows,
+  }
+  list.empty = list.content.length === 0;
+  list.first = !list.empty && page === 0;
+  list.last = !list.empty && page === (list.totalPages - 1);
+  list.numberOfElements = list.content.length
+  return list
+}
+apis.getAll = async (servicio, req, res, next) => {
+  try {
+    await servicio.db.load()
+    let list = await servicio.db.select(req.query._projection, generaFiltro(req),
+      req.query._sort ? req.query._sort : servicio.pk)
+    if (req.query._page != undefined || req.query._rows != undefined) {
+      const rows = req.query._rows && !isNaN(+req.query._rows) ? Math.abs(+req.query._rows) : 20;
+      if (req.query._page && typeof(req.query._page) === "string" && req.query._page.toUpperCase() == "COUNT") {
+        res.json({ pages: Math.ceil(list.length / rows), rows: list.length }).end()
+        return;
       }
-      let orderBy = req.query._sort ? req.query._sort.split(',') : [servicio.pk];
-      orderBy = orderBy.map(cmp => {
-          let dir = 1;
-          if (cmp.startsWith("-")) {
-            cmp = cmp.substring(1);
-            dir = -1;
-          }
-          return { cmp, dir }
-        })
-      const compara = function(a, b, index) {
-        let rslt = orderBy[index].dir * (a[orderBy[index].cmp] == b[orderBy[index].cmp] ? 0 : (a[orderBy[index].cmp] < b[orderBy[index].cmp] ? -1 : 1))
-        if(rslt !== 0 || index + 1 === orderBy.length) return rslt;
-        return compara(a, b, index + 1);
-      }
-      lst = lst.sort((a, b) => compara(a, b, 0));
-      if (req.query._page != undefined || req.query._rows != undefined) {
-        const rows = req.query._rows && !isNaN(+req.query._rows) ? Math.abs(+req.query._rows) : 20;
-        if (req.query._page && req.query._page.toUpperCase() == "COUNT") {
-          res.json({ pages: Math.ceil(lst.length / rows), rows: lst.length }).end()
-          return;
-        }
-        const page = req.query._page && !isNaN(+req.query._page) ? Math.abs(+req.query._page) : 0;
-        lst = {
-          content: lst.slice(page * rows, page * rows + rows),
-          totalElements: lst.length,
-          totalPages: Math.ceil(lst.length / rows),
-          number: lst.length === 0 ? 0 : page + 1,
-          size: rows,
-        }
-        lst.empty = lst.content.length === 0;
-        lst.first = !lst.empty && page === 0;
-        lst.last = !lst.empty && page === (lst.totalPages - 1);
-        lst.numberOfElements = lst.content.length
-      }
-      if ('_projection' in req.query) {
-        const cmps = req.query._projection.split(',');
-        const mapeo = item => { let e = {}; cmps.forEach(c => e[c] = item[c]); return e; }
-        if(lst.content) {
-          lst.content = lst.content.map(mapeo)
-        } else {
-          lst = lst.map(mapeo)
-        }
-      }
-      res.json(lst)
-    } catch (error) {
-      res.status(500).json(error)
+      list = generaPagina(req, list, rows)
     }
-  })
-  router.get(servicio.url + '/:id', async function (req, res) {
-    try {
-      let data = await fs.readFile(servicio.fich, 'utf8');
-      let lst = JSON.parse(data)
-      let ele = lst.find(ele => ele[servicio.pk] == req.params.id)
-      if (ele) {
-        if ('_projection' in req.query) {
-          const cmps = req.query._projection.split(',');
-          let projection = {};
-          cmps.forEach(c => projection[c] = ele[c]);
-          ele = projection;
-        }
-        if (_DATALOG) console.log(ele)
-        res.status(200).json(ele).end()
-      } else {
-        res.status(404).end()
-      }
-    } catch (err) {
-      res.status(500).end();
-      console.log(err.stack);
+    res.json(list)
+  } catch (error) {
+    next(generateErrorByError(error))
+  }
+}
+apis.getOne = async (servicio, req, res, next) => {
+  try {
+    await servicio.db.load()
+    let element = servicio.db.getById(req.params.id, req.query._projection)
+    if (element) {
+      res.status(200).json(element)
+    } else {
+      return next(generateErrorByStatus(404))
     }
-  })
-  router.post(servicio.url, async function (req, res) {
-    if (servicio.readonly && !res.locals.isAuthenticated) {
-      res.status(401).json({ message : 'No autorizado.'})
-      return
+  } catch (err) {
+    next(generateErrorByError(err))
+  }
+}
+apis.post = async (servicio, req, res, next) => {
+  if (!req.is('json') || !req.body) {
+    return next(generateErrorByStatus(406))
+  }
+  if (Object.keys(req.body).length == 0) {
+    return next(generateError('Faltan los datos.', 400))
+  }
+  try {
+    await servicio.db.load()
+    let element = req.body
+    if (element[servicio.pk] == undefined) {
+      element[servicio.pk] = 0
     }
-    if(!req.is('json') || !req.body) {
-      res.sendStatus(406)
-      return
+    element = await servicio.db.add(element, true);
+    res.status(201).header('location', `${req.protocol}://${req.hostname}:${req.connection.localPort}${req.originalUrl}/${element[servicio.pk]}`).end()
+  } catch (error) {
+    next(generateErrorByError(error))
+  }
+}
+apis.put = async (servicio, req, res, next) => {
+  if (!req.is('json') || !req.body) {
+    return next(generateErrorByStatus(406))
+  }
+  let element = req.body
+  if (req.body[servicio.pk] == undefined) {
+    if (Object.keys(req.body).length == 0) {
+      return next(generateError('Faltan los datos.', 400))
     }
-    let data = await fs.readFile(servicio.fich, 'utf8');
-    try {
-      let lst = JSON.parse(data)
-      let ele = req.body
-      if (ele[servicio.pk] == undefined) {
-        res.status(400).json({ message : 'Falta clave primaria.'})
-      } else if (lst.find(item => item[servicio.pk] == ele[servicio.pk]) == undefined) {
-        if (ele[servicio.pk] == 0) {
-          if (lst.length == 0)
-            ele[servicio.pk] = 1;
-          else {
-            let newId = +lst.sort((a, b) => (a[servicio.pk] == b[servicio.pk] ? 0 : (a[servicio.pk] < b[servicio.pk] ? -1 : 1)))[lst.length - 1][servicio.pk];
-            ele[servicio.pk] = newId + 1;
-          }
-        }
-        lst.push(ele)
-        if (_DATALOG) console.log(lst)
-        await fs.writeFile(servicio.fich, JSON.stringify(lst), 'utf8');
-        res.status(201).header('Location', `${req.protocol}://${req.hostname}:${req.connection.localPort}${req.originalUrl}/${ele[servicio.pk]}`).end()
-      } else {
-        res.status(400).json({ message : 'Clave duplicada.'})
-      }
-    } catch (error) {
-      res.status(500).json(error).end()
+    element[servicio.pk] = req.params.id
+  } else if (req.body[servicio.pk] != req.params.id) {
+    return next(generateError('Invalid identifier', 400))
+  }
+  try {
+    await servicio.db.load()
+    element = await servicio.db.update(element, true);
+    res.status(200).json(element).end()
+  } catch (error) {
+    next(generateErrorByError(error))
+  }
+}
+apis.putWithoutId = async (servicio, req, res, next) => {
+  if (!req.is('json') || !req.body) {
+    return next(generateErrorByStatus(406))
+  }
+  if (req.body[servicio.pk] == undefined) {
+    return next(generateError('Invalid identifier', 400))
+  }
+  let element = req.body
+  try {
+    await servicio.db.load()
+    element = await servicio.db.update(element, true);
+    res.status(200).json(element).end()
+  } catch (error) {
+    next(generateErrorByError(error))
+  }
+}
+apis.patch = async (servicio, req, res, next) => {
+  if (!req.is('json') || !req.body) {
+    return next(generateErrorByStatus(406))
+  }
+  if (Object.keys(req.body).length == 0) {
+    return next(generateError('Faltan los datos.', 400))
+  }
+  if (req.body[servicio.pk] != undefined && req.body[servicio.pk] != req.params.id) {
+    return next(generateError('Invalid identifier', 400))
+  }
+  let partial = req.body
+  try {
+    await servicio.db.load()
+    let element = await servicio.db.change(req.params.id, partial, true);
+    res.status(200).json(element)
+  } catch (error) {
+    next(generateErrorByError(error))
+  }
+}
+apis.delete = async (servicio, req, res, next) => {
+  try {
+    await servicio.db.load()
+    await servicio.db.delete(req.params.id, true)
+    res.sendStatus(204)
+  } catch (error) {
+    next(generateErrorByError(error))
+  }
+}
+apis.options = async (_servicio, _req, res) => {
+  res.status(200).end()
+}
+
+serviciosConfig.forEach(servicio => {
+  const apiRouter = express.Router();
+  // servicio.file = DIR_DATA + servicio.file
+  if (!servicio.operations || servicio.operations.length === 0) servicio.operations = ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
+  if (servicio.security) {
+    if (typeof (servicio.security) === 'string') {
+      apiRouter.use(onlyInRole(servicio.security))
+    } else {
+      apiRouter.use(onlyAuthenticated)
     }
-  })
-  router.put(servicio.url, async function (req, res) {
-    if (servicio.readonly && !res.locals.isAuthenticated) {
-      res.status(401).json({ message : 'No autorizado.'})
-      return
-    }
-    if(!req.is('json') || !req.body) {
-      res.sendStatus(406)
-      return
-    }
-    let data = await fs.readFile(servicio.fich, 'utf8');
-    try {
-      let lst = JSON.parse(data)
-      let ele = req.body
-      let ind = lst.findIndex(row => row[servicio.pk] == ele[servicio.pk])
-      if (ind == -1) {
-        res.status(404).end()
-      } else {
-        lst[ind] = ele
-        if (_DATALOG) console.log(lst)
-        await fs.writeFile(servicio.fich, JSON.stringify(lst), 'utf8');
-        res.status(200).json(lst[ind]).end()
-      }
-    } catch (error) {
-      res.status(500).json(error).end()
-    }
-  })
-  router.put(servicio.url + '/:id', async function (req, res) {
-    if (servicio.readonly && !res.locals.isAuthenticated) {
-      res.status(401).json({ message : 'No autorizado.'})
-      return
-    }
-    
-    if(!req.is('json') || !req.body) {
-      res.sendStatus(406)
-      return
-    }
-    if(req.body[servicio.pk] != req.params.id) {
-      res.status(400).json({ message : "Invalid identifier"})
-      return
-    }
-    let data = await fs.readFile(servicio.fich, 'utf8');
-    try {
-      let lst = JSON.parse(data)
-      let ele = req.body
-      let ind = lst.findIndex(row => row[servicio.pk] == req.params.id)
-      if (ind == -1) {
-        res.status(404).end()
-      } else {
-        lst[ind] = ele
-        if (_DATALOG) console.log(lst)
-        await fs.writeFile(servicio.fich, JSON.stringify(lst), 'utf8');
-        res.status(200).json(lst[ind]).end()
-      }
-    } catch (error) {
-      res.status(500).json(error).end()
-    }
-  })
-  router.patch(servicio.url + '/:id', async function (req, res) {
-    if (servicio.readonly && !res.locals.isAuthenticated) {
-      res.status(401).json({ message : 'No autorizado.'})
-      return
-    }
-    if(!req.is('json') || !req.body) {
-      res.sendStatus(406)
-      return
-    }
-    if(req.body[servicio.pk] && req.body[servicio.pk] != req.params.id) {
-      res.status(400).json({ message : "Invalid identifier"})
-      return
-    }
-    let data = await fs.readFile(servicio.fich, 'utf8');
-    try {
-      let lst = JSON.parse(data)
-      let ele = req.body
-      let ind = lst.findIndex(row => row[servicio.pk] == req.params.id)
-      if (ind == -1) {
-        res.status(404).end()
-      } else {
-        lst[ind] = Object.assign({}, lst[ind], ele)
-        if (_DATALOG) console.log(lst)
-        await fs.writeFile(servicio.fich, JSON.stringify(lst), 'utf8');
-        res.status(200).json(lst[ind]).end()
-      }
-    } catch (error) {
-      res.status(500).json(error).end()
-    }
-  })
-  router.delete(servicio.url + '/:id', async function (req, res) {
-    if (servicio.readonly && !res.locals.isAuthenticated) {
-      res.status(401).json({ message : 'No autorizado.'})
-      return
-    }
-    let data = await fs.readFile(servicio.fich, 'utf8');
-    try {
-      let lst = JSON.parse(data)
-      let ind = lst.findIndex(row => row[servicio.pk] == req.params.id)
-      if (ind == -1) {
-        res.status(404).end()
-      } else {
-        lst.splice(ind, 1)
-        if (_DATALOG) console.log(lst)
-        await fs.writeFile(servicio.fich, JSON.stringify(lst), 'utf8');
-        res.sendStatus(204)
-      }
-    } catch (error) {
-      res.status(500).json(error).end()
-    }
-  })
-  router.options(servicio.url + '/:id', function (req, res) {
-    res.status(200).end()
-  })
+  } else if (servicio.readonly) {
+    apiRouter.use(readOnly)
+  }
+
+  if (servicio.endpoint === 'usuarios') {
+    apiRouter.use(onlyInRole('Administradores'))
+  }
+  servicio.db = new DbJSON(DIR_DATA + servicio.file, servicio.pk);
+  let sinID = apiRouter.route('/')
+  let conID = apiRouter.route('/:id')
+  if (servicio.operations.includes('GET')) {
+    sinID.get((req, res, next) => apis.getAll(servicio, req, res, next))
+    conID.get((req, res, next) => apis.getOne(servicio, req, res, next))
+  }
+  if (servicio.operations.includes('POST'))
+    sinID.post((req, res, next) => apis.post(servicio, req, res, next))
+  if (servicio.operations.includes('PUT')) {
+    sinID.put((req, res, next) => apis.putWithoutId(servicio, req, res, next))
+    conID.put((req, res, next) => apis.put(servicio, req, res, next))
+  }
+  if (servicio.operations.includes('OPTIONS')) {
+    sinID.options((req, res, next) => apis.options(servicio, req, res, next));
+    conID.options((req, res, next) => apis.options(servicio, req, res, next));
+  }
+  if (servicio.operations.includes('PATCH'))
+    conID.patch((req, res, next) => apis.patch(servicio, req, res, next))
+  if (servicio.operations.includes('DELETE'))
+    conID.delete((req, res, next) => apis.delete(servicio, req, res, next))
+  router.use('/' + servicio.endpoint, apiRouter)
 })
 
-module.exports = { router, lstServicio }; 
+module.exports = apis; 
