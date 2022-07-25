@@ -16,7 +16,7 @@ Versión NodeJS del servidor de pruebas para cursos de FrontEnd y con un sitio w
   3. Ejecutar `npm start` o `node server` para levantar el servidor.
   4. Navegar a <http://localhost:8181/> para comprobar el correcto funcionamiento de los servicios.
 * Con Docker Desktop instalado:
-  1. `docker run -d -p 8181:8181 --name mock-web-server jamarton/web-for-testing:latest`
+  1. `docker run -d -p 8181:8181 --name web-for-testing jamarton/web-for-testing:latest`
 
 **Nota:** *Se puede configurar el puerto en el entorno con `SET PORT=3000` antes de levantar el servidor o levantarlo con `node server --port=3000`.*
 

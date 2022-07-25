@@ -1,8 +1,8 @@
 FROM node:alpine
 ENV NODE_ENV=production
-WORKDIR /usr/src/app
-COPY package*.json ./
-RUN npm install --production
+WORKDIR /app
+COPY ["package.json", "package-lock.json*", "npm-shrinkwrap.json*", "./"]
+RUN npm install --production --silent && mv node_modules ../
 COPY . .
 EXPOSE 8181
 VOLUME [ "/app/uploads", "/app/public", "/app/data", "app/log" ]
