@@ -3,6 +3,7 @@ const Contactos = new (
         let obj = this;
         obj.currentPage = 1;
         const FxP = 7;
+        let idOriginal = null
         let configPage = {
             totalPages: 0,
             visiblePages: 10,
@@ -13,6 +14,34 @@ const Contactos = new (
             last: '<i class="fas fa-angle-double-right"></i><span hidden>último</span>',
             paginationClass: 'pagination justify-content-end',
         }
+        const decodeError = response => {
+            if (response.headers.get('content-type').includes('application/json'))
+                response.json().then(err => {
+                    obj.ponError('ERROR: ' + response.status + ': ' + (err.title || response.statusText))
+                })
+            else {
+                obj.ponError('ERROR: ' + response.status + ': ' + response.statusText)
+            }
+        }
+        const getData = () => {
+            let datos = $('#frmPrincipal').serializeArray();
+            if (datos.length == 0) return
+            let envio = {};
+            let esValido = true;
+            datos.forEach(function (item) {
+                if (!obj.validar(item.name)) {
+                    esValido = false;
+                    return;
+                }
+                if (item.value)
+                    envio[item.name] = item.value;
+            });
+            envio.id = +envio.id;
+            envio.conflictivo = envio.conflictivo === "true"
+            if (!esValido)
+                return;
+            return envio
+        }
         obj.resetForm = function () {
             $('.msg-error').remove();
             $('#frmPrincipal').show().each(function (_i, _item) {
@@ -21,24 +50,24 @@ const Contactos = new (
         };
         obj.get = function () {
             return new Promise(function (resolve, reject) {
-                $.ajax({
-                    url: '/api/contactos?_sort=nombre,apellidos&_projection=id,tratamiento,nombre,apellidos,avatar,telefono,email' +
-                        '&_page=' + (obj.currentPage - 1) + '&_rows=' + FxP,
-                    dataType: 'json',
-                }).then(
-                    function (resp) {
-                        resolve(resp);
-                    },
-                    function (jqXHR, textStatus, errorThrown) {
-                        reject(jqXHR, textStatus, errorThrown);
+                fetch('/api/contactos?_sort=nombre,apellidos&_projection=id,tratamiento,nombre,apellidos,avatar,telefono,email' +
+                    '&_page=' + (obj.currentPage - 1) + '&_rows=' + FxP, {
+                    method: 'GET',
+                    headers: Web4Testing.AuthService.getHeaders(),
+                }).then(response => {
+                    if (response.ok) {
+                        response.json().then(data => resolve(data))
+                    } else {
+                        decodeError(response)
+                        reject(response);
                     }
-                );
+                });
             });
         };
 
         obj.listar = function () {
             obj.get().then(function (envios) {
-                if(configPage.totalPages !== envios.totalPages)
+                if (configPage.totalPages !== envios.totalPages)
                     configPage.totalPages = envios.totalPages;
                 configPage.startPage = obj.currentPage;
                 $('#listado').empty()
@@ -60,56 +89,57 @@ const Contactos = new (
         };
 
         obj.editar = function (id) {
-            $.ajax({
-                url: '/api/contactos/' + id,
-                dataType: 'json',
-            }).then(
-                function (resp) {
-                    obj.resetForm();
-                    for (let name in resp) {
-                        $('[name="' + name + '"]').each(function () {
-                            switch (this.type) {
-                                case 'radio': this.checked = (this.value === resp[name]); break;
-                                case 'checkbox': if (resp[name]) this.checked = true; break;
-                                default: $(this).val(resp[name]); break;
-                            }
-                        });
-                    }
-                    $('#listado').hide();
-                    $('#btnEnviar').on('click', obj.enviarModificado);
-                }
-            );
+            fetch('/api/contactos/' + id, {
+                method: 'GET',
+                headers: Web4Testing.AuthService.getHeaders(),
+            }).then((response) => {
+                if (response.ok) {
+                    response.json().then(function (resp) {
+                        idOriginal = id
+                        obj.resetForm();
+                        for (let name in resp) {
+                            $('[name="' + name + '"]').each(function () {
+                                switch (this.type) {
+                                    case 'radio': this.checked = (this.value === resp[name]); break;
+                                    case 'checkbox': if (resp[name]) this.checked = true; break;
+                                    default: $(this).val(resp[name]); break;
+                                }
+                            });
+                        }
+                        $('#listado').hide();
+                        $('#btnEnviar').on('click', obj.enviarModificado);
+                    })
+                } else decodeError(response)
+            })
         };
 
         obj.borrar = function (id) {
             if (!window.confirm("¿Estas seguro?")) return;
 
-            $.ajax({
-                url: '/api/contactos/' + id,
+            fetch('/api/contactos/' + id, {
                 method: 'DELETE',
-                dataType: 'json',
-            }).then(
-                function (_resp) {
+                headers: Web4Testing.AuthService.getHeaders(),
+            }).then((response) => {
+                if (response.ok) {
                     obj.volver();
-                },
-                function (jqXHR, _textStatus, _errorThrown) {
-                    obj.ponError('ERROR: ' + jqXHR.status + ': ' + jqXHR.statusText);
-                }
-            );
+                } else decodeError(response)
+            })
         };
 
         obj.ver = function (id) {
-            $.ajax({
-                url: '/api/contactos/' + id,
-                dataType: 'json',
-            }).then(
-                function (resp) {
-                    resp.fnacimiento = function () {
-                        return resp.nacimiento.slice(-2) + '/' + resp.nacimiento.slice(5, 7) + '/' + resp.nacimiento.slice(0, 4)
-                    };
-                    $("#listado").empty().html(Mustache.render($('#tmplDetalle').html(), { item: resp }));
-                }
-            );
+            fetch('/api/contactos/' + id, {
+                method: 'GET',
+                headers: Web4Testing.AuthService.getHeaders(),
+            }).then((response) => {
+                if (response.ok) {
+                    response.json().then(function (resp) {
+                        resp.fnacimiento = function () {
+                            return resp.nacimiento.slice(-2) + '/' + resp.nacimiento.slice(5, 7) + '/' + resp.nacimiento.slice(0, 4)
+                        };
+                        $("#listado").empty().html(Mustache.render($('#tmplDetalle').html(), { item: resp }));
+                    })
+                } else decodeError(response)
+            })
         };
 
         obj.validar = function (name) {
@@ -137,74 +167,48 @@ const Contactos = new (
                     $('#err_' + name).remove();
                 }
             });
+            $('#btnEnviar').prop("disabled", !esValido);
             return esValido;
         };
 
         obj.enviarNuevo = function () {
-            let datos = $('#frmPrincipal').serializeArray();
-            let envio = {};
-            let esValido = true;
-            datos.forEach(function (item) {
-                if (!obj.validar(item.name)) {
-                    esValido = false;
-                    return;
-                }
-                envio[item.name] = item.value;
-            });
-            if (!esValido)
-                return;
-            $.ajax({
-                url: '/api/contactos',
+            let envio = getData();
+            if (!envio) {
+                obj.ponError('Datos inválidos')
+                return
+            }
+            fetch('/api/contactos', {
                 method: 'POST',
-                dataType: 'json',
-                data: envio
-            }).then(
-                function () {
+                headers: Web4Testing.AuthService.getHeaders(),
+                body: JSON.stringify(envio)
+            }).then((response) => {
+                if (response.ok) {
                     $('#btnEnviar').off('click', obj.enviarNuevo);
                     obj.volver();
-                },
-                function (jqXHR, _textStatus, _errorThrown) {
-                    obj.ponError('ERROR: ' + jqXHR.status + ': ' + jqXHR.statusText);
-                }
-            );
+                } else decodeError(response)
+            })
         };
 
         obj.enviarModificado = function () {
-            $('#frmPrincipal').each(function (_i, _item) {
-                // if(!item.checkValidity()) {
-                //     alert("Error en el formulario.");
-                // } else {
-                let datos = $('#frmPrincipal').serializeArray();
-                let envio = {};
-                let esValido = true;
-                datos.forEach(function (item) {
-                    if (!obj.validar(item.name)) {
-                        esValido = false;
-                        return;
-                    }
-                    envio[item.name] = item.value;
-                });
-                if (!esValido)
-                    return;
-                $.ajax({
-                    url: '/api/contactos',
-                    method: 'PUT',
-                    dataType: 'json',
-                    data: envio
-                }).then(
-                    function () {
-                        $('#btnEnviar').off('click', obj.enviarModificado);
-                        obj.volver();
-                    },
-                    function (jqXHR, _textStatus, _errorThrown) {
-                        obj.ponError('ERROR: ' + jqXHR.status + ': ' + jqXHR.statusText);
-                    }
-                );
-                // }
-            });
+            let envio = getData();
+            if (!envio) {
+                obj.ponError('Datos inválidos')
+                return
+            }
+            fetch('/api/contactos/' + idOriginal, {
+                method: 'PUT',
+                headers: Web4Testing.AuthService.getHeaders(),
+                body: JSON.stringify(envio)
+            }).then((response) => {
+                if (response.ok) {
+                    $('#btnEnviar').off('click', obj.enviarNuevo);
+                    obj.volver();
+                } else decodeError(response)
+            })
         };
 
         obj.volver = function () {
+            idOriginal = null
             obj.listar();
             $('#listado').show();
             $('#frmPrincipal').hide();

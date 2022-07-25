@@ -1,0 +1,588 @@
+[
+    {
+        "endpoint": "contactos",
+        "summary": "Gestión de contactos",
+        "description": "",
+        "models": "Contactos",
+        "model": "Contacto",
+        "pk": "id",
+        "file": "contactos.json",
+        "operations": [],
+        "security": false,
+        "readonly": false,
+        "schema": {
+            "title": "Contacto",
+            "type": "object",
+            "required": [
+                "id",
+                "nombre"
+            ],
+            "properties": {
+                "id": {
+                    "title": "Id",
+                    "type": "integer",
+                    "example": 1
+                },
+                "tratamiento": {
+                    "title": "Tratamiento",
+                    "type": "string",
+                    "enum": [
+                        "Sr.",
+                        "Sra.",
+                        "Srta.",
+                        "Dr.",
+                        "Dra.",
+                        "Ilmo.",
+                        "Ilma.",
+                        "Excmo.",
+                        "Excma."
+                    ],
+                    "example": "Excmo."
+                },
+                "nombre": {
+                    "title": "Nombre",
+                    "type": "string",
+                    "maxLength": 100,
+                    "example": "Pietro"
+                },
+                "apellidos": {
+                    "title": "Apellidos",
+                    "type": "string",
+                    "maxLength": 100,
+                    "example": "Woodall"
+                },
+                "telefono": {
+                    "title": "Telefono",
+                    "type": "string",
+                    "example": "642 051 348",
+                    "pattern": "^(\\d{3}\\s){2}\\d{3}$"
+                },
+                "email": {
+                    "title": "Email",
+                    "type": "string",
+                    "format": "email",
+                    "maxLength": 100,
+                    "example": "pwoodall0@army.mil"
+                },
+                "nif": {
+                    "title": "N.I.F.",
+                    "type": "string",
+                    "format": "nif",
+                    "example": "12345678Z"
+                },
+                "sexo": {
+                    "title": "Sexo",
+                    "type": "string",
+                    "enum": [
+                        "H",
+                        "M"
+                    ],
+                    "example": "H"
+                },
+                "nacimiento": {
+                    "title": "Nacimiento",
+                    "type": "string",
+                    "format": "date",
+                    "example": "1963-10-11"
+                },
+                "avatar": {
+                    "title": "Avatar",
+                    "type": "string",
+                    "format": "uri",
+                    "maxLength": 200,
+                    "example": "https://randomuser.me/api/portraits/men/0.jpg"
+                },
+                "conflictivo": {
+                    "title": "Conflictivo",
+                    "type": "boolean",
+                    "example": true
+                },
+                "icono": {
+                    "title": "Icono",
+                    "type": "string",
+                    "maxLength": 65000,
+                    "example": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAALJSURBVDjLpVNbS1RRFP72nHGaUedmpamj5pgKSUli0eXJfOipoELs+hA+FFT44oMSRBkZ1GNC/oAoCJ+C8QaSZhdCTEU0rbyP05jTzOTczv20zkz6IBFBBxZrs9f+vv3t76zFNE3D/3zGjYXa01OuKUqtJstZqizPUnSb6+vDem29o8OpiuIFimZFEOZUQXiY09rq0WtMV6B2d98k8F2YTU4YOKjRCKTw+qQqSZcJFKPoTMty7Nu2pwRKJILY2DjiPv9TIrvGlK6uk5osvjSUl4ERGJIEmEyQlpeRmJpeUkQxaikp3mt2u4FwEPoFcDgR6u1FaHzivpGk3uDy88DiccDnBxQVkGWkFReAO3SgUONFcGYLMDxC71RTF1jTYTt2FIEPw1eMJLOCs9mAuXkqyoBGhxQF+PQFBjvtcwyY+aq7BIhyKgeCYCUqFJ636QSmJIAXAEFIEYhSimTFl1STvFkPjfYEqqmUJRFkpmokg9bJ+Z1MpgKfIICSAutAZcs6mSmMBvLCADLRYCCWfnlmBnDlAbEokCASnqcbhFQW+VRO7lPQX0CpG4GB17qCZyzc3u4mFf2WItdu864cYHIKWAv+bg5lU4V3bYxiFLHQd3CZNqT9zIynx7PLuAceTyg2OPiK9/kPqqEfeWmV+8HSqb8WvSkwue5dHUXIHkbFmQaUXmxETrYVIX6FC0YmFtlGK39rabHTm5pIVqOzqtJqzc8F3r2nNoxiaLkT1Q1NsMwOkLFvALsDAWMRPvYNzbOtszDf0FBNRI8dxYWHd9TWJE3rbzuF449egFWd3jwXvpOLkaGAxv40TJ/r6hxEco+8ue4syGVTC88TR85fsmQseSAk/KCWQ2Sdw/QsVtjfpnGipuYs9Ykr4pp3mqwZtwq2y0ajwYvImoyFVU6ReO02+9dxfnuusDkW9F3lFFakcNoKoZ6c6JPbfgHHGqU/+iLy1wAAAABJRU5ErkJggg=="
+                },
+                "direcciones": {
+                    "title": "Direcciones",
+                    "type": "array",
+                    "uniqueItems": true,
+                    "items": {
+                        "title": "Dirección",
+                        "type": "object",
+                        "required": [
+                            "calle",
+                            "codigo",
+                            "provincia",
+                            "pais"
+                        ],
+                        "properties": {
+                            "calle": {
+                                "title": "Calle",
+                                "type": "string",
+                                "maxLength": 500,
+                                "example": "488 Pankratz Junction"
+                            },
+                            "codigo": {
+                                "title": "Código Postal",
+                                "type": "string",
+                                "example": "29071",
+                                "pattern": "^\\d{4,5}$"
+                            },
+                            "provincia": {
+                                "title": "Provincia",
+                                "type": "string",
+                                "maxLength": 100,
+                                "example": "Malaga"
+                            },
+                            "pais": {
+                                "title": "Pais",
+                                "type": "string",
+                                "maxLength": 100,
+                                "example": "España"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    {
+        "endpoint": "peliculas",
+        "model": "Pelicula",
+        "pk": "id",
+        "file": "peliculas.json"
+    },
+    {
+        "endpoint": "personas",
+        "model": "Persona",
+        "pk": "id",
+        "file": "personas.json",
+        "operations": [
+            "GET",
+            "POST",
+            "PUT",
+            "DELETE"
+        ],
+        "schema": {
+            "title": "Persona",
+            "type": "object",
+            "required": [
+                "id",
+                "nombre"
+            ],
+            "properties": {
+                "id": {
+                    "title": "Id",
+                    "type": "integer",
+                    "example": 1
+                },
+                "nombre": {
+                    "title": "Nombre",
+                    "type": "string",
+                    "example": "Pepito"
+                },
+                "apellidos": {
+                    "title": "Apellidos",
+                    "type": "string",
+                    "example": "Grillo"
+                },
+                "correo": {
+                    "title": "Correo",
+                    "type": "string",
+                    "format": "email",
+                    "example": "pepito@grillo.tv"
+                },
+                "edad": {
+                    "title": "Edad",
+                    "type": "integer",
+                    "minimum": 16,
+                    "maximum": 67,
+                    "example": 37
+                },
+                "telefono": {
+                    "title": "Teléfonos",
+                    "type": "array",
+                    "uniqueItems": true,
+                    "items": {
+                        "title": "Teléfono",
+                        "type": "string",
+                        "example": "999 555 555",
+                        "pattern": "^(\\d{3}\\s){2}\\d{3}$"
+                    }
+                }
+            }
+        }
+    },
+    {
+        "endpoint": "tarjetas",
+        "model": "Tarjeta",
+        "pk": "id",
+        "file": "tarjetas.json",
+        "operations": [
+            "GET",
+            "POST",
+            "PUT"
+        ],
+        "security": "Administradores",
+        "schema": {
+            "title": "Tarjeta",
+            "type": "object",
+            "required": [
+                "id",
+                "idCliente",
+                "numero",
+                "caducidad",
+                "CVC_CVV",
+                "tipo"
+            ],
+            "properties": {
+                "id": {
+                    "title": "Id",
+                    "type": "integer",
+                    "example": 0
+                },
+                "idCliente": {
+                    "title": "IdCliente",
+                    "type": "string",
+                    "format": "email",
+                    "example": "a.auctor.non@dictummi.ca"
+                },
+                "tipo": {
+                    "title": "Tipo",
+                    "type": "string",
+                    "example": "Visa"
+                },
+                "numero": {
+                    "title": "Numero",
+                    "type": "string",
+                    "example": "4024 0071 1838 5904",
+                    "pattern": "^(((\\d{4}\\s){3}\\d{4})|(\\d{13}))$"
+                },
+                "caducidad": {
+                    "title": "Caducidad",
+                    "type": "string",
+                    "example": "03/2020",
+                    "pattern": "^\\d{2}\\/\\d{4}$"
+                },
+                "CVC_CVV": {
+                    "title": "Cvc_cvv",
+                    "type": "string",
+                    "example": "147"
+                }
+            }
+        }
+    },
+    {
+        "endpoint": "blog",
+        "model": "Articulo",
+        "pk": "id",
+        "file": "blog.json",
+        "security": "Empleados,Administradores",
+        "schema": {
+            "title": "Articulo",
+            "type": "object",
+            "required": [
+                "id",
+                "titulo"
+            ],
+            "properties": {
+                "id": {
+                    "title": "Id",
+                    "type": "integer",
+                    "example": 1
+                },
+                "titulo": {
+                    "title": "Titulo",
+                    "type": "string",
+                    "maxLength": 200,
+                    "example": "Saludo"
+                },
+                "texto": {
+                    "title": "Texto",
+                    "type": "string",
+                    "example": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores eveniet eum nisi expedita ab dolorum labore similique provident officia ipsa, aliquam recusandae dicta id, praesentium quasi consequatur minus laborum perferendis?"
+                },
+                "autor": {
+                    "title": "Autor",
+                    "type": "string",
+                    "maxLength": 200,
+                    "example": "Javier"
+                },
+                "fecha": {
+                    "title": "Fecha",
+                    "type": "string",
+                    "format": "date",
+                    "example": "2016-02-29"
+                },
+                "megusta": {
+                    "title": "Megusta",
+                    "type": "integer",
+                    "example": 0
+                },
+                "fotourl": {
+                    "title": "Fotourl",
+                    "type": "string",
+                    "format": "uri",
+                    "example": "https://cdn-images-1.medium.com/max/800/1*V3Kfghg_jIV0ubxmAnCXBA.jpeg"
+                }
+            }
+        }
+    },
+    {
+        "endpoint": "libros",
+        "model": "Libro",
+        "pk": "idLibro",
+        "file": "libros.json",
+        "security": "Empleados",
+        "schema": {
+            "title": "Libro",
+            "type": "object",
+            "required": [
+                "idLibro",
+                "titulo"
+            ],
+            "properties": {
+                "idLibro": {
+                    "title": "Idlibro",
+                    "type": "string",
+                    "example": "1"
+                },
+                "titulo": {
+                    "title": "Titulo",
+                    "type": "string",
+                    "maxLength": 200,
+                    "example": "El ingenioso hidalgo don Quijote de la Mancha "
+                },
+                "autor": {
+                    "title": "Autor",
+                    "type": "string",
+                    "maxLength": 100,
+                    "example": "Miguel de Cervantes"
+                },
+                "pais": {
+                    "title": "Pais",
+                    "type": "string",
+                    "maxLength": 50,
+                    "example": "España"
+                },
+                "fecha": {
+                    "title": "Fecha",
+                    "type": "string",
+                    "example": "1605"
+                },
+                "paginas": {
+                    "title": "Paginas",
+                    "type": "string",
+                    "example": "377"
+                },
+                "wiki": {
+                    "title": "Wiki",
+                    "type": "string",
+                    "format": "uri",
+                    "example": "https://es.wikipedia.org/wiki/Don_Quijote_de_la_Mancha"
+                }
+            }
+        }
+    },
+    {
+        "endpoint": "biblioteca",
+        "model": "Volumen",
+        "pk": "id",
+        "file": "biblioteca.json",
+        "readonly": true,
+        "schema": {
+            "title": "Volumen",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "id",
+                "titulo",
+                "autor"
+            ],
+            "properties": {
+                "id": {
+                    "title": "Id",
+                    "type": "integer",
+                    "example": 0
+                },
+                "titulo": {
+                    "title": "Titulo",
+                    "type": "string",
+                    "maxLength": 100,
+                    "example": "Mauris"
+                },
+                "autor": {
+                    "title": "Autor",
+                    "type": "string",
+                    "maxLength": 100,
+                    "example": "At Mi Imperdiet"
+                },
+                "numPag": {
+                    "title": "Número de páginas",
+                    "type": "integer",
+                    "minimum": 0,
+                    "exclusiveMinimum": true,
+                    "example": 22
+                }
+            }
+        }
+    },
+    {
+        "endpoint": "vehiculos",
+        "model": "Vehiculo",
+        "tag": "vehiculos",
+        "pk": "id",
+        "file": "vehiculos.json",
+        "security": true,
+        "schema": {
+            "title": "Vehículo",
+            "type": "object",
+            "required": [
+                "id",
+                "marca",
+                "modelo",
+                "matricula"
+            ],
+            "properties": {
+                "id": {
+                    "title": "Id",
+                    "type": "integer",
+                    "example": 1
+                },
+                "marca": {
+                    "title": "Marca",
+                    "type": "string",
+                    "example": "AUDI"
+                },
+                "modelo": {
+                    "title": "Modelo",
+                    "type": "string",
+                    "example": "A3"
+                },
+                "matricula": {
+                    "title": "Matricula",
+                    "type": "string",
+                    "example": "1234ABC"
+                },
+                "edad": {
+                    "title": "Edad",
+                    "type": "integer",
+                    "example": 2
+                },
+                "propietario": {
+                    "title": "Propietario",
+                    "type": "object",
+                    "required": [
+                        "nombre",
+                        "apellidos",
+                        "dni",
+                        "email"
+                    ],
+                    "properties": {
+                        "nombre": {
+                            "title": "Nombre",
+                            "type": "string",
+                            "example": "Penélope"
+                        },
+                        "apellidos": {
+                            "title": "Apellidos",
+                            "type": "string",
+                            "example": "Glamour"
+                        },
+                        "dni": {
+                            "title": "Dni",
+                            "type": "string",
+                            "format": "nif",
+                            "example": "12345678Z"
+                        },
+                        "email": {
+                            "title": "Email",
+                            "type": "string",
+                            "format": "email",
+                            "example": "pglamour@example.com"
+                        }
+                    }
+                },
+                "direcciones": {
+                    "title": "Direcciones",
+                    "type": "array",
+                    "uniqueItems": true,
+                    "items": {
+                        "title": "Dirección",
+                        "type": "object",
+                        "required": [
+                            "id",
+                            "calle",
+                            "localidad",
+                            "cp",
+                            "provincia"
+                        ],
+                        "properties": {
+                            "id": {
+                                "title": "Id",
+                                "type": "integer",
+                                "example": 1
+                            },
+                            "calle": {
+                                "title": "Calle",
+                                "type": "string",
+                                "example": "Compact Pussycat"
+                            },
+                            "localidad": {
+                                "title": "Localidad",
+                                "type": "string",
+                                "example": "Rota"
+                            },
+                            "cp": {
+                                "title": "Cp",
+                                "type": "string",
+                                "example": "11080"
+                            },
+                            "provincia": {
+                                "title": "Provincia",
+                                "type": "integer",
+                                "example": 11
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    {
+        "endpoint": "marcas",
+        "model": "Marca",
+        "tag": "vehiculos",
+        "pk": "marca",
+        "file": "marcas-modelos.json",
+        "operations": [
+            "GET"
+        ],
+        "schema": {
+            "title": "Marca",
+            "type": "object",
+            "required": [
+                "marca",
+                "modelos"
+            ],
+            "properties": {
+                "marca": {
+                    "title": "Marca",
+                    "type": "string",
+                    "example": "ALFA ROMEO"
+                },
+                "modelos": {
+                    "title": "Modelos",
+                    "type": "array",
+                    "uniqueItems": true,
+                    "items": {
+                        "title": "Modelo",
+                        "type": "string",
+                        "example": "Giulietta"
+                    }
+                }
+            }
+        }
+    }
+]

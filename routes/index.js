@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/', function(req, res) {
   res.render('index', { title: 'Entorno de pruebas Web4Testing', baseUrl: req.path, contenido:  [
     { titulo: 'Calculadora', descripcion: 'La calculadora, al disponer de múltiples botones, es ideal para realizar las pruebas de interacciones con el UI y validar los resultados que se van obteniendo.', imagen: 'https://placeimg.com/640/480/tech', enlace: '/calculadora', boton: 'Hacer cálculos' },
     { titulo: 'Carrito de la compra', descripcion: 'El carrito de la compra es un entorno dinámico que permite añadir y quitar productos, comprobar totales e importes filtrar la lista de productos, arrastrar el producto de la lista y soltar en el carrito. Si el producto ya está en la lista, se incrementa la cantidad.', imagen: 'https://placeimg.com/640/480/people', enlace: '/compras', boton: 'Ir ahora' },
@@ -13,27 +13,36 @@ router.get('/', function(req, res, next) {
   ]});
 });
 
-router.get('/calculadora', function (req, res, next) {
+router.get('/calculadora', function (req, res) {
   res.render('calculadora', { title: 'Calculadora', baseUrl: req.path });
 });
-router.get('/compras', function (req, res, next) {
+router.get('/compras', function (req, res) {
   res.render('carrito', { title: 'Carrito de la compra', baseUrl: req.path });
 });
 
-router.get('/biblioteca', function (req, res, next) {
+router.get('/biblioteca', function (req, res) {
   res.render('biblioteca', { title: 'Biblioteca', baseUrl: req.path });
 });
 
-router.get('/contactos', function (req, res, next) {
+router.get('/contactos', function (req, res) {
   res.render('contactos', { title: 'Contactos', baseUrl: req.path });
 });
 
-router.get('/alertas', function (req, res, next) {
+router.get('/alertas', function (req, res) {
   res.render('alertas', { title: 'Alertas', baseUrl: req.path });
 });
 
-router.get('/documentacion', function (req, res, next) {
+router.get('/documentacion', function (req, res) {
   res.render('documentacion', { title: 'Documentación', baseUrl: req.path });
 });
+router.get('/api', function (req, res) {
+  res.render('api', { 
+    title: 'API REST', 
+    baseUrl: `${req.protocol}://${req.headers.host}`, 
+    base: `${req.protocol}://${req.headers.host}${req.baseUrl}`, 
+    servicios: [] 
+  });
+});
+
 
 module.exports = router;

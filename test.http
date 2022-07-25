@@ -30,7 +30,7 @@ Content-Type: application/json
 #x-xsrf-token: 123456790ABCDEF
 
 {
-    "name": "admin", 
+    "username": "admin", 
     "password": "P@$$w0rd" 
 }
 ###
@@ -60,7 +60,7 @@ POST http://localhost:8181/api/login
 Content-Type: application/json
 
 {
-    "name": "kk@kk", 
+    "username": "kk@kk", 
     "password": "P@$$w0rd" 
 }
 ###

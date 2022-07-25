@@ -5,6 +5,7 @@ COPY package*.json ./
 RUN npm install --production
 COPY . .
 EXPOSE 8181
+VOLUME [ "/app/uploads", "/app/public", "/app/data", "app/log" ]
 CMD [ "node", "bin/www" ]
 
 # docker build --rm -f "Dockerfile" -t web-for-testing:latest .

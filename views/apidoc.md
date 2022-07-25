@@ -1,39 +1,3 @@
-# Web4Testing
-
-Versión NodeJS del servidor de pruebas para cursos de FrontEnd y con un sitio web de ejemplo donde aplicar casos de prueba WebDriver.
-
-* Sitio web
-* Servicios RestFul para probar las conexiones AJAX
-* Servicio de Autenticación JWT
-* Autorespondedor de formularios.
-* Servidor de ficheros
-
-## Instalación
-
-* Con NodeJS instalado:
-  1. Descargar o clonar el repositorio
-  2. Ejecutar `npm install` para descargar las dependencias.
-  3. Ejecutar `npm start` o `node server` para levantar el servidor.
-  4. Navegar a <http://localhost:8181/> para comprobar el correcto funcionamiento de los servicios.
-* Con Docker Desktop instalado:
-  1. `docker run -d -p 8181:8181 --name mock-web-server jamarton/web-for-testing:latest`
-
-**Nota:** *Se puede configurar el puerto en el entorno con `SET PORT=3000` antes de levantar el servidor o levantarlo con `node server --port=3000`.*
-
-## Sitio web
-
-El sitio web cuenta con un juego de páginas donde se exponen diferentes escenarios de pruebas navegación, interacción con páginas, trabajo con formularios, arrastrar y soltar, autenticación, SPA y AJAX.
-Las páginas disponibles son:
-
-* **Inicio**: Pagina muy larga que incorpora animaciones, textos e imagenes
-* **Calculadora**: La calculadora, al disponer de múltiples botones, es ideal para realizar las pruebas de interacciones con el UI y validar los resultados que se van obteniendo.
-* **Carrito de la compra**: El carrito de la compra es un entorno dinámico que permite añadir y quitar productos, comprobar totales e importes filtrar la lista de productos, arrastrar el producto de la lista y soltar en el carrito. Si el producto ya está en la lista, se incrementa la cantidad.
-* **Contactos**: Sistema CRUD completo que permite las pruebas de acceso a datos, paginación, trabajo con formularios y validaciones. Las consultas se pueden realizar sin estar autenticado, pero para añadir, modificar y borrar es necesaria la autenticación.
-* **Alertas**: Entorno de pruebas para los tres tipos nativos de mensajes emergentes ofrecidos por JavaScript: alertas, prompts y confirmaciones, así como los cuadros modales y modeless.
-* **Ficheros**: Entorno de sencillo de pruebas para subir ficheros a un servidor. Permite eliminar los ficheros subidos.
-* **API Rest**: Conjunto de servicios REST completos para servir de back-end y mock de las pruebas de las conexiones AJAX de las aplicaciones front-end. Permite la autenticación JWT.
-* **Atenticación**: Permite el registro de nuevos usuarios a través de formularios emergentes, la autenticación y la edición de los datos de usuario autenticado.
-
 ## Servicios RestFul
 
 Para no crear dependencias de bases de datos los servicios utilizan ficheros como `data/contactos.json`. El fichero se lee completo y se graba completo, no se ha optimizado el proceso salvo la cache de lecturas.
@@ -236,38 +200,4 @@ Para habilitar la protección:
 
     node server --xsrf
 
-El token está basado en la IP remota para ser único para cada usuario y es verificado por el servidor. Las verificaciones solo se aplican a las peticiones  POST, PUT, DELETE y PATCH. El mecanismo *“Cookie-to-Header Token”* solo puede utilizase cuando el front-end se aloje en el propio servidor (ver sección *Servidor de web*).
-
-## Autorespondedor
-
-Similar al PHPInfo, genera una página con la información enviada al servidor, generalmente con un formulario, separando la información recibida en cabecera, querystring (GET) y cuerpo (POST).  
-Está disponible en la página <http://localhost:8181/form>.
-
-## Servidor de Ficheros
-
-Se ha habilitado el subdirectorio `/public` para los ficheros que se deben servir directamente. Está mapeado a la raíz del servidor.
-
-### Subir ficheros
-
-Se pueden subir ficheros al servidor, mediante peticiones POST AJAX a <http://localhost:8181/fileupload>, requieren la cabecera **'Content-Type':'multipart/form-data'** y se envían en el campo **filetoupload** del formulario (acepta múltiples ficheros).
-
-Los ficheros se almacenan en el subdirectorio `/uploads` y son accesibles mediante la ruta <http://localhost:8181/files>.
-
-Las peticiones GET a <http://localhost:8181/fileupload> mostrarán un formulario para subir ficheros.
-
-## Docker
-
-Esta disponible el fichero **Dockerfile** para crear una imagen Docker del servidor, utiliza como base la versión *node:alpine* por ser la de ocupación mínima.
-
-Para construir la imagen:  
-    `docker build --rm -f "Dockerfile" -t web-for-testing:latest .`
-
-Para crear el contenedor:  
-    `docker run -d --name web-for-testing -p 8181:8181 web-for-testing`
-
-Volúmenes disponibles:
-
-* /app/data
-* /app/public
-* /app/uploads
-* /app/log
+El token está basado en la IP remota para ser único para cada usuario y es verificado por el servidor. Las verificaciones solo se aplican a las peticiones  POST, PUT, DELETE y PATCH.
