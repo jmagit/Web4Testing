@@ -25,7 +25,6 @@
 **/log
 **/tmp
 **/spec
-README.md
 .dockerignore
 *.http
 sonar-project.properties
