@@ -57,15 +57,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Parse originalUrl para validar el contenido separado por , en lo QueryParams 
-app.use(function (req, _res, next) {
-  let partes = req.originalUrl.split('?')
-  if(partes.length === 1)
-    return next();
-  req.originalUrl = partes[0] + '?' + partes[1].replace(/,/g,'%2C')
-  next()
-});
-
 app.use('/', ficherosRouter);
 
 // Cross-origin resource sharing (CORS)
