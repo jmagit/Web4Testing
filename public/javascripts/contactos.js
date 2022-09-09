@@ -134,7 +134,7 @@ const Contactos = new (
                 if (response.ok) {
                     response.json().then(function (resp) {
                         resp.fnacimiento = function () {
-                            return resp.nacimiento.slice(-2) + '/' + resp.nacimiento.slice(5, 7) + '/' + resp.nacimiento.slice(0, 4)
+                            return resp.nacimiento ? (resp.nacimiento.slice(-2) + '/' + resp.nacimiento.slice(5, 7) + '/' + resp.nacimiento.slice(0, 4)) : ''
                         };
                         $("#listado").empty().html(Mustache.render($('#tmplDetalle').html(), { item: resp }));
                     })
@@ -170,6 +170,12 @@ const Contactos = new (
             $('#btnEnviar').prop("disabled", !esValido);
             return esValido;
         };
+        let procesaEnvio = (response) => {
+            if (response.ok) {
+                $('#btnEnviar').off('click', obj.enviarNuevo);
+                obj.volver();
+            } else decodeError(response)
+        }
 
         obj.enviarNuevo = function () {
             let envio = getData();
@@ -181,12 +187,7 @@ const Contactos = new (
                 method: 'POST',
                 headers: Web4Testing.AuthService.getHeaders(),
                 body: JSON.stringify(envio)
-            }).then((response) => {
-                if (response.ok) {
-                    $('#btnEnviar').off('click', obj.enviarNuevo);
-                    obj.volver();
-                } else decodeError(response)
-            })
+            }).then(procesaEnvio)
         };
 
         obj.enviarModificado = function () {
@@ -199,12 +200,7 @@ const Contactos = new (
                 method: 'PUT',
                 headers: Web4Testing.AuthService.getHeaders(),
                 body: JSON.stringify(envio)
-            }).then((response) => {
-                if (response.ok) {
-                    $('#btnEnviar').off('click', obj.enviarNuevo);
-                    obj.volver();
-                } else decodeError(response)
-            })
+            }).then(procesaEnvio)
         };
 
         obj.volver = function () {

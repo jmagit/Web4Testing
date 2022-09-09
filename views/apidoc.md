@@ -10,9 +10,9 @@ Se genera automáticamente la documentación de los servicios disponibles y est�
 
 La documentación está disponible en formato HTML, YAML y JSOM:
 
-* <http://localhost:8181/api-docs>
-* <http://localhost:8181/api-docs/v1/openapi.yaml>
-* <http://localhost:8181/api-docs/v1/openapi.json>
+* [http://localhost:8181/api-docs](/api-docs)
+* [http://localhost:8181/api-docs/v1/openapi.yaml](/api-docs/v1/openapi.yaml)
+* [http://localhost:8181/api-docs/v1/openapi.json](/api-docs/v1/openapi.json)
 
 ### Para añadir nuevos servicios
 
@@ -32,7 +32,7 @@ La documentación está disponible en formato HTML, YAML y JSOM:
    | operations | array[string] |  Lista de operaciones `["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]` disponibles para el servicio, si está vacía, estarán todas disponibles |
    | security | boolean o string | `true` para indicar que el usuario debe estar autenticado para acceder al servicio. Acepta una cadena con los roles, separados por comas, a los que se autoriza el acceso (requiere autenticación). |
    | schema | string | Esquema OpenApi para la validación y definición de la documentación |
-3. Rearrancar el servidor.
+3. Re arrancar el servidor.
 4. Probar: <http://localhost:8181/api/nuevoservicio>
 
 ### Filtrado, paginación y ordenación
@@ -75,7 +75,7 @@ Para evitar conflictos con los navegadores se han habilitado las siguientes cabe
 
 El servicio ECO se puede usar para probar los clientes REST, hacer llamadas API de muestra y comprobar la información recibida por el servidor.
 
-Por ejemplo: <http://localhost:8181/eco/personas/1?_page=1&_rows=10>
+Por ejemplo: [http://localhost:8181/eco/personas/1?_page=1&_rows=10](/eco/personas/1?_page=1&_rows=10)
 
     {
         "url": "/eco/personas/1?_page=1&_rows=10",

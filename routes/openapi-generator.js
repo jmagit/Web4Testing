@@ -56,7 +56,7 @@ const serviciosConfigSchema = {
                 "anyOf": [
                     { "type": "string" },
                     { "type": "boolean" }
-                  ]
+                ]
             },
             "readonly": {
                 "type": "boolean",
@@ -615,8 +615,11 @@ const addServiceDocumentation = (servicio, dirAPIs) => {
 
 let cache = false
 const generaSwaggerSpecification = (server, dirAPIs, shutdown, dirAPIsSeguridad) => {
-    if(cache)
+    if (cache) {
+        if (swaggerDocument.servers[0].url !== `{protocol}://${server.hostname}:{port}/`)
+            swaggerDocument.servers[0].url = `{protocol}://${server.hostname}:{port}/`
         return swaggerDocument
+    }
     cache = true
     const valid = validate(serviciosConfig)
     if (!valid) {
@@ -624,20 +627,20 @@ const generaSwaggerSpecification = (server, dirAPIs, shutdown, dirAPIsSeguridad)
         shutdown()
     }
 
-    swaggerDocument.servers[0].variables.port.default = server
+    swaggerDocument.servers[0].variables.port.default = server.port
     serviciosConfig.forEach(servicio => addServiceDocumentation(servicio, dirAPIs))
     let apisSeguridad = swaggerJsdoc({
         swaggerDefinition: { openapi: swaggerDocument.openapi },
         apis: [`${__dirname}/seguridad.js`]
     });
     dirAPIsSeguridad = dirAPIsSeguridad || dirAPIs
-    Object.assign(swaggerDocument.tags, swaggerDocument.tags,  apisSeguridad.tags)
-    for(let path in apisSeguridad.paths) {
+    Object.assign(swaggerDocument.tags, swaggerDocument.tags, apisSeguridad.tags)
+    for (let path in apisSeguridad.paths) {
         swaggerDocument.paths[dirAPIsSeguridad + path] = apisSeguridad.paths[path]
     }
-    for(let component in apisSeguridad.components) {
-            if(!swaggerDocument.components[component]) swaggerDocument.components[component] = {}
-            Object.assign(swaggerDocument.components[component], swaggerDocument.components[component],  apisSeguridad.components[component])
+    for (let component in apisSeguridad.components) {
+        if (!swaggerDocument.components[component]) swaggerDocument.components[component] = {}
+        Object.assign(swaggerDocument.components[component], swaggerDocument.components[component], apisSeguridad.components[component])
     }
     return swaggerDocument;
 }

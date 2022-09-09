@@ -1,4 +1,4 @@
-const DbJSON = require('../routes/dbJSON')
+const DbJSON = require('../../routes/dbJSON')
 
 jest.mock('fs/promises');
 

@@ -1,6 +1,6 @@
 // eslint-disable-next-line node/no-unpublished-require
 const request = require('supertest');
-const utils = require('../routes/utils')
+const utils = require('../../routes/utils')
 
 let spy = jest.spyOn(utils, 'getServiciosConfig');
 spy.mockReturnValue([
@@ -11,7 +11,7 @@ spy.mockReturnValue([
         "file": "fake.json"
     },
 ])
-const app = require('../app');
+const app = require('../../app');
 describe('API Rest: Sin fichero', () => {
     it.each(["GET", "POST", "PUT"])('/%s', async (method) => {
         let response = await request(app)[method.toLowerCase()]("/api/fake")

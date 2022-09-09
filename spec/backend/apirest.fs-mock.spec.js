@@ -1,6 +1,6 @@
 // eslint-disable-next-line node/no-unpublished-require
 const request = require('supertest');
-const utils = require('../routes/utils')
+const utils = require('../../routes/utils')
 
 let spy = jest.spyOn(utils, 'getServiciosConfig');
 spy.mockReturnValue([
@@ -450,7 +450,7 @@ const getFichero = () => {
     return fichero;
 }
 describe('API Rest: Ficheros simulados', () => {
-    const app = require('../app');
+    const app = require('../../app');
     let fsMock
 
     beforeEach(() => {
@@ -593,10 +593,11 @@ describe('API Rest: Ficheros simulados', () => {
                     .catch(err => done(err))
             });
         })
-        describe.skip('KO', () => {
+        describe('KO', () => {
             it('Uno no encontrado', done => {
                 request(app)
                     .get("/api/fake/999")
+                    .set('X-Requested-With', 'XMLHttpRequest')
                     .expect(404, done)
             });
         })
@@ -652,10 +653,11 @@ describe('API Rest: Ficheros simulados', () => {
                     .catch(err => done(err))
             });
         })
-        describe.skip('KO', () => {
+        describe('KO', () => {
             it('Duplicate key', done => {
                 request(app)
                     .post("/api/fake")
+                    .set('X-Requested-With', 'XMLHttpRequest')
                     .set('Content-Type', 'application/json')
                     .send({ "id": "1", "name": "Nuevo" })
                     .expect(400)
@@ -665,6 +667,7 @@ describe('API Rest: Ficheros simulados', () => {
             it('Sin Content-Type: application/json', done => {
                 request(app)
                     .post("/api/fake")
+                    .set('X-Requested-With', 'XMLHttpRequest')
                     .send("Nuevo")
                     .expect(406)
                     .end(done)
@@ -672,6 +675,7 @@ describe('API Rest: Ficheros simulados', () => {
             it('Sin body', done => {
                 request(app)
                     .post("/api/fake")
+                    .set('X-Requested-With', 'XMLHttpRequest')
                     .set('Content-Type', 'application/json')
                     .expect(400)
                     .end(done)
@@ -713,10 +717,11 @@ describe('API Rest: Ficheros simulados', () => {
                     .catch(err => done(err))
             });
         })
-        describe.skip('KO', () => {
+        describe('KO', () => {
             it('Invalid identifier', done => {
                 request(app)
                     .put("/api/fake/2")
+                    .set('X-Requested-With', 'XMLHttpRequest')
                     .set('Content-Type', 'application/json')
                     .send({ "id": "1", "name": "Nuevo" })
                     .expect(400)
@@ -726,6 +731,7 @@ describe('API Rest: Ficheros simulados', () => {
             it('No encontrado: con id', done => {
                 request(app)
                     .put("/api/fake/222")
+                    .set('X-Requested-With', 'XMLHttpRequest')
                     .set('Content-Type', 'application/json')
                     .send({ "id": "222", "name": "Nuevo" })
                     .expect(404)
@@ -734,6 +740,7 @@ describe('API Rest: Ficheros simulados', () => {
             it('No encontrado: sin id', done => {
                 request(app)
                     .put("/api/fake")
+                    .set('X-Requested-With', 'XMLHttpRequest')
                     .set('Content-Type', 'application/json')
                     .send({ "id": "222", "name": "Nuevo" })
                     .expect(404)
@@ -742,6 +749,7 @@ describe('API Rest: Ficheros simulados', () => {
             it('Sin body: con id', done => {
                 request(app)
                     .put("/api/fake/1")
+                    .set('X-Requested-With', 'XMLHttpRequest')
                     .set('Content-Type', 'application/json')
                     .expect(400)
                     .end(done)
@@ -749,6 +757,7 @@ describe('API Rest: Ficheros simulados', () => {
             it('Sin body: sin id', done => {
                 request(app)
                     .put("/api/fake")
+                    .set('X-Requested-With', 'XMLHttpRequest')
                     .set('Content-Type', 'application/json')
                     .expect(400)
                     .expect(response => expect(response.body.title).toBe('Invalid identifier'))
@@ -795,10 +804,11 @@ describe('API Rest: Ficheros simulados', () => {
                     .catch(err => done(err))
             });
         })
-        describe.skip('KO', () => {
+        describe('KO', () => {
             it('Invalid identifier', done => {
                 request(app)
                     .patch("/api/fake/2")
+                    .set('X-Requested-With', 'XMLHttpRequest')
                     .set('Content-Type', 'application/json')
                     .send({ "id": "1", "name": "Nuevo" })
                     .expect(400)
@@ -808,6 +818,7 @@ describe('API Rest: Ficheros simulados', () => {
             it('No encontrado: con id', done => {
                 request(app)
                     .patch("/api/fake/222")
+                    .set('X-Requested-With', 'XMLHttpRequest')
                     .set('Content-Type', 'application/json')
                     .send({ "id": "222", "name": "Nuevo" })
                     .expect(404)
@@ -816,6 +827,7 @@ describe('API Rest: Ficheros simulados', () => {
             it('No encontrado: sin id', done => {
                 request(app)
                     .patch("/api/fake/222")
+                    .set('X-Requested-With', 'XMLHttpRequest')
                     .set('Content-Type', 'application/json')
                     .send({ "name": "Nuevo" })
                     .expect(404)
@@ -824,6 +836,7 @@ describe('API Rest: Ficheros simulados', () => {
             it('Sin body', done => {
                 request(app)
                     .patch("/api/fake/1")
+                    .set('X-Requested-With', 'XMLHttpRequest')
                     .set('Content-Type', 'application/json')
                     .expect(400)
                     .end(done)
@@ -845,10 +858,11 @@ describe('API Rest: Ficheros simulados', () => {
                     .catch(err => done(err))
             });
         })
-        describe.skip('KO', () => {
+        describe('KO', () => {
             it('No encontrado', done => {
                 request(app)
                     .delete("/api/fake/222")
+                    .set('X-Requested-With', 'XMLHttpRequest')
                     .expect(404)
                     .end(done)
             });

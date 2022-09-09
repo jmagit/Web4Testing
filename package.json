@@ -8,11 +8,10 @@
   },
   "scripts": {
     "start": "node ./bin/www",
-    "restart ": "nodemon -w **/*.* -e js,pug ./bin/www",
-    "nodemon ": "nodemon -w **/*.* -e js,pug ./bin/www",
+    "restart": "nodemon -w **/*.* -e js,pug ./bin/www",
     "lint": "eslint **/*.js",
     "test": "jest --collectCoverage",
-    "sonar": "sonar-scanner.bat -D\"sonar.projectKey=web4testing\" -D\"sonar.sources=.\" -D\"sonar.host.url=http://localhost:9000\" -D\"sonar.login=sqp_a79694bfb805627e9edd0feb1d852b7c846f04db\""
+    "sonar": "sonar-scanner.bat -D\"sonar.projectKey=web4testing\" -D\"sonar.host.url=http://localhost:9000\" -D\"sonar.javascript.lcov.reportPaths=./coverage/lcov.info\" -D\"sonar.login=sqp_a79694bfb805627e9edd0feb1d852b7c846f04db\""
   },
   "dependencies": {
     "ajv": "^8.11.0",

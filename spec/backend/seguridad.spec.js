@@ -2,8 +2,8 @@
 const request = require('supertest');
 const cookieParser = require('cookie-parser');
 const express = require('express')
-const seguridad = require('../routes/seguridad')
-const app = require('../app');
+const seguridad = require('../../routes/seguridad')
+const app = require('../../app');
 
 jest.mock('fs/promises');
 
@@ -454,10 +454,11 @@ describe('Seguridad', () => {
                     expect(data[index].roles).toEqual(usuarios[index].roles)
                 });
             })
-            describe.skip('KO', () => {
+            describe('KO', () => {
                 it('POST: Falta el nombre de usuario', async () => {
                     await request(app)
                         .post('/api/register')
+                        .set('X-Requested-With', 'XMLHttpRequest')
                         .set('Content-Type', 'application/json')
                         .send({ "nombre": "Nuevo", "password": "P@$$w0rd" })
                         .expect(400)
@@ -467,6 +468,7 @@ describe('Seguridad', () => {
                 it('POST: Formato incorrecto de la password', async () => {
                     await request(app)
                         .post('/api/register')
+                        .set('X-Requested-With', 'XMLHttpRequest')
                         .set('Content-Type', 'application/json')
                         .send({ "idUsuario": "usr@kk.kk", "nombre": "Nuevo", "password": "p@$$w0rd" })
                         .expect(400)
@@ -476,6 +478,7 @@ describe('Seguridad', () => {
                 it('POST: El usuario ya existe', async () => {
                     await request(app)
                         .post('/api/register')
+                        .set('X-Requested-With', 'XMLHttpRequest')
                         .set('Content-Type', 'application/json')
                         .send({ "idUsuario": usuarios[1].idUsuario, "nombre": "Nuevo", "password": "P@$$w0rd" })
                         .expect(400)
@@ -485,10 +488,12 @@ describe('Seguridad', () => {
                 it('GET: Sin token', done => {
                     request(app)
                         .get('/api/register')
+                        .set('X-Requested-With', 'XMLHttpRequest')
                         .expect(401, done)
                 });
                 it('GET: Usuario eliminado', async () => {
                     const response = await request(app).get('/api/register')
+                        .set('X-Requested-With', 'XMLHttpRequest')
                         .set('authorization', seguridad.generarTokenScheme(usuarioBorrado))
                     expect(response.statusCode).toBe(401)
                 });
@@ -496,12 +501,14 @@ describe('Seguridad', () => {
                     request(app)
                         .put('/api/register')
                         .set('Content-Type', 'application/json')
+                        .set('X-Requested-With', 'XMLHttpRequest')
                         .send({ "idUsuario": usuarios[0].idUsuario, "nombre": "Nuevo nombre", "password": "ignorar", "roles": [] })
                         .expect(401, done)
                 });
                 it('PUT: Otro usuario', done => {
                     request(app)
                         .put('/api/register')
+                        .set('X-Requested-With', 'XMLHttpRequest')
                         .set('authorization', seguridad.generarTokenScheme( usuarios[0]))
                         .set('Content-Type', 'application/json')
                         .send( usuarios[1])
@@ -510,6 +517,7 @@ describe('Seguridad', () => {
                  it('PUT: Usuario eliminado', done => {
                     request(app)
                         .put('/api/register')
+                        .set('X-Requested-With', 'XMLHttpRequest')
                         .set('authorization', seguridad.generarTokenScheme(usuarioBorrado))
                         .set('Content-Type', 'application/json')
                         .send(usuarioBorrado)
@@ -518,6 +526,7 @@ describe('Seguridad', () => {
                 it('PUT: Falta el nombre de usuario', done => {
                     request(app)
                         .put('/api/register')
+                        .set('X-Requested-With', 'XMLHttpRequest')
                         .set('authorization', seguridad.generarTokenScheme(usuarios[0]))
                         .set('Content-Type', 'application/json')
                         .send({ "nombre": "", "password": "ignorar", "roles": [] })
@@ -543,10 +552,11 @@ describe('Seguridad', () => {
                     expect(data[index].roles).toEqual(usuarios[index].roles)
                 });
             })
-            describe.skip('KO', () => {
+            describe('KO', () => {
                 it('PUT: Cambiar contraseña sin token', done => {
                     request(app)
                         .put('/api/register/password')
+                        .set('X-Requested-With', 'XMLHttpRequest')
                         .set('Content-Type', 'application/json')
                         .send({ "oldPassword": "P@$$w0rd", "newPassword": "Pa$$w0rd" })
                         .expect(401, done)
@@ -554,6 +564,7 @@ describe('Seguridad', () => {
                 it('PUT: Cambiar contraseña usuario eliminado', done => {
                     request(app)
                         .put('/api/register/password')
+                        .set('X-Requested-With', 'XMLHttpRequest')
                         .set('authorization', seguridad.generarTokenScheme(usuarioBorrado))
                         .set('Content-Type', 'application/json')
                         .send({ "oldPassword": "P@$$w0rd", "newPassword": "Pa$$w0rd" })
@@ -562,6 +573,7 @@ describe('Seguridad', () => {
                 it('PUT: Contraseña anterior invalida', done => {
                     request(app)
                         .put('/api/register/password')
+                        .set('X-Requested-With', 'XMLHttpRequest')
                         .set('authorization', seguridad.generarTokenScheme(usuarios[0]))
                         .set('Content-Type', 'application/json')
                         .send({ "oldPassword": "Pa$$w0rd", "newPassword": "P@$$w0rd" })
@@ -570,6 +582,7 @@ describe('Seguridad', () => {
                 it('PUT: Contraseña nueva invalida', done => {
                     request(app)
                         .put('/api/register/password')
+                        .set('X-Requested-With', 'XMLHttpRequest')
                         .set('authorization', seguridad.generarTokenScheme(usuarios[0]))
                         .set('Content-Type', 'application/json')
                         .send({ "oldPassword": "P@$$w0rd", "newPassword": "P@$$W0RD" })

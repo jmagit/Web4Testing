@@ -1,6 +1,6 @@
 // eslint-disable-next-line node/no-unpublished-require
 const request = require('supertest');
-const app = require('../app');
+const app = require('../../app');
 
 describe("Test the root path", () => {
   let spy

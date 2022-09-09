@@ -76,11 +76,11 @@ block scripts
       });
       $('#btnAlert').click(function(ev) {
         alert('Esta es una alerta');
-        $('#txtResultado').text('Se a cerrado la alerta');
+        $('#txtResultado').text('Se ha cerrado la alerta');
         $('#CuadroAlerta').removeClass().addClass( "alert alert-warning fade show" ).show();
       });
       $('#btnConfirm').click(function(ev) {
-        if (window.confirm("¿Eatas seguro?")) { 
+        if (window.confirm("¿Estas seguro?")) { 
           $('#txtResultado').text('Respuesta positiva');
           $('#CuadroAlerta').removeClass().addClass( "alert alert-success fade show" ).show();
         } else {
