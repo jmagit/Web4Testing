@@ -34,7 +34,7 @@ router.post('/fileupload', function (req, res) {
           let newpath = DIR_UPLOADS + file.name;
           try {
             await fs.unlink(newpath)
-          } catch (err) {
+          } catch {
           }
           await fs.rename(oldpath, newpath);
         } else {

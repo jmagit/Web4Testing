@@ -17,11 +17,14 @@ block scripts
   script(src="javascripts/contactos.js")
   script(id="tmplListado", type="x-tmpl-mustache").
       <table class="table table-striped table-hover">
+        <thead>
           <tr class="table-info">
               <th>Lista de contactos</th>
               <th class="text-right"><input type="button" class="btn btn-success" value="Añadir"
                       onclick="Contactos.añadir()"></th>
           </tr>
+        </thead>
+        <tbody>
           {{#filas}}          
           <tr>
               <td>
@@ -32,7 +35,7 @@ block scripts
                   <img class="rounded-circle float-left" src="{{avatar}}" alt="Foto de {{nombre}} {{apellidos}}" width="75" height="75" >
                 </div>
                 <div class="col-md-11">
-                  <buton type="button" class="btn btn-link btn-lg" onclick="Contactos.ver({{id}});">{{tratamiento}} {{nombre}} {{apellidos}}</buton>
+                  <button type="button" class="btn btn-link btn-lg" onclick="Contactos.ver({{id}});">{{tratamiento}} {{nombre}} {{apellidos}}</button>
                   <br>
                   <b>Tlfn.:</b> {{telefono}} <b>Correo:</b> {{email}}
                 </div>
@@ -49,6 +52,7 @@ block scripts
               </td>
           </tr>
           {{/filas}}
+        </tbody>
       </table>
   script(id="tmplDetalle", type="x-tmpl-mustache").
     <div class="container">
@@ -131,7 +135,7 @@ block scripts
     </div>
     <div class="form-row">
         <div class="form-group col-md-2">
-            <label for="telefono">Telefono:</label>
+            <label for="telefono">Teléfono:</label>
             <div>
                 <input class="form-control" type="tel" name="telefono" id="telefono" maxlength="11">
             </div>

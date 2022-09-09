@@ -30,6 +30,14 @@ const shutdown = () => {
   process.kill(process.pid, 'SIGTERM');
 }
 
+const extraeURL = req => (
+  {
+    protocol: req.protocol,
+    hostname: req.hostname,
+    port: req.connection.localPort,
+  }
+);
+
 // Argumentos de entrada
 process.argv.forEach(val => {
   if (val.toLocaleLowerCase().startsWith('--port='))
@@ -73,7 +81,7 @@ app.use(seguridad.useAuthentication)
 // Validación OpenApi
 app.use(
   OpenApiValidator.middleware({
-    apiSpec: generaSwaggerSpecification(app.get('port'), DIR_API_REST, shutdown),
+    apiSpec: generaSwaggerSpecification({ port: app.get('port') }, DIR_API_REST, shutdown),
     validateRequests: true, // (default)
     validateResponses: true, // false by default
     ignoreUndocumented: true,
@@ -90,20 +98,23 @@ app.use(DIR_API_REST, seguridad)
 app.use(DIR_API_REST, apiRouter.router);
 
 // Documentación OpenApi
-app.all('/api-docs/v1/openapi.json', async function (_req, res) {
-  let result = await generaSwaggerSpecification(app.get('port'), DIR_API_REST, shutdown)
+app.all('/api-docs/v1/openapi.json', function (req, res) {
+  let result = generaSwaggerSpecification(extraeURL(req), DIR_API_REST, shutdown)
   res.json(result)
 });
-app.all('/api-docs/v1/openapi.yaml', async function (_req, res) {
-  let result = await generaSwaggerSpecification(app.get('port'), DIR_API_REST, shutdown)
+app.all('/api-docs/v1/openapi.yaml', function (req, res) {
+  let result = generaSwaggerSpecification(extraeURL(req), DIR_API_REST, shutdown)
   res.contentType('text/yaml').end(YAML.stringify(result))
 });
 
 // Swaggger-ui
 const options = {
-  explorer: true
+  explorer: true,
+  swaggerOptions: {
+    url: '/api-docs/v1/openapi.json'
+  }
 };
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(generaSwaggerSpecification(app.get('port'), DIR_API_REST, shutdown), options));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(null, options));
 
 app.all('/eco(/*)?', function (req, res) {
   res.status(200).json({
@@ -128,7 +139,7 @@ app.use(function (_req, _res, next) {
 });
 
 app.use(function (err, req, res, next) {
-  if(!req.xhr) next(err)
+  if (!req.xhr) next(err)
   let error = err.payload ? err : generateErrorByError(err)
   res.status(error.payload.status).json(error.payload);
 });
