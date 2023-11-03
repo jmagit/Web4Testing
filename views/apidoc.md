@@ -93,7 +93,7 @@ Por ejemplo: [http://localhost:8181/eco/personas/1?_page=1&_rows=10](/eco/person
         },
         "authentication": {
             "isAuthenticated": true,
-            "usr": "admin",
+            "usr": "adm@example.com",
             "name": "Administrador",
             "roles": [
                 "Usuarios",
@@ -131,17 +131,17 @@ Para simular la autenticación con token JWT de cabecera está disponible el ser
 * **Formularios**
   * action="http://localhost:8181/api/login"
   * method="post"
-  * body="username=admin&password=P@$$w0rd"
+  * body="username=adm@example.com&password=P@$$w0rd"
 * **API**
   * Content-Type: application/json
-  * body: { "username": "admin", "password": "P@$$w0rd" }
+  * body: { "username": "adm@example.com", "password": "P@$$w0rd" }
 
 #### Respuesta JSON:
 
     {
         "success": true,
         "token": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIiwicm9sZXMiOlsiVXN1YXJpb3MiLCJBZG1pbmlzdHJhZG9yZXMiXSwiaWF0IjoxNjQ4NTc4NTYxLCJleHAiOjE2NDg1ODIxNjF9.WF-z8UHEOtqh0NSttxkV4VSp8evKEKLvW1fIh4CwEJ0",
-        "name": "admin",
+        "name": "adm@example.com",
         "roles": [
             "Usuarios",
             "Administradores"

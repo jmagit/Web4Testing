@@ -3,7 +3,7 @@ const request = require('supertest');
 const seguridad = require('../../routes/seguridad')
 const utils = require('../../routes/utils')
 
-const usr = { "idUsuario": "admin", "password": "", "nombre": "Administrador", "roles": ["Usuarios", "Administradores", "Empleados"] }
+const usr = { "idUsuario": "adm@example.com", "password": "", "nombre": "Administrador", "roles": ["Usuarios", "Administradores", "Empleados"] }
 const token = seguridad.generarTokenScheme(usr)
 const cookie = `Authorization=${seguridad.generarTokenJWT(usr)};`
 

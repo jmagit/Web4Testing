@@ -30,7 +30,7 @@ Content-Type: application/json
 #x-xsrf-token: 123456790ABCDEF
 
 {
-    "username": "admin", 
+    "username": "adm@example.com", 
     "password": "P@$$w0rd" 
 }
 ###

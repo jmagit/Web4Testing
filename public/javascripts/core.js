@@ -23,7 +23,7 @@ Web4Testing.AuthService = new function () {
     const decodeError = response => {
         if (response.headers.get('content-type').includes('application/json'))
             response.json().then(err => {
-                alert('ERROR: ' + response.status + ': ' + (err.title || response.statusText))
+                alert('ERROR: ' + response.status + ': ' + (err.detail || err.title || response.statusText))
             })
         else {
             alert('ERROR: ' + response.status + ': ' + response.statusText)

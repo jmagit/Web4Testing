@@ -11,7 +11,7 @@ const sendOK = (_req, res) => res.sendStatus(200)
 
 const usuarios = [
     {
-        "idUsuario": "admin@kk.kk",
+        "idUsuario": "adm@example.com",
         "password": "$2b$10$7EHNhM3dTSyGenDgmxzub.IfYloVNJrbvdjAF5LsrNBpu57JuNV1W",
         "nombre": "Administrador",
         "roles": ["Usuarios", "Administradores"]
@@ -103,8 +103,8 @@ describe('Seguridad', () => {
                 const response = await request(mockApp).get('/')
                     .set('authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIiwicm9sZXMiOlsiVXN1YXJpb3MiLCJBZG1pbmlzdHJhZG9yZXMiXSwiaWF0IjoxNjQ5MzM5MDgwLCJleHAiOjE2NDkzNDI2ODB9.1XAvQTzCSgEjs6NVhA0rgFt5NeEb_DMMVIn4DfNOjvg')
 
-                expect(response.statusCode).toBe(401)
-                expect(response.body.detail).toEqual('Token expired')
+                expect(response.statusCode).toBe(403)
+                expect(response.body.detail).toContain('token expired')
             })
             it('Con token manipulado', async () => {
                 mockApp.use(seguridad.useAuthentication)
@@ -117,7 +117,8 @@ describe('Seguridad', () => {
                     .set('authorization', token)
 
                 expect(response.statusCode).toBe(401)
-                expect(response.body.title).toEqual('Invalid token')
+                expect(response.body.title).toEqual('Unauthorized')
+                expect(response.body.detail).toEqual('Invalid token')
             })
         })
         describe('Middleware: Autorización', () => {
@@ -340,7 +341,7 @@ describe('Seguridad', () => {
                     request(app)
                         .post('/api/login')
                         .set('Content-Type', 'application/json')
-                        .send({ "username": "admin@kk.kk", "password": "P@$$w0rd" })
+                        .send({ "username": "adm@example.com", "password": "P@$$w0rd" })
                         .expect('Content-Type', /json/)
                         .then(response => {
                             expect(response.statusCode).toBe(200);
@@ -353,7 +354,7 @@ describe('Seguridad', () => {
                     let response = await request(app)
                         .post('/api/login?cookie=true')
                         .set('Content-Type', 'application/json')
-                        .send({ "username": "admin@kk.kk", "password": "P@$$w0rd" })
+                        .send({ "username": "adm@example.com", "password": "P@$$w0rd" })
                     expect(response.statusCode).toBe(200)
                     expect(response.headers['set-cookie']).toBeTruthy()
                     let cookie = response.headers['set-cookie']
@@ -383,7 +384,7 @@ describe('Seguridad', () => {
                     return request(app)
                         .post('/api/login')
                         .set('Content-Type', 'application/json')
-                        .send({ "username": "admin@kk.kk", "password": "P@$Sw0rd" })
+                        .send({ "username": "adm@example.com", "password": "P@$Sw0rd" })
                         .expect(200)
                         .expect('Content-Type', /json/)
                         .expect('{"success":false}')
@@ -392,7 +393,7 @@ describe('Seguridad', () => {
                     return request(app)
                         .post('/api/login')
                         .set('Content-Type', 'application/json')
-                        .send({ "username": "admin", "password": "P@$Sword" })
+                        .send({ "username": "adm@example.com", "password": "P@$Sword" })
                         .expect(400)
                 });
             });
@@ -463,7 +464,7 @@ describe('Seguridad', () => {
                         .send({ "nombre": "Nuevo", "password": "P@$$w0rd" })
                         .expect(400)
                         .expect('Content-Type', /json/)
-                        .expect(response => expect(response.body.title).toBe('Falta el nombre de usuario.'))
+                        .expect(response => expect(response.body.detail).toBe('Falta el nombre de usuario.'))
                 });
                 it('POST: Formato incorrecto de la password', async () => {
                     await request(app)
@@ -473,7 +474,7 @@ describe('Seguridad', () => {
                         .send({ "idUsuario": "usr@kk.kk", "nombre": "Nuevo", "password": "p@$$w0rd" })
                         .expect(400)
                         .expect('Content-Type', /json/)
-                        .expect(response => expect(response.body.title).toBe('Formato incorrecto de la password.'))
+                        .expect(response => expect(response.body.detail).toBe('Formato incorrecto de la password.'))
                 });
                 it('POST: El usuario ya existe', async () => {
                     await request(app)
@@ -483,7 +484,7 @@ describe('Seguridad', () => {
                         .send({ "idUsuario": usuarios[1].idUsuario, "nombre": "Nuevo", "password": "P@$$w0rd" })
                         .expect(400)
                         .expect('Content-Type', /json/)
-                        .expect(response => expect(response.body.title).toBe('El usuario ya existe.'))
+                        .expect(response => expect(response.body.detail).toBe('El usuario ya existe.'))
                 });
                 it('GET: Sin token', done => {
                     request(app)
