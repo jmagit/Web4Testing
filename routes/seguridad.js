@@ -48,7 +48,7 @@ module.exports.useAuthentication = (req, res, next) => {
         next();
     } catch (err) {
         if (err.name === 'TokenExpiredError')
-            return next(generateError('Invalid token', 401, 'Token expired', { expiredAt: err.expiredAt }))
+            return next(generateError(`Invalid token: token expired`, 403, { expiredAt: err.expiredAt }))
         return next(generateError('Invalid token', 401))
     }
 }
@@ -160,9 +160,11 @@ module.exports.generarTokenScheme = (usuario) => {
  *        username:
  *          type: string
  *          format: email
+ *          example: 'adm@example.com'
  *        password:
  *          type: string
  *          format: password
+ *          example: 'P@$$w0rd'
  *    RespuestaLogin:
  *      type: object
  *      title: Respuesta Login

@@ -111,7 +111,10 @@ app.all('/api-docs/v1/openapi.yaml', function (req, res) {
 const options = {
   explorer: true,
   swaggerOptions: {
-    url: '/api-docs/v1/openapi.json'
+    url: '/api-docs/v1/openapi.json',
+    docExpansion: 'none',
+    tagsSorter: 'alpha',
+    operationsSorter: 'alpha',
   }
 };
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(null, options));
@@ -139,8 +142,9 @@ app.use(function (_req, _res, next) {
 });
 
 app.use(function (err, req, res, next) {
-  if (!req.xhr) next(err)
+  if (!req.xhr && !req.originalUrl.startsWith('/api/')) next(err)
   let error = err.payload ? err : generateErrorByError(err)
+  error.payload.instance = req.originalUrl
   res.status(error.payload.status).json(error.payload);
 });
 

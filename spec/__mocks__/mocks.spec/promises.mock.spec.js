@@ -5,7 +5,7 @@ jest.mock('fs/promises');
 
 const usuarios = [
     {
-        "idUsuario": "admin",
+        "idUsuario": "adm@example.com",
         "password": "$2b$10$7EHNhM3dTSyGenDgmxzub.IfYloVNJrbvdjAF5LsrNBpu57JuNV1W",
         "nombre": "Administrador",
         "roles": ["Usuarios", "Administradores"]
