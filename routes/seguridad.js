@@ -48,7 +48,7 @@ module.exports.useAuthentication = (req, res, next) => {
         next();
     } catch (err) {
         if (err.name === 'TokenExpiredError')
-            return next(generateError(`Invalid token: token expired`, 403, { expiredAt: err.expiredAt }))
+            return next(generateError(`Invalid token: token expired`, 403, [{ expiredAt: err.expiredAt }]))
         return next(generateError('Invalid token', 401))
     }
 }
