@@ -9,8 +9,9 @@ const DIR_UPLOADS = 'uploads/' // __dirname + "/uploads/"
 const upload = multer({
   limits: { fileSize: 2 * 1024 * 1024 /* 2mb */ },
   storage: multer.diskStorage({
-    destination: (req, file, cb) => cb(null, DIR_UPLOADS),
-    filename: (req, file, cb) => cb(null, file.originalname)
+    destination: (_req, _file, cb) => cb(null, DIR_UPLOADS),
+    filename: (_req, file, cb) => cb(null, file.originalname),
+    limits: { fileSize: 100000 /* 2 * 1024 * 1024 /* 2mb */ },
   })
 })
 router.use('/files', express.static('uploads'))
