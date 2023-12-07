@@ -31,6 +31,7 @@ const shutdown = () => {
   process.kill(process.pid, 'SIGTERM');
 }
 
+// eslint-disable-next-line no-unused-vars
 const extraeURL = req => (
   {
     protocol: req.protocol,
@@ -102,11 +103,11 @@ app.use(config.paths.API_AUTH, seguridad)
 app.use(config.paths.API_REST, apiRouter.router);
 
 // Documentación OpenApi
-app.all('/api-docs/v1/openapi.json', function (req, res) {
+app.all('/api-docs/v1/openapi.json', function (_req, res) {
   let result = generaSwaggerSpecification(app.PUERTO, config.paths.API_REST, shutdown, config.paths.API_AUTH ?? '/')
   res.json(result)
 });
-app.all('/api-docs/v1/openapi.yaml', function (req, res) {
+app.all('/api-docs/v1/openapi.yaml', function (_req, res) {
   let result = generaSwaggerSpecification(app.PUERTO, config.paths.API_REST, shutdown, config.paths.API_AUTH ?? '/')
   res.contentType('text/yaml').end(YAML.stringify(result))
 });
@@ -141,16 +142,9 @@ app.all('/eco(/*)?', function (req, res) {
 app.use('/', indexRouter);
 
 // catch 404 and forward to error handler
-app.use(function (req, _res, next) {
+app.use(function (_req, _res, next) {
   next(createError(404));
 });
-
-// app.use(function (err, req, res, next) {
-//   if (!req.xhr && !req.originalUrl.startsWith('/api/')) next(err)
-//   let error = err.payload ? err : generateErrorByError(req, err)
-//   error.payload.instance = req.originalUrl
-//   res.status(error.payload.status).json(error.payload);
-// });
 
 // error handler
 app.use(function (err, req, res, _next) {
