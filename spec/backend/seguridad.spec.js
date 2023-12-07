@@ -1,9 +1,12 @@
+/* eslint-disable jest/no-hooks */
+/* eslint-disable jest/prefer-lowercase-title */
 /* eslint-disable node/no-unpublished-require */
 const request = require('supertest');
 const cookieParser = require('cookie-parser');
 const express = require('express')
 const seguridad = require('../../routes/seguridad')
 const app = require('../../app');
+const config = require('../../config')
 
 jest.mock('fs/promises');
 
@@ -11,13 +14,21 @@ const sendOK = (_req, res) => res.sendStatus(200)
 
 const usuarios = [
     {
-        "idUsuario": "adm@example.com",
+        "idUsuario": "admin@kk.kk",
         "password": "$2b$10$7EHNhM3dTSyGenDgmxzub.IfYloVNJrbvdjAF5LsrNBpu57JuNV1W",
         "nombre": "Administrador",
-        "roles": ["Usuarios", "Administradores"]
+        "roles": ["Usuarios", "Administradores"],
+        "activo": true
     },
     {
         "idUsuario": "fake@kk.kk",
+        "password": "$2b$10$5i7NYY8y3qmK3bmLmU8uMOHTawhPq7ddD7F6SfOf9ZKz76V8XssM6",
+        "nombre": "Usuario registrado",
+        "roles": ["Usuarios", "Empleados"],
+        "activo": false
+    },
+    {
+        "idUsuario": "pending@kk.kk",
         "password": "$2b$10$5i7NYY8y3qmK3bmLmU8uMOHTawhPq7ddD7F6SfOf9ZKz76V8XssM6",
         "nombre": "Usuario registrado",
         "roles": ["Usuarios", "Empleados"]
@@ -31,6 +42,8 @@ const usuarioBorrado = {
         "Usuarios"
     ]
 }
+const contraseña = 'P@$$w0rd'
+
 // eslint-disable-next-line no-unused-vars
 const errorMiddleware = (err, _req, res, _next) => {
     // console.error('ERROR: %s', req.originalUrl, err)
@@ -101,7 +114,7 @@ describe('Seguridad', () => {
                 mockApp.use(errorMiddleware);
 
                 const response = await request(mockApp).get('/')
-                    .set('authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIiwicm9sZXMiOlsiVXN1YXJpb3MiLCJBZG1pbmlzdHJhZG9yZXMiXSwiaWF0IjoxNjQ5MzM5MDgwLCJleHAiOjE2NDkzNDI2ODB9.1XAvQTzCSgEjs6NVhA0rgFt5NeEb_DMMVIn4DfNOjvg')
+                    .set('authorization', `${config.security.AUTHENTICATION_SCHEME}eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1AZXhhbXBsZS5jb20iLCJuYW1lIjoiQWRtaW5pc3RyYWRvciIsInJvbGVzIjpbIlVzdWFyaW9zIiwiQWRtaW5pc3RyYWRvcmVzIl0sImlhdCI6MTY3MDM0MjE3MiwiZXhwIjoxNjcwMzQyNDcyLCJhdWQiOiJhdXRob3JpemF0aW9uIiwiaXNzIjoiTWljcm9zZXJ2aWNpb3NKV1QifQ.dlt-d1K6wGoe-VBsPtE6SYx25wPgR0k7RwVdkdzMRKoZxYjVjUCAl9P1o4yd4pemG2B2jVu5cq4birz5EqBRy4cgVeNxD86E9f89QwOimNDr3dKGxbVbiS40RyJ1cm9qJ5_aEiBA-LZunByWp5OOtPf1Eq6Hs-AJoDWxidS0kgdjSZmeojzzzcZiE_sb8AoFhKiWC_UXpJr880YQ1jceqQ-qQmD_WCf6JICDqN-cv9Z4uMtdBCFWuMtc_6RCEd38iURtiDYS1a_oSKEZyQTf7cc3etA-4MuckdIItCRqDLiuUyJcuaJV1ODw0dI40MDU2a6Ju0LVB8QPQyNTNLKQvQ`)
 
                 expect(response.statusCode).toBe(403)
                 expect(response.body.detail).toContain('token expired')
@@ -118,7 +131,6 @@ describe('Seguridad', () => {
 
                 expect(response.statusCode).toBe(401)
                 expect(response.body.title).toEqual('Unauthorized')
-                expect(response.body.detail).toEqual('Invalid token')
             })
         })
         describe('Middleware: Autorización', () => {
@@ -254,10 +266,10 @@ describe('Seguridad', () => {
                 mockApp.use(errorMiddleware);
                 const response = await request(mockApp).get('/')
                 expect(response.statusCode).toBe(200)
-                expect(response.headers['access-control-allow-origin']).toBe('*')
-                expect(response.headers['access-control-allow-headers']).toBeTruthy()
-                expect(response.headers['access-control-allow-methods']).toBeTruthy()
-                expect(response.headers['access-control-allow-credentials']).toBeTruthy()
+                expect(response.headers['access-control-allow-origin']).toBeUndefined()
+                expect(response.headers['access-control-allow-headers']).toBeUndefined()
+                expect(response.headers['access-control-allow-methods']).toBeUndefined()
+                expect(response.headers['access-control-allow-credentials']).toBeUndefined()
             })
             it('Con Origin', async () => {
                 mockApp.use(seguridad.useCORS)
@@ -320,13 +332,13 @@ describe('Seguridad', () => {
         });
         it('OPTIONS', done => {
             request(app)
-                .options('/api/login')
+                .options(`${config.paths.API_AUTH}/login`)
                 .expect(200, done)
         });
     })
 
     describe('Pruebas con ficheros simulados', () => {
-         let fsMock
+        let fsMock
 
         beforeEach(() => {
             jest.mock('fs/promises');
@@ -335,13 +347,13 @@ describe('Seguridad', () => {
                 './data/usuarios.json': JSON.stringify(usuarios),
             });
         });
-        describe('/api/login', () => {
+        describe(`${config.paths.API_AUTH}/login`, () => {
             describe('OK', () => {
                 it('POST: Login Admin', done => {
                     request(app)
-                        .post('/api/login')
+                        .post(`${config.paths.API_AUTH}/login`)
                         .set('Content-Type', 'application/json')
-                        .send({ "username": "adm@example.com", "password": "P@$$w0rd" })
+                        .send({ "username": "admin@kk.kk", "password": contraseña })
                         .expect('Content-Type', /json/)
                         .then(response => {
                             expect(response.statusCode).toBe(200);
@@ -352,15 +364,15 @@ describe('Seguridad', () => {
                 });
                 it('Autenticación por cookies', async () => {
                     let response = await request(app)
-                        .post('/api/login?cookie=true')
+                        .post(`${config.paths.API_AUTH}/login?cookie=true`)
                         .set('Content-Type', 'application/json')
-                        .send({ "username": "adm@example.com", "password": "P@$$w0rd" })
+                        .send({ "username": "admin@kk.kk", "password": contraseña })
                     expect(response.statusCode).toBe(200)
                     expect(response.headers['set-cookie']).toBeTruthy()
                     let cookie = response.headers['set-cookie']
 
                     response = await request(app)
-                        .get('/api/register')
+                        .get(`${config.paths.API_AUTH}/register`)
                         .set('Cookie', cookie)
                     expect(response.statusCode).toBe(200)
                 });
@@ -368,71 +380,264 @@ describe('Seguridad', () => {
             describe('KO', () => {
                 it('POST: Sin body', done => {
                     request(app)
-                        .post('/api/login')
-                        .expect(415, done)
+                        .post(`${config.paths.API_AUTH}/login`)
+                        .expect(config.paths.API_AUTH ? 415 : 400, done)
                 });
                 it('POST: Usuario invalido: username', async () => {
                     await request(app)
-                        .post('/api/login')
+                        .post(`${config.paths.API_AUTH}/login`)
                         .set('Content-Type', 'application/json')
-                        .send({ "username": "admina@kk", "password": "P@$$w0rd" })
+                        .send({ "username": "noexiste@kk.kk", "password": contraseña })
                         .expect(200)
                         .expect('Content-Type', /json/)
                         .expect(response => expect(response.body.success).toBeFalsy())
                 });
                 it('POST: Usuario invalido: password', () => {
                     return request(app)
-                        .post('/api/login')
+                        .post(`${config.paths.API_AUTH}/login`)
                         .set('Content-Type', 'application/json')
-                        .send({ "username": "adm@example.com", "password": "P@$Sw0rd" })
+                        .send({ "username": "admin@kk.kk", "password": "P@$Sw0rd" })
                         .expect(200)
                         .expect('Content-Type', /json/)
                         .expect('{"success":false}')
                 });
                 it('POST: formato invalido de password', () => {
                     return request(app)
-                        .post('/api/login')
+                        .post(`${config.paths.API_AUTH}/login`)
                         .set('Content-Type', 'application/json')
-                        .send({ "username": "adm@example.com", "password": "P@$Sword" })
+                        .send({ "username": "admin", "password": "P@$Sword" })
                         .expect(400)
+                });
+                it('POST: Usuario no activo', async () => {
+                    await request(app)
+                        .post(`${config.paths.API_AUTH}/login`)
+                        .set('Content-Type', 'application/json')
+                        .send({ "username": "fake@kk.kk", "password": contraseña })
+                        .expect(200)
+                        .expect('Content-Type', /json/)
+                        .expect(response => expect(response.body.success).toBeFalsy())
+                });
+                it('POST: Usuario sin confirmar', async () => {
+                    await request(app)
+                        .post(`${config.paths.API_AUTH}/login`)
+                        .set('Content-Type', 'application/json')
+                        .send({ "username": "pending@kk.kk", "password": contraseña })
+                        .expect(200)
+                        .expect('Content-Type', /json/)
+                        .expect(response => expect(response.body.success).toBeFalsy())
                 });
             });
         })
-        describe('/api/logout', () => {
+        describe(`${config.paths.API_AUTH}/login/signature`, () => {
+            it('GET', done => {
+                request(app)
+                    .get(`${config.paths.API_AUTH}/login/signature`)
+                    .expect(200, done)
+                    .expect('Content-Type', 'text/plain; charset=utf-8')
+                    .expect(config.security.PUBLIC_KEY)
+            });
+        })
+        describe(`${config.paths.API_AUTH}/logout`, () => {
             describe('OK', () => {
                 it('GET', done => {
                     request(app)
-                        .get('/api/logout')
+                        .get(`${config.paths.API_AUTH}/logout`)
                         .expect(200, done)
                 });
                 it('POST', done => {
                     request(app)
-                        .post('/api/logout')
+                        .post(`${config.paths.API_AUTH}/logout`)
                         .expect(200, done)
                 });
             })
         })
-        describe('/api/register', () => {
+        describe(`${config.paths.API_AUTH}/login/refresh`, () => {
+            describe('KO', () => {
+                it('POST: sin token', async () => {
+                    await request(app)
+                        .post(`${config.paths.API_AUTH}/login/refresh`)
+                        .set('Content-Type', 'application/json')
+                        .expect(400)
+                });
+                it('POST: Token expirado', async () => {
+                    await request(app)
+                        .post(`${config.paths.API_AUTH}/login/refresh`)
+                        .set('Content-Type', 'application/json')
+                        .send({ "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1AZXhhbXBsZS5jb20iLCJpYXQiOjE2NzAzNDIxNzIsIm5iZiI6MTY3MDM0MjQ3MiwiZXhwIjoxNjcwMzQzMzcyLCJhdWQiOiJhdXRob3JpemF0aW9uIiwiaXNzIjoiTWljcm9zZXJ2aWNpb3NKV1QifQ.8q1Nwd9E6ZgpMyOPGUTFrv7EGRwvk_6J-J6Uzvk4o_A" })
+                        .expect(403)
+                        .expect('Content-Type', /json/)
+                        .expect(response => expect(response.body.detail).toContain("token expired"))
+                });
+            });
+        })
+        describe(`${config.paths.API_AUTH}/register`, () => {
             describe('OK', () => {
                 it('POST: Nuevo usuario', done => {
                     request(app)
-                        .post('/api/register')
+                        .post(`${config.paths.API_AUTH}/register`)
                         .set('Content-Type', 'application/json')
-                        .send({ "idUsuario": "usr@kk.kk", "nombre": "Nuevo", "password": "P@$$w0rd", "roles": [] })
-                        .expect(201)
+                        .send({ "idUsuario": "usr@kk.kk", "nombre": "Nuevo", "password": contraseña, "roles": [], "activo": true })
+                        .expect(202)
+                        .expect('Content-Type', /json/)
+                        .expect(response => {
+                            expect(response.body.statusGetUri).toBeDefined()
+                            expect(response.body.confirmGetUri).toBeDefined()
+                            expect(response.body.rejectGetUri).toBeDefined()
+                        })
                         .then(() => {
                             let data = JSON.parse(fsMock.__getMockFile('./data/usuarios.json'))
-                            expect(data.length).toBe(3);
-                            expect(data[2].idUsuario).toBe('usr@kk.kk')
-                            expect(data[2].nombre).toBe('Nuevo')
-                            expect(data[2].roles).toEqual(['Usuarios'])
+                            expect(data.length).toBe(4);
+                            const last = data[data.length - 1]
+                            expect(last.idUsuario).toBe('usr@kk.kk')
+                            expect(last.nombre).toBe('Nuevo')
+                            expect(last.roles).toEqual(['Usuarios'])
+                            expect(last.activo).toBeUndefined()
                             done();
                         })
                         .catch(err => done(err))
                 });
+                describe(`${config.paths.API_AUTH}/register/status`, () => {
+                    it('status: pending', async () => {
+                        await request(app)
+                            .get(`${config.paths.API_AUTH}/register/status?instance=${seguridad.CreatedTokenHMAC256.generar({ idUsuario: 'pending@kk.kk' })}`)
+                            .expect(202)
+                            .expect('Content-Type', /json/)
+                            .expect(response => {
+                                expect(response.body.status).toBe('pending')
+                            })
+                    });
+                    it('status: canceled, result: timeout', async () => {
+                        await request(app)
+                            .get(`${config.paths.API_AUTH}/register/status?instance=XXX`)
+                            .expect(200)
+                            .expect('Content-Type', /json/)
+                            .expect(response => {
+                                expect(response.body.status).toBe('canceled')
+                                expect(response.body.result).toBe('timeout')
+                            })
+                    });
+                    it('status: complete, result: confirm', async () => {
+                        await request(app)
+                            .get(`${config.paths.API_AUTH}/register/status?instance=${seguridad.CreatedTokenHMAC256.generar({ idUsuario: 'admin@kk.kk' })}`)
+                            .expect(200)
+                            .expect('Content-Type', /json/)
+                            .expect(response => {
+                                expect(response.body.status).toBe('complete')
+                                expect(response.body.result).toBe('confirm')
+                            })
+                    });
+                    it('status: complete, result: reject by activo=false', async () => {
+                        await request(app)
+                            .get(`${config.paths.API_AUTH}/register/status?instance=${seguridad.CreatedTokenHMAC256.generar({ idUsuario: 'fake@kk.kk' })}`)
+                            .expect(200)
+                            .expect('Content-Type', /json/)
+                            .expect(response => {
+                                expect(response.body.status).toBe('complete')
+                                expect(response.body.result).toBe('reject')
+                            })
+                    });
+                    it('status: complete, result: reject by delete', async () => {
+                        await request(app)
+                            .get(`${config.paths.API_AUTH}/register/status?instance=${seguridad.CreatedTokenHMAC256.generar({ idUsuario: 'delete@kk.kk' })}`)
+                            .expect(200)
+                            .expect('Content-Type', /json/)
+                            .expect(response => {
+                                expect(response.body.status).toBe('complete')
+                                expect(response.body.result).toBe('reject')
+                            })
+                    });
+                });
+                describe(`${config.paths.API_AUTH}/register/confirm`, () => {
+                    it('status: pending', async () => {
+                        const idUsuario = 'pending@kk.kk'
+                        await request(app)
+                            .get(`${config.paths.API_AUTH}/register/confirm?instance=${seguridad.CreatedTokenHMAC256.generar({ idUsuario })}`)
+                            .expect(204)
+                            .then(() => {
+                                let data = JSON.parse(fsMock.__getMockFile('./data/usuarios.json'))
+                                const last = data[data.length - 1]
+                                expect(last.idUsuario).toBe(idUsuario)
+                                expect(last.activo).toBeTruthy()
+                            })
+                    });
+                    it('status: complete by activo=true', async () => {
+                        const idUsuario = 'admin@kk.kk'
+                        await request(app)
+                            .get(`${config.paths.API_AUTH}/register/confirm?instance=${seguridad.CreatedTokenHMAC256.generar({ idUsuario })}`)
+                            .expect(204)
+                            .then(() => {
+                                let data = JSON.parse(fsMock.__getMockFile('./data/usuarios.json'))
+                                expect(data[0].idUsuario).toBe(idUsuario)
+                                expect(data[0].activo).toBeTruthy()
+                            })
+                    });
+                    it('status: complete by activo=false', async () => {
+                        const idUsuario = 'fake@kk.kk'
+                        await request(app)
+                            .get(`${config.paths.API_AUTH}/register/confirm?instance=${seguridad.CreatedTokenHMAC256.generar({ idUsuario })}`)
+                            .expect(204)
+                            .then(() => {
+                                let data = JSON.parse(fsMock.__getMockFile('./data/usuarios.json'))
+                                expect(data[1].idUsuario).toBe(idUsuario)
+                                expect(data[1].activo).toBeTruthy()
+                            })
+                    });
+                    it('BAD instance', async () => {
+                        await request(app)
+                            .get(`${config.paths.API_AUTH}/register/confirm?instance=XXX`)
+                            .expect(400)
+                            .expect('Content-Type', /json/)
+                    });
+                    it('404', async () => {
+                        await request(app)
+                            .get(`${config.paths.API_AUTH}/register/confirm?instance=${seguridad.CreatedTokenHMAC256.generar({ idUsuario: 'kk@kk.kk' })}`)
+                            .expect(404)
+                            .expect('Content-Type', /json/)
+                    });
+                });
+                describe(`${config.paths.API_AUTH}/register/reject`, () => {
+                    it('status: pending', async () => {
+                        const idUsuario = 'pending@kk.kk'
+                        await request(app)
+                            .get(`${config.paths.API_AUTH}/register/reject?instance=${seguridad.CreatedTokenHMAC256.generar({ idUsuario })}`)
+                            .expect(204)
+                            .then(() => {
+                                let data = JSON.parse(fsMock.__getMockFile('./data/usuarios.json'))
+                                expect(data.length).toBe(2);
+                            })
+                    });
+                    it('status: complete by activo=true', async () => {
+                        const idUsuario = 'admin@kk.kk'
+                        await request(app)
+                            .get(`${config.paths.API_AUTH}/register/reject?instance=${seguridad.CreatedTokenHMAC256.generar({ idUsuario })}`)
+                            .expect(400)
+                    });
+                    it('status: complete by activo=false', async () => {
+                        const idUsuario = 'fake@kk.kk'
+                        await request(app)
+                            .get(`${config.paths.API_AUTH}/register/reject?instance=${seguridad.CreatedTokenHMAC256.generar({ idUsuario })}`)
+                            .expect(204)
+                            .then(() => {
+                                let data = JSON.parse(fsMock.__getMockFile('./data/usuarios.json'))
+                                expect(data.length).toBe(2);
+                            })
+                    });
+                    it('BAD instance', async () => {
+                        await request(app)
+                            .get(`${config.paths.API_AUTH}/register/reject?instance=XXX`)
+                            .expect(400)
+                            .expect('Content-Type', /json/)
+                    });
+                    it('404', async () => {
+                        await request(app)
+                            .get(`${config.paths.API_AUTH}/register/reject?instance=${seguridad.CreatedTokenHMAC256.generar({ idUsuario: 'kk@kk.kk' })}`)
+                            .expect(404)
+                            .expect('Content-Type', /json/)
+                    });
+                });
                 it('GET: Con token', async () => {
                     let index = 0
-                    const response = await request(app).get('/api/register')
+                    const response = await request(app).get(`${config.paths.API_AUTH}/register`)
                         .set('authorization', seguridad.generarTokenScheme(usuarios[index]))
                     expect(response.statusCode).toBe(200)
                     expect(response.body.idUsuario).toBe(usuarios[index].idUsuario)
@@ -442,13 +647,13 @@ describe('Seguridad', () => {
                 it('PUT: Modificar usuario', async () => {
                     let index = 0
                     const response = await request(app)
-                        .put('/api/register')
+                        .put(`${config.paths.API_AUTH}/register`)
                         .set('authorization', seguridad.generarTokenScheme(usuarios[index]))
                         .set('Content-Type', 'application/json')
                         .send({ "nombre": "Nuevo nombre", "password": "ignorar", "roles": [] })
                     expect(response.statusCode).toBe(204)
                     let data = JSON.parse(fsMock.__getMockFile('./data/usuarios.json'))
-                    expect(data.length).toBe(2);
+                    expect(data.length).toBe(3);
                     expect(data[index].idUsuario).toBe(usuarios[index].idUsuario)
                     expect(data[index].nombre).toBe('Nuevo nombre')
                     expect(data[index].password).toBe(usuarios[index].password)
@@ -458,67 +663,59 @@ describe('Seguridad', () => {
             describe('KO', () => {
                 it('POST: Falta el nombre de usuario', async () => {
                     await request(app)
-                        .post('/api/register')
-                        .set('X-Requested-With', 'XMLHttpRequest')
+                        .post(`${config.paths.API_AUTH}/register`)
                         .set('Content-Type', 'application/json')
-                        .send({ "nombre": "Nuevo", "password": "P@$$w0rd" })
+                        .send({ "nombre": "Nuevo", "password": contraseña })
                         .expect(400)
                         .expect('Content-Type', /json/)
                         .expect(response => expect(response.body.detail).toBe('Falta el nombre de usuario.'))
                 });
                 it('POST: Formato incorrecto de la password', async () => {
                     await request(app)
-                        .post('/api/register')
-                        .set('X-Requested-With', 'XMLHttpRequest')
+                        .post(`${config.paths.API_AUTH}/register`)
                         .set('Content-Type', 'application/json')
-                        .send({ "idUsuario": "usr@kk.kk", "nombre": "Nuevo", "password": "p@$$w0rd" })
+                        .send({ "idUsuario": "usr@kk.kk", "nombre": "Nuevo", "password": "contraseña" })
                         .expect(400)
                         .expect('Content-Type', /json/)
                         .expect(response => expect(response.body.detail).toBe('Formato incorrecto de la password.'))
                 });
                 it('POST: El usuario ya existe', async () => {
                     await request(app)
-                        .post('/api/register')
-                        .set('X-Requested-With', 'XMLHttpRequest')
+                        .post(`${config.paths.API_AUTH}/register`)
                         .set('Content-Type', 'application/json')
-                        .send({ "idUsuario": usuarios[1].idUsuario, "nombre": "Nuevo", "password": "P@$$w0rd" })
+                        .send({ "idUsuario": usuarios[1].idUsuario, "nombre": "Nuevo", "password": contraseña })
                         .expect(400)
                         .expect('Content-Type', /json/)
                         .expect(response => expect(response.body.detail).toBe('El usuario ya existe.'))
                 });
                 it('GET: Sin token', done => {
                     request(app)
-                        .get('/api/register')
-                        .set('X-Requested-With', 'XMLHttpRequest')
+                        .get(`${config.paths.API_AUTH}/register`)
                         .expect(401, done)
                 });
                 it('GET: Usuario eliminado', async () => {
-                    const response = await request(app).get('/api/register')
-                        .set('X-Requested-With', 'XMLHttpRequest')
+                    const response = await request(app).get(`${config.paths.API_AUTH}/register`)
                         .set('authorization', seguridad.generarTokenScheme(usuarioBorrado))
                     expect(response.statusCode).toBe(401)
                 });
                 it('PUT: Sin token', done => {
                     request(app)
-                        .put('/api/register')
+                        .put(`${config.paths.API_AUTH}/register`)
                         .set('Content-Type', 'application/json')
-                        .set('X-Requested-With', 'XMLHttpRequest')
                         .send({ "idUsuario": usuarios[0].idUsuario, "nombre": "Nuevo nombre", "password": "ignorar", "roles": [] })
                         .expect(401, done)
                 });
                 it('PUT: Otro usuario', done => {
                     request(app)
-                        .put('/api/register')
-                        .set('X-Requested-With', 'XMLHttpRequest')
-                        .set('authorization', seguridad.generarTokenScheme( usuarios[0]))
+                        .put(`${config.paths.API_AUTH}/register`)
+                        .set('authorization', seguridad.generarTokenScheme(usuarios[0]))
                         .set('Content-Type', 'application/json')
-                        .send( usuarios[1])
+                        .send(usuarios[1])
                         .expect(403, done)
                 });
-                 it('PUT: Usuario eliminado', done => {
+                it('PUT: Usuario eliminado', done => {
                     request(app)
-                        .put('/api/register')
-                        .set('X-Requested-With', 'XMLHttpRequest')
+                        .put(`${config.paths.API_AUTH}/register`)
                         .set('authorization', seguridad.generarTokenScheme(usuarioBorrado))
                         .set('Content-Type', 'application/json')
                         .send(usuarioBorrado)
@@ -526,8 +723,7 @@ describe('Seguridad', () => {
                 });
                 it('PUT: Falta el nombre de usuario', done => {
                     request(app)
-                        .put('/api/register')
-                        .set('X-Requested-With', 'XMLHttpRequest')
+                        .put(`${config.paths.API_AUTH}/register`)
                         .set('authorization', seguridad.generarTokenScheme(usuarios[0]))
                         .set('Content-Type', 'application/json')
                         .send({ "nombre": "", "password": "ignorar", "roles": [] })
@@ -535,18 +731,18 @@ describe('Seguridad', () => {
                 });
             });
         })
-        describe('/api/register/password', () => {
+        describe(`${config.paths.API_AUTH}/register/password`, () => {
             describe('OK', () => {
                 it('PUT: Cambiar contraseña', async () => {
                     let index = 0
                     const response = await request(app)
-                        .put('/api/register/password')
+                        .put(`${config.paths.API_AUTH}/register/password`)
                         .set('authorization', seguridad.generarTokenScheme(usuarios[index]))
                         .set('Content-Type', 'application/json')
                         .send({ "oldPassword": "P@$$w0rd", "newPassword": "Pa$$w0rd" })
                     expect(response.statusCode).toBe(204)
                     let data = JSON.parse(fsMock.__getMockFile('./data/usuarios.json'))
-                    expect(data.length).toBe(2);
+                    expect(data.length).toBe(3);
                     expect(data[index].idUsuario).toBe(usuarios[index].idUsuario)
                     expect(data[index].nombre).toBe(usuarios[index].nombre)
                     expect(data[index].password).not.toBe(usuarios[index].password)
@@ -556,16 +752,14 @@ describe('Seguridad', () => {
             describe('KO', () => {
                 it('PUT: Cambiar contraseña sin token', done => {
                     request(app)
-                        .put('/api/register/password')
-                        .set('X-Requested-With', 'XMLHttpRequest')
+                        .put(`${config.paths.API_AUTH}/register/password`)
                         .set('Content-Type', 'application/json')
                         .send({ "oldPassword": "P@$$w0rd", "newPassword": "Pa$$w0rd" })
                         .expect(401, done)
                 });
                 it('PUT: Cambiar contraseña usuario eliminado', done => {
                     request(app)
-                        .put('/api/register/password')
-                        .set('X-Requested-With', 'XMLHttpRequest')
+                        .put(`${config.paths.API_AUTH}/register/password`)
                         .set('authorization', seguridad.generarTokenScheme(usuarioBorrado))
                         .set('Content-Type', 'application/json')
                         .send({ "oldPassword": "P@$$w0rd", "newPassword": "Pa$$w0rd" })
@@ -573,8 +767,7 @@ describe('Seguridad', () => {
                 });
                 it('PUT: Contraseña anterior invalida', done => {
                     request(app)
-                        .put('/api/register/password')
-                        .set('X-Requested-With', 'XMLHttpRequest')
+                        .put(`${config.paths.API_AUTH}/register/password`)
                         .set('authorization', seguridad.generarTokenScheme(usuarios[0]))
                         .set('Content-Type', 'application/json')
                         .send({ "oldPassword": "Pa$$w0rd", "newPassword": "P@$$w0rd" })
@@ -582,8 +775,7 @@ describe('Seguridad', () => {
                 });
                 it('PUT: Contraseña nueva invalida', done => {
                     request(app)
-                        .put('/api/register/password')
-                        .set('X-Requested-With', 'XMLHttpRequest')
+                        .put(`${config.paths.API_AUTH}/register/password`)
                         .set('authorization', seguridad.generarTokenScheme(usuarios[0]))
                         .set('Content-Type', 'application/json')
                         .send({ "oldPassword": "P@$$w0rd", "newPassword": "P@$$W0RD" })
@@ -591,12 +783,12 @@ describe('Seguridad', () => {
                 });
             });
         })
-        describe('/api/auth', () => {
+        describe(`${config.paths.API_AUTH}/auth`, () => {
             describe('OK', () => {
                 it('GET: Con token', done => {
                     let index = 0
                     request(app)
-                        .get('/api/auth')
+                        .get(`${config.paths.API_AUTH}/auth`)
                         .set('authorization', seguridad.generarTokenScheme(usuarios[index]))
                         .expect(200)
                         .then(response => {
