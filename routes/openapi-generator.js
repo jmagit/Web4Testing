@@ -1,14 +1,13 @@
 const Ajv = require("ajv")
 const addFormats = require("ajv-formats")
+const validator = require('validator');
 const swaggerJsdoc = require('swagger-jsdoc')
+const config = require('../config')
 const serviciosConfig = require('../data/__servicios.json');
-
-const TITLE = "Web4Testing"
-const DESCRIPTION = "Versión NodeJS del servidor de pruebas para cursos de FrontEnd y con un sitio web de ejemplo donde aplicar casos de prueba WebDriver."
-const REPOSITORIO = "https://github.com/jmagit/Web4Testing"
 
 const ajv = new Ajv()
 addFormats(ajv)
+ajv.addFormat("nif", { type: 'nif', validate: (v) => validator.isIdentityCard(v, 'ES') })
 
 const serviciosConfigSchema = {
     "type": "array",
@@ -56,7 +55,7 @@ const serviciosConfigSchema = {
                 "anyOf": [
                     { "type": "string" },
                     { "type": "boolean" }
-                ]
+                  ]
             },
             "readonly": {
                 "type": "boolean",
@@ -78,12 +77,12 @@ const validate = ajv.compile(serviciosConfigSchema)
 
 const Capitalize = cad => cad.charAt(0).toUpperCase() + cad.substring(1).toLowerCase()
 
-let swaggerDocument = {
+const swaggerDocument = {
     "openapi": "3.0.0",
     "info": {
-        "title": TITLE,
+        "title": config.openapi.TITLE,
         "version": "2.0.0",
-        "description": DESCRIPTION,
+        "description": config.openapi.DESCRIPTION,
         "contact": {
             "name": "Javier Martín",
             "url": "https://github.com/jmagit",
@@ -118,7 +117,7 @@ let swaggerDocument = {
     ],
     "externalDocs": {
         "description": "Repositorio del proyecto",
-        "url": REPOSITORIO
+        "url": config.openapi.REPOSITORIO
     },
     "tags": [],
     "paths": {},
@@ -234,7 +233,7 @@ let swaggerDocument = {
                 "schema": {
                     "oneOf": [
                         { "type": "integer", "minimum": 0 },
-                        { "type": "string", "enum": ["COUNT"] },
+                        { "type": "string", "enum": ["count", "COUNT"] },
                     ]
                 }
             },
@@ -418,14 +417,7 @@ const generaPut = (servicio) => {
                 "required": true,
             },
             "responses": {
-                "200": {
-                    "description": "OK",
-                    "content": {
-                        "application/json": {
-                            "schema": { "$ref": `#/components/schemas/${servicio.model}Projection` }
-                        }
-                    }
-                },
+                "204": { "$ref": "#/components/responses/NoContent" },
                 "400": { "$ref": "#/components/responses/BadRequest" },
                 "401": { "$ref": "#/components/responses/Unauthorized" },
                 "403": { "$ref": "#/components/responses/Forbidden" },
@@ -635,7 +627,7 @@ const addServiceDocumentation = (servicio, dirAPIs) => {
 let cache = false
 const generaSwaggerSpecification = (server, dirAPIs, shutdown, dirAPIsSeguridad) => {
     if (cache) {
-        if (swaggerDocument.servers[0].url !== `{protocol}://${server.hostname}:{port}/`)
+        if (server.hostname && swaggerDocument.servers[0].url !== `{protocol}://${server.hostname}:{port}/`)
             swaggerDocument.servers[0].url = `{protocol}://${server.hostname}:{port}/`
         return swaggerDocument
     }
@@ -646,22 +638,23 @@ const generaSwaggerSpecification = (server, dirAPIs, shutdown, dirAPIsSeguridad)
         shutdown()
     }
 
-    swaggerDocument.servers[0].variables.port.default = server.port
+    swaggerDocument.servers[0].variables.port.default = server.port ?? server
     serviciosConfig.forEach(servicio => addServiceDocumentation(servicio, dirAPIs))
     let apisSeguridad = swaggerJsdoc({
-        swaggerDefinition: { openapi: swaggerDocument.openapi },
+        swaggerDefinition: { openapi: swaggerDocument.openapi, info: swaggerDocument.info },
         apis: [`${__dirname}/seguridad.js`]
     });
     dirAPIsSeguridad = dirAPIsSeguridad || dirAPIs
+    if(dirAPIsSeguridad === '/') dirAPIsSeguridad = '';
     swaggerDocument.tags = [ ...swaggerDocument.tags, ...apisSeguridad.tags ]
-    for (let path in apisSeguridad.paths) {
+    for(let path in apisSeguridad.paths) {
         swaggerDocument.paths[dirAPIsSeguridad + path] = apisSeguridad.paths[path]
     }
-    for (let component in apisSeguridad.components) {
-        if (!swaggerDocument.components[component]) swaggerDocument.components[component] = {}
-        Object.assign(swaggerDocument.components[component], swaggerDocument.components[component], apisSeguridad.components[component])
+    for(let component in apisSeguridad.components) {
+            if(!swaggerDocument.components[component]) swaggerDocument.components[component] = {}
+            Object.assign(swaggerDocument.components[component], swaggerDocument.components[component],  apisSeguridad.components[component])
     }
     return swaggerDocument;
 }
 
-module.exports.generaSwaggerSpecification = (servidor, DIR_API_REST, shutdown) => generaSwaggerSpecification(servidor, DIR_API_REST, shutdown)
+module.exports.generaSwaggerSpecification = (servidor, dirAPIsRest, shutdown, dirAPIsSeguridad) => generaSwaggerSpecification(servidor, dirAPIsRest, shutdown, dirAPIsSeguridad)

@@ -9,6 +9,7 @@ const YAML = require('yaml')
 const OpenApiValidator = require('express-openapi-validator');
 const validator = require('validator');
 
+const config = require('./config')
 const indexRouter = require('./routes/index');
 const ficherosRouter = require('./routes/ficheros');
 const seguridad = require('./routes/seguridad');
@@ -16,12 +17,12 @@ const apiRouter = require('./routes/apirest');
 const { generaSwaggerSpecification } = require('./routes/openapi-generator');
 const { generateErrorByError } = require('./routes/utils')
 
-const DIR_API_REST = '/api'
 let VALIDATE_XSRF_TOKEN = false;
 
 const app = express();
 app.disable("x-powered-by");
-app.set('port', process.env.PORT || '8181');
+app.PUERTO = process.env.PORT || '8181';
+app.set('port', app.PUERTO);
 
 const shutdown = () => {
   if (app.server) {
@@ -81,9 +82,12 @@ app.use(seguridad.useAuthentication)
 // Validación OpenApi
 app.use(
   OpenApiValidator.middleware({
-    apiSpec: generaSwaggerSpecification({ port: app.get('port') }, DIR_API_REST, shutdown),
-    validateRequests: true, // (default)
+    apiSpec: generaSwaggerSpecification(app.PUERTO, config.paths.API_REST, shutdown, config.paths.API_AUTH ?? '/'),
+    validateRequests: {
+      allowUnknownQueryParameters: true,
+    },
     validateResponses: true, // false by default
+    validateSecurity: false,
     ignoreUndocumented: true,
     formats: [
       { name: 'nif', type: 'string', validate: (v) => validator.isIdentityCard(v, 'ES') },
@@ -92,18 +96,18 @@ app.use(
 )
 
 // Control de acceso
-app.use(DIR_API_REST, seguridad)
+app.use(config.paths.API_AUTH, seguridad)
 
 // Servicios web
-app.use(DIR_API_REST, apiRouter.router);
+app.use(config.paths.API_REST, apiRouter.router);
 
 // Documentación OpenApi
 app.all('/api-docs/v1/openapi.json', function (req, res) {
-  let result = generaSwaggerSpecification(extraeURL(req), DIR_API_REST, shutdown)
+  let result = generaSwaggerSpecification(app.PUERTO, config.paths.API_REST, shutdown, config.paths.API_AUTH ?? '/')
   res.json(result)
 });
 app.all('/api-docs/v1/openapi.yaml', function (req, res) {
-  let result = generaSwaggerSpecification(extraeURL(req), DIR_API_REST, shutdown)
+  let result = generaSwaggerSpecification(app.PUERTO, config.paths.API_REST, shutdown, config.paths.API_AUTH ?? '/')
   res.contentType('text/yaml').end(YAML.stringify(result))
 });
 
@@ -137,29 +141,29 @@ app.all('/eco(/*)?', function (req, res) {
 app.use('/', indexRouter);
 
 // catch 404 and forward to error handler
-app.use(function (_req, _res, next) {
+app.use(function (req, _res, next) {
   next(createError(404));
 });
 
-app.use(function (err, req, res, next) {
-  if (!req.xhr && !req.originalUrl.startsWith('/api/')) next(err)
-  let error = err.payload ? err : generateErrorByError(err)
-  error.payload.instance = req.originalUrl
-  res.status(error.payload.status).json(error.payload);
-});
+// app.use(function (err, req, res, next) {
+//   if (!req.xhr && !req.originalUrl.startsWith('/api/')) next(err)
+//   let error = err.payload ? err : generateErrorByError(req, err)
+//   error.payload.instance = req.originalUrl
+//   res.status(error.payload.status).json(error.payload);
+// });
 
 // error handler
-// eslint-disable-next-line no-unused-vars
 app.use(function (err, req, res, _next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-  // CSRF token errors
-  if (err.code === 'EBADCSRFTOKEN') err.status = 403
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+  const status = err.status ?? err.statusCode ??  500
+  if(req.headers.accept && req.accepts('html')) {
+    // render the error page
+    res.locals.message = err.message;
+    res.locals.error = req.app.get('env') === 'development' ? err : {};
+    res.status(status);
+    res.render('error');
+  } else {
+    res.status(status).json(err.payload ? err.payload : generateErrorByError(req, err, status).payload)
+  }
 });
 
 module.exports = app;

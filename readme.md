@@ -1,6 +1,6 @@
 # Web4Testing
 
-Versión NodeJS del servidor de pruebas para cursos de FrontEnd y con un sitio web de ejemplo donde aplicar casos de prueba WebDriver.
+Versión NodeJS del servidor de pruebas para cursos de FrontEnd y con un sitio web de ejemplo donde aplicar casos de prueba E2E.
 
 * Sitio web
 * Servicios RestFul para probar las conexiones AJAX
@@ -98,6 +98,20 @@ Se han incorporado una serie de parámetros (querystring) para ampliar el contro
 }`
 * **_rows=*número*:** Número de filas por página, por defecto 20, si se omite pero aparece el parámetro *_page*.
 
+### Respuestas de error
+
+Las respuesta de error implementan el estándar *Problem Details for HTTP APIs* ([RFC 7807](https://datatracker.ietf.org/doc/html/rfc7807)).
+
+Los detalles del problema puede tener las siguientes propiedades:
+
+* **"type"** (cadena): URI que identifica el tipo de problema y proporciona documentación legible por humanos para el tipo de problema. El valor "about:blank" (predeterminado) indica que el problema no tiene semántica adicional a la del código de estado HTTP.
+* **"title"** (cadena): Breve resumen legible por humanos del problema escribe. No cambia de una ocurrencia a otra del mismo problema. Con "type": "about:blank", coincide con la versión textual del status.
+* **"status"** (número): Código de estado HTTP (por conveniencia, coincide con el código de estado de la respuesta).
+* **"detail"** (cadena): Explicación legible por humanos específica de la ocurrencia concreta del problema.
+* **"instance"** (cadena): URI de referencia que identifica el origen de la ocurrencia del problema.
+* **"errors"** (array): Lista de errores de validación en pares propiedad/literal de la restricción incumplida.
+* **"source"** (cadena): En modo depuración, información complementaria sobre el origen del error.
+
 ### Cross-Origin Resource Sharing
 
 Para evitar conflictos con los navegadores se han habilitado las siguientes cabeceras CORS:
@@ -162,38 +176,54 @@ Por ejemplo: <http://localhost:8181/eco/personas/1?_page=1&_rows=10>
 
 ### Autenticación
 
-Para simular la autenticación con token JWT de cabecera está disponible el servicio `http://localhost:8181/api/login` con el método POST.
+Para simular la autenticación con token JWT de cabecera está disponible el servicio `http://localhost:4321/login` con el método POST.
 
 * **Formularios**
-  * action="http://localhost:8181/api/login"
+  * action="http://localhost:4321/login"
   * method="post"
-  * body="username=adm@example.com&password=P@$$w0rd"
+  * body="username=admin&password=P@$$w0rd"
 * **API**
   * Content-Type: application/json
-  * body: { "username": "adm@example.com", "password": "P@$$w0rd" }
+  * body: { "username": "admin", "password": "P@$$w0rd" }
 
 #### Respuesta JSON:
 
     {
         "success": true,
-        "token": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIiwicm9sZXMiOlsiVXN1YXJpb3MiLCJBZG1pbmlzdHJhZG9yZXMiXSwiaWF0IjoxNjQ4NTc4NTYxLCJleHAiOjE2NDg1ODIxNjF9.WF-z8UHEOtqh0NSttxkV4VSp8evKEKLvW1fIh4CwEJ0",
-        "name": "adm@example.com",
+        "token": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1AZXhhbXBsZS5jb20iLCJuYW1lIjoiQWRtaW5pc3RyYWRvciIsInJvbGVzIjpbIlVzdWFyaW9zIiwiQWRtaW5pc3RyYWRvcmVzIl0sImlhdCI6MTY3MDM0MjE3MiwiZXhwIjoxNjcwMzQyNDcyLCJhdWQiOiJhdXRob3JpemF0aW9uIiwiaXNzIjoiTWljcm9zZXJ2aWNpb3NKV1QifQ.dlt-d1K6wGoe-VBsPtE6SYx25wPgR0k7RwVdkdzMRKoZxYjVjUCAl9P1o4yd4pemG2B2jVu5cq4birz5EqBRy4cgVeNxD86E9f89QwOimNDr3dKGxbVbiS40RyJ1cm9qJ5_aEiBA-LZunByWp5OOtPf1Eq6Hs-AJoDWxidS0kgdjSZmeojzzzcZiE_sb8AoFhKiWC_UXpJr880YQ1jceqQ-qQmD_WCf6JICDqN-cv9Z4uMtdBCFWuMtc_6RCEd38iURtiDYS1a_oSKEZyQTf7cc3etA-4MuckdIItCRqDLiuUyJcuaJV1ODw0dI40MDU2a6Ju0LVB8QPQyNTNLKQvQ",
+        "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1AZXhhbXBsZS5jb20iLCJpYXQiOjE2NzAzNDIxNzIsIm5iZiI6MTY3MDM0MjQ3MiwiZXhwIjoxNjcwMzQzMzcyLCJhdWQiOiJhdXRob3JpemF0aW9uIiwiaXNzIjoiTWljcm9zZXJ2aWNpb3NKV1QifQ.8q1Nwd9E6ZgpMyOPGUTFrv7EGRwvk_6J-J6Uzvk4o_A",
+        "name": "Administrador",
         "roles": [
             "Usuarios",
             "Administradores"
-        ]
+        ],
+        "expires_in": 300
     }
 
-#### Envío del token en la cabecera:
+Se obtiene un token de acceso (RS256), un token de refresco (HMAC256) y la expiración del token de acceso en segundos. El token de refresco no se activa hasta que expire el token de acceso.
 
-    GET http://localhost:8181/api/auth
+#### Envío del token de acceso en la cabecera:
+
+    GET http://localhost:4321/auth
     Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIiwicm9sZXMiOlsiVXN1YXJpb3MiLCJBZG1pbmlzdHJhZG9yZXMiXSwiaWF0IjoxNjQ4NTc4NTYxLCJleHAiOjE2NDg1ODIxNjF9.WF-z8UHEOtqh0NSttxkV4VSp8evKEKLvW1fIh4CwEJ0
+
+#### Envío del token de refresco:
+
+    POST http://localhost:4321/login/refresh
+
+    {
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1AZXhhbXBsZS5jb20iLCJpYXQiOjE2NzAzNDIxNzIsIm5iZiI6MTY3MDM0MjQ3MiwiZXhwIjoxNjcwMzQzMzcyLCJhdWQiOiJhdXRob3JpemF0aW9uIiwiaXNzIjoiTWljcm9zZXJ2aWNpb3NKV1QifQ.8q1Nwd9E6ZgpMyOPGUTFrv7EGRwvk_6J-J6Uzvk4o_A"
+    }
+
+#### Obtener la clave publica para validar el token JWT (text/plain)
+
+    GET http://localhost:4321/login/signature
 
 ### Gestión de usuarios
 
 En el fichero data/usuarios.json se mantiene la estructura básica de los usuarios registrados que se puede ampliar.
 
-Mediante peticiones AJAX a <http://localhost:8181/api/register> se pueden:
+Mediante peticiones AJAX a <http://localhost:4321/register> se pueden:
 
 * Registrar usuario (POST).
 * Modificar usuario autenticado (PUT)
@@ -201,9 +231,41 @@ Mediante peticiones AJAX a <http://localhost:8181/api/register> se pueden:
 
 Las modificaciones y consultas están restringidas al propio usuario autenticado. Los usuarios tienen asociados, a través de la propiedad roles, un array de cadenas con los diferentes grupos a los que pertenecen, permitiendo la autorización por membresía. El servicio de registro no permite a un usuario modificar sus roles.
 
-La contraseñas sigue el patrón /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/ (al menos 8 caracteres con minúsculas, mayúsculas, dígitos y símbolos). Para el encriptado de contraseñas en la persistencia se utiliza bcrypt (función de hashing de contraseñas basada en el cifrado Blowfish), utilizado al Registrar usuario y se ignora la contraseña en el resto de los casos. Para cambiar la contraseña se ha habilitado el método PUT <http://localhost:8181/api/register/password> que requiere el usuario autenticado y la contraseña anterior como medida de seguridad:
+#### Webhooks
 
-    PUT http://localhost:8181/api/register/password
+Al registrar un usuario, el usuario queda pendiente de que confirme el correo electrónico a través de webhooks antes de activarse y poder acceder.
+
+    HTTP/1.1 202 Accepted
+
+    {
+        "statusGetUri": "http://localhost:4321/register/status?instance=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
+        "confirmGetUri": "http://localhost:4321/register/confirm?instance=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
+        "rejectGetUri": "http://localhost:4321/register/reject?instance=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+    }
+
+Con peticiones get a la url statusGetUri se obtiene el estado actual. Devuelve un 202 mientras esté pendiente de confirmación:
+
+    HTTP/1.1 202 Accepted
+
+    {
+        "status": "pending"
+    }
+
+Se obtiene un 200 cuando el estado pase complete o canceled (dispone de un día antes de que se cancele), el resultado puede ser confirm, reject, canceled o timeout:
+
+    HTTP/1.1 200 OK
+
+    {
+        "status": "complete",
+        "result": "reject"
+    }
+
+Los webhooks confirmGetUri y rejectGetUri se invocan con peticiones get para poder ser invocados desde correos electrónicos. Ambos devuelven un 204 cuando se completan.
+
+#### Contraseñas
+La contraseñas sigue el patrón /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/ (al menos 8 caracteres con minúsculas, mayúsculas, dígitos y símbolos). Para el encriptado de contraseñas en la persistencia se utiliza bcrypt (función de hashing de contraseñas basada en el cifrado Blowfish), utilizado al Registrar usuario y se ignora la contraseña en el resto de los casos. Para cambiar la contraseña se ha habilitado el método PUT <http://localhost:4321/register/password> que requiere el usuario autenticado y la contraseña anterior como medida de seguridad:
+
+    PUT http://localhost:4321/register/password
     Content-Type: application/json
     Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIiwicm9sZXMiOlsiVXN1YXJpb3MiLCJBZG1pbmlzdHJhZG9yZXMiXSwiaWF0IjoxNjQ5MzM5MDgwLCJleHAiOjE2NDkzNDI2ODB9.1XAvQTzCSgEjs6NVhA0rgFt5NeEb_DMMVIn4DfNOjvg
 
@@ -214,9 +276,9 @@ La contraseñas sigue el patrón /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/
 
 ### Cookies
 
-* Para otros escenarios que requiera autenticación por cookies se puede añadir el parámetro `cookie=true` para que envíe la cookie `Authorization` con una validez de una hora: <http://localhost:8181/api/login?cookie=true>
-* Para borrar la cookie: <http://localhost:8181/api/logout>
-* Para obtener la información de la autenticación: <http://localhost:8181/api/auth>
+* Para otros escenarios que requiera autenticación por cookies se puede añadir el parámetro `cookie=true` para que envíe la cookie `Authorization` con una validez de una hora: <http://localhost:4321/login?cookie=true>
+* Para borrar la cookie: <http://localhost:4321/logout>
+* Para obtener la información de la autenticación: <http://localhost:4321/auth>
 
 ### Cross-Site Request Forgery (XSRF o CSRF)
 
@@ -236,7 +298,7 @@ Para habilitar la protección:
 
     node server --xsrf
 
-El token está basado en la IP remota para ser único para cada usuario y es verificado por el servidor. Las verificaciones solo se aplican a las peticiones  POST, PUT, DELETE y PATCH. El mecanismo *“Cookie-to-Header Token”* solo puede utilizase cuando el front-end se aloje en el propio servidor.
+El token está basado en la IP remota para ser único para cada usuario y es verificado por el servidor. Las verificaciones solo se aplican a las peticiones  POST, PUT, DELETE y PATCH. El mecanismo *“Cookie-to-Header Token”* solo puede utilizase cuando el front-end se aloje en el propio servidor (ver sección *Servidor de web*).
 
 ## Autorespondedor
 

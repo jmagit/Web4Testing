@@ -18,6 +18,7 @@
         "ecmaVersion": 2021
     },
     "rules": {
+        "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
         "node/exports-style": [
             "error",
             "module.exports"
