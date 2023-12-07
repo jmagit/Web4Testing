@@ -17,10 +17,18 @@ describe("Test the root path", () => {
         done();
       });
   });
-  it("NOT FOUND", async () => {
-    const response = await request(app)
+  it("NOT FOUND - HTML", async () => {
+    return request(app)
       .get('/esta/ruta/no/existe')
-    expect(response.statusCode).toBe(404)
+      .accept('text/html')
+      .expect(404)
+      .expect('Content-Type', /html/)
+  });
+  it("NOT FOUND - JSON", async () => {
+    return await request(app)
+      .get('/esta/ruta/no/existe')
+      .expect(404)
+      .expect('Content-Type', /json/)
   });
   it("GET /fileupload", done => {
     request(app)
