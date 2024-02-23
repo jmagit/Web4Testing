@@ -11,7 +11,7 @@
     "restart": "nodemon -w **/*.* -e js,pug ./bin/www",
     "lint": "eslint **/*.js",
     "test": "jest --collectCoverage",
-    "sonar": "sonar-scanner.bat -D\"sonar.projectKey=Web4Testing\" -D\"sonar.host.url=http://localhost:9000\" -D\"sonar.javascript.lcov.reportPaths=./coverage/lcov.info\" -D\"sonar.login=sqp_e1b8bfa05028565cb183638b7d727984a46011b6\""
+    "sonar": "sonar-scanner.bat -D\"sonar.projectKey=Web4Testing\" -D\"sonar.host.url=http://localhost:9000\" -D\"sonar.javascript.lcov.reportPaths=./coverage/lcov.info\" -D\"sonar.login=sqp_d22e4655d28f01e31c69f5d4873a88254e07e7f0\""
   },
   "dependencies": {
     "ajv": "^8.12.0",
