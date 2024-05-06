@@ -6,6 +6,14 @@ const { generateErrorByError } = require('./utils')
 
 const DIR_UPLOADS = 'uploads/' // __dirname + "/uploads/"
 
+const promesa = fs.access(DIR_UPLOADS, fs.constants.F_OK)
+if(promesa)
+  promesa.catch(() => {
+    fs.mkdir(DIR_UPLOADS).catch(err => {
+      console.error(err)
+    })
+})
+
 const upload = multer({
   limits: { fileSize: 2 * 1024 * 1024 /* 2mb */ },
   storage: multer.diskStorage({
