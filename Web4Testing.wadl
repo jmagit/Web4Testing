@@ -1,0 +1,1484 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application xmlns="http://wadl.dev.java.net/2009/02">
+  <doc xml:lang="en" title="Web4Testing">Versión NodeJS del servidor de pruebas para cursos de FrontEnd y con un sitio web de ejemplo donde aplicar casos de prueba WebDriver.</doc>
+  <resources base="http://localhost:8181">
+    <resource path="api/auth" id="/api/auth">
+      <doc xml:lang="en" title="/api/auth"/>
+      <method name="GET" id="GET">
+        <doc xml:lang="en" title="GET">Obtener estado de sesión</doc>
+        <request/>
+        <response status="200">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+    </resource>
+    <resource path="api/biblioteca" id="/api/biblioteca">
+      <doc xml:lang="en" title="/api/biblioteca"/>
+      <method name="GET" id="GET">
+        <doc xml:lang="en" title="GET">Listar biblioteca</doc>
+        <request>
+          <param name="_page" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <doc xml:lang="en" title="_page Parameter">Número de página empezando en 0 (primera página).</doc>
+          </param>
+          <param name="_rows" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <doc xml:lang="en" title="_rows Parameter">Número de filas por página, por defecto 20 si se omite pero aparece el parámetro *_page*.</doc>
+          </param>
+          <param name="_sort" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <doc xml:lang="en" title="_sort Parameter">Indica la lista de propiedades (separadas por comas) por la que se ordenaran los resultados, en caso de omitirse se utilizará la propiedad que actúa como primary key. Si el nombre de la propiedad está precedido por un guion (signo negativo) la ordenación será descendente.</doc>
+          </param>
+          <param name="_search" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <doc xml:lang="en" title="_search Parameter">Selecciona todos aquellos que en alguna de sus propiedades contenga el valor proporcionado.</doc>
+          </param>
+          <param name="_projection" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <doc xml:lang="en" title="_projection Parameter">Devuelve solo aquellas propiedades de la lista suministrada, los nombres de las propiedades deben ir separadas por comas.</doc>
+          </param>
+        </request>
+        <response status="200">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+      <method name="POST" id="POST">
+        <doc xml:lang="en" title="POST">Crear volumen</doc>
+        <request>
+          <representation mediaType="application/json"/>
+          <representation mediaType="application/json"/>
+        </request>
+        <response status="">
+          <representation mediaType="application/json"/>
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="201">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="400">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+      <method name="OPTIONS" id="OPTIONS">
+        <doc xml:lang="en" title="OPTIONS">Sondeo CORS</doc>
+        <request/>
+        <response status="200">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+    </resource>
+    <resource path="api/biblioteca/{id}" id="/api/biblioteca/{id}">
+      <doc xml:lang="en" title="/api/biblioteca/{id}"/>
+      <param name="id" type="xs:string" required="true" default="" style="template" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+        <doc xml:lang="en" title="id Parameter">Identificador del recurso</doc>
+      </param>
+      <method name="GET" id="GET">
+        <doc xml:lang="en" title="GET">Recuperar volumen</doc>
+        <request>
+          <param name="_projection" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <doc xml:lang="en" title="_projection Parameter">Devuelve solo aquellas propiedades de la lista suministrada, los nombres de las propiedades deben ir separadas por comas.</doc>
+          </param>
+        </request>
+        <response status="200">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="404">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+      <method name="PUT" id="PUT">
+        <doc xml:lang="en" title="PUT">Reemplazar volumen</doc>
+        <request>
+          <representation mediaType="application/json"/>
+          <representation mediaType="application/json"/>
+        </request>
+        <response status="">
+          <representation mediaType="application/json"/>
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="200">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="400">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="404">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+      <method name="DELETE" id="DELETE">
+        <doc xml:lang="en" title="DELETE">Borrar volumen</doc>
+        <request/>
+        <response status="204">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="404">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+      <method name="PATCH" id="PATCH">
+        <doc xml:lang="en" title="PATCH">Actualizar parcialmente volumen</doc>
+        <request>
+          <representation mediaType="application/json"/>
+          <representation mediaType="application/json"/>
+        </request>
+        <response status="">
+          <representation mediaType="application/json"/>
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="200">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="400">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="404">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+      <method name="OPTIONS" id="OPTIONS">
+        <doc xml:lang="en" title="OPTIONS">Sondeo CORS</doc>
+        <request/>
+        <response status="200">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+    </resource>
+    <resource path="api/blog" id="/api/blog">
+      <doc xml:lang="en" title="/api/blog"/>
+      <method name="GET" id="GET">
+        <doc xml:lang="en" title="GET">Listar blog</doc>
+        <request>
+          <param name="_page" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <doc xml:lang="en" title="_page Parameter">Número de página empezando en 0 (primera página).</doc>
+          </param>
+          <param name="_rows" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <doc xml:lang="en" title="_rows Parameter">Número de filas por página, por defecto 20 si se omite pero aparece el parámetro *_page*.</doc>
+          </param>
+          <param name="_sort" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <doc xml:lang="en" title="_sort Parameter">Indica la lista de propiedades (separadas por comas) por la que se ordenaran los resultados, en caso de omitirse se utilizará la propiedad que actúa como primary key. Si el nombre de la propiedad está precedido por un guion (signo negativo) la ordenación será descendente.</doc>
+          </param>
+          <param name="_search" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <doc xml:lang="en" title="_search Parameter">Selecciona todos aquellos que en alguna de sus propiedades contenga el valor proporcionado.</doc>
+          </param>
+          <param name="_projection" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <doc xml:lang="en" title="_projection Parameter">Devuelve solo aquellas propiedades de la lista suministrada, los nombres de las propiedades deben ir separadas por comas.</doc>
+          </param>
+        </request>
+        <response status="200">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+      <method name="POST" id="POST">
+        <doc xml:lang="en" title="POST">Crear articulo</doc>
+        <request>
+          <representation mediaType="application/json"/>
+          <representation mediaType="application/json"/>
+        </request>
+        <response status="">
+          <representation mediaType="application/json"/>
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="201">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="400">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+      <method name="OPTIONS" id="OPTIONS">
+        <doc xml:lang="en" title="OPTIONS">Sondeo CORS</doc>
+        <request/>
+        <response status="200">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+    </resource>
+    <resource path="api/blog/{id}" id="/api/blog/{id}">
+      <doc xml:lang="en" title="/api/blog/{id}"/>
+      <param name="id" type="xs:string" required="true" default="" style="template" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+        <doc xml:lang="en" title="id Parameter">Identificador del recurso</doc>
+      </param>
+      <method name="GET" id="GET">
+        <doc xml:lang="en" title="GET">Recuperar articulo</doc>
+        <request>
+          <param name="_projection" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <doc xml:lang="en" title="_projection Parameter">Devuelve solo aquellas propiedades de la lista suministrada, los nombres de las propiedades deben ir separadas por comas.</doc>
+          </param>
+        </request>
+        <response status="200">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="404">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+      <method name="PUT" id="PUT">
+        <doc xml:lang="en" title="PUT">Reemplazar articulo</doc>
+        <request>
+          <representation mediaType="application/json"/>
+          <representation mediaType="application/json"/>
+        </request>
+        <response status="">
+          <representation mediaType="application/json"/>
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="200">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="400">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="404">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+      <method name="DELETE" id="DELETE">
+        <doc xml:lang="en" title="DELETE">Borrar articulo</doc>
+        <request/>
+        <response status="204">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="404">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+      <method name="PATCH" id="PATCH">
+        <doc xml:lang="en" title="PATCH">Actualizar parcialmente articulo</doc>
+        <request>
+          <representation mediaType="application/json"/>
+          <representation mediaType="application/json"/>
+        </request>
+        <response status="">
+          <representation mediaType="application/json"/>
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="200">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="400">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="404">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+      <method name="OPTIONS" id="OPTIONS">
+        <doc xml:lang="en" title="OPTIONS">Sondeo CORS</doc>
+        <request/>
+        <response status="200">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+    </resource>
+    <resource path="api/contactos" id="/api/contactos">
+      <doc xml:lang="en" title="/api/contactos"/>
+      <method name="GET" id="GET">
+        <doc xml:lang="en" title="GET">Listar contactos</doc>
+        <request>
+          <param name="_page" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <doc xml:lang="en" title="_page Parameter">Número de página empezando en 0 (primera página).</doc>
+          </param>
+          <param name="_rows" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <doc xml:lang="en" title="_rows Parameter">Número de filas por página, por defecto 20 si se omite pero aparece el parámetro *_page*.</doc>
+          </param>
+          <param name="_sort" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <doc xml:lang="en" title="_sort Parameter">Indica la lista de propiedades (separadas por comas) por la que se ordenaran los resultados, en caso de omitirse se utilizará la propiedad que actúa como primary key. Si el nombre de la propiedad está precedido por un guion (signo negativo) la ordenación será descendente.</doc>
+          </param>
+          <param name="_search" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <doc xml:lang="en" title="_search Parameter">Selecciona todos aquellos que en alguna de sus propiedades contenga el valor proporcionado.</doc>
+          </param>
+          <param name="_projection" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <doc xml:lang="en" title="_projection Parameter">Devuelve solo aquellas propiedades de la lista suministrada, los nombres de las propiedades deben ir separadas por comas.</doc>
+          </param>
+        </request>
+        <response status="200">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+      <method name="POST" id="POST">
+        <doc xml:lang="en" title="POST">Crear contacto</doc>
+        <request>
+          <representation mediaType="application/json"/>
+          <representation mediaType="application/json"/>
+        </request>
+        <response status="">
+          <representation mediaType="application/json"/>
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="201">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="400">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+      <method name="OPTIONS" id="OPTIONS">
+        <doc xml:lang="en" title="OPTIONS">Sondeo CORS</doc>
+        <request/>
+        <response status="200">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+    </resource>
+    <resource path="api/contactos/{id}" id="/api/contactos/{id}">
+      <doc xml:lang="en" title="/api/contactos/{id}"/>
+      <param name="id" type="xs:string" required="true" default="" style="template" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+        <doc xml:lang="en" title="id Parameter">Identificador del recurso</doc>
+      </param>
+      <method name="GET" id="GET">
+        <doc xml:lang="en" title="GET">Recuperar contacto</doc>
+        <request>
+          <param name="_projection" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <doc xml:lang="en" title="_projection Parameter">Devuelve solo aquellas propiedades de la lista suministrada, los nombres de las propiedades deben ir separadas por comas.</doc>
+          </param>
+        </request>
+        <response status="200">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="404">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+      <method name="PUT" id="PUT">
+        <doc xml:lang="en" title="PUT">Reemplazar contacto</doc>
+        <request>
+          <representation mediaType="application/json"/>
+          <representation mediaType="application/json"/>
+        </request>
+        <response status="">
+          <representation mediaType="application/json"/>
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="200">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="400">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="404">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+      <method name="DELETE" id="DELETE">
+        <doc xml:lang="en" title="DELETE">Borrar contacto</doc>
+        <request/>
+        <response status="204">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="404">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+      <method name="PATCH" id="PATCH">
+        <doc xml:lang="en" title="PATCH">Actualizar parcialmente contacto</doc>
+        <request>
+          <representation mediaType="application/json"/>
+          <representation mediaType="application/json"/>
+        </request>
+        <response status="">
+          <representation mediaType="application/json"/>
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="200">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="400">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="404">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+      <method name="OPTIONS" id="OPTIONS">
+        <doc xml:lang="en" title="OPTIONS">Sondeo CORS</doc>
+        <request/>
+        <response status="200">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+    </resource>
+    <resource path="api/libros" id="/api/libros">
+      <doc xml:lang="en" title="/api/libros"/>
+      <method name="GET" id="GET">
+        <doc xml:lang="en" title="GET">Listar libros</doc>
+        <request>
+          <param name="_page" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <doc xml:lang="en" title="_page Parameter">Número de página empezando en 0 (primera página).</doc>
+          </param>
+          <param name="_rows" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <doc xml:lang="en" title="_rows Parameter">Número de filas por página, por defecto 20 si se omite pero aparece el parámetro *_page*.</doc>
+          </param>
+          <param name="_sort" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <doc xml:lang="en" title="_sort Parameter">Indica la lista de propiedades (separadas por comas) por la que se ordenaran los resultados, en caso de omitirse se utilizará la propiedad que actúa como primary key. Si el nombre de la propiedad está precedido por un guion (signo negativo) la ordenación será descendente.</doc>
+          </param>
+          <param name="_search" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <doc xml:lang="en" title="_search Parameter">Selecciona todos aquellos que en alguna de sus propiedades contenga el valor proporcionado.</doc>
+          </param>
+          <param name="_projection" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <doc xml:lang="en" title="_projection Parameter">Devuelve solo aquellas propiedades de la lista suministrada, los nombres de las propiedades deben ir separadas por comas.</doc>
+          </param>
+        </request>
+        <response status="200">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+      <method name="POST" id="POST">
+        <doc xml:lang="en" title="POST">Crear libro</doc>
+        <request>
+          <representation mediaType="application/json"/>
+          <representation mediaType="application/json"/>
+        </request>
+        <response status="">
+          <representation mediaType="application/json"/>
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="201">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="400">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+      <method name="OPTIONS" id="OPTIONS">
+        <doc xml:lang="en" title="OPTIONS">Sondeo CORS</doc>
+        <request/>
+        <response status="200">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+    </resource>
+    <resource path="api/libros/{id}" id="/api/libros/{id}">
+      <doc xml:lang="en" title="/api/libros/{id}"/>
+      <param name="id" type="xs:string" required="true" default="" style="template" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+        <doc xml:lang="en" title="id Parameter">Identificador del recurso</doc>
+      </param>
+      <method name="GET" id="GET">
+        <doc xml:lang="en" title="GET">Recuperar libro</doc>
+        <request>
+          <param name="_projection" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <doc xml:lang="en" title="_projection Parameter">Devuelve solo aquellas propiedades de la lista suministrada, los nombres de las propiedades deben ir separadas por comas.</doc>
+          </param>
+        </request>
+        <response status="200">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="404">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+      <method name="PUT" id="PUT">
+        <doc xml:lang="en" title="PUT">Reemplazar libro</doc>
+        <request>
+          <representation mediaType="application/json"/>
+          <representation mediaType="application/json"/>
+        </request>
+        <response status="">
+          <representation mediaType="application/json"/>
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="200">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="400">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="404">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+      <method name="DELETE" id="DELETE">
+        <doc xml:lang="en" title="DELETE">Borrar libro</doc>
+        <request/>
+        <response status="204">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="404">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+      <method name="PATCH" id="PATCH">
+        <doc xml:lang="en" title="PATCH">Actualizar parcialmente libro</doc>
+        <request>
+          <representation mediaType="application/json"/>
+          <representation mediaType="application/json"/>
+        </request>
+        <response status="">
+          <representation mediaType="application/json"/>
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="200">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="400">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="404">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+      <method name="OPTIONS" id="OPTIONS">
+        <doc xml:lang="en" title="OPTIONS">Sondeo CORS</doc>
+        <request/>
+        <response status="200">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+    </resource>
+    <resource path="api/login" id="/api/login">
+      <doc xml:lang="en" title="/api/login"/>
+      <method name="POST" id="POST">
+        <doc xml:lang="en" title="POST">Iniciar sesión</doc>
+        <request>
+          <param name="cookie" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <doc xml:lang="en" title="cookie Parameter">true para que genere y envíe la cookie</doc>
+          </param>
+          <representation mediaType="application/json"/>
+          <representation mediaType="application/x-www-form-urlencoded"/>
+          <representation mediaType="application/json"/>
+          <representation mediaType="application/x-www-form-urlencoded"/>
+        </request>
+        <response status="">
+          <representation mediaType="application/json"/>
+          <representation mediaType="application/x-www-form-urlencoded"/>
+          <representation mediaType="application/json"/>
+          <representation mediaType="application/x-www-form-urlencoded"/>
+        </response>
+        <response status="200">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="400">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="404">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+      <method name="OPTIONS" id="OPTIONS">
+        <doc xml:lang="en" title="OPTIONS">Sondeo CORS</doc>
+        <request/>
+        <response status="200">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="404">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+    </resource>
+    <resource path="api/logout" id="/api/logout">
+      <doc xml:lang="en" title="/api/logout"/>
+      <method name="POST" id="POST">
+        <doc xml:lang="en" title="POST">Cerrar sesión</doc>
+        <request/>
+        <response status="200">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="404">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+    </resource>
+    <resource path="api/marcas" id="/api/marcas">
+      <doc xml:lang="en" title="/api/marcas"/>
+      <method name="GET" id="GET">
+        <doc xml:lang="en" title="GET">Listar marcas</doc>
+        <request>
+          <param name="_page" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <doc xml:lang="en" title="_page Parameter">Número de página empezando en 0 (primera página).</doc>
+          </param>
+          <param name="_rows" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <doc xml:lang="en" title="_rows Parameter">Número de filas por página, por defecto 20 si se omite pero aparece el parámetro *_page*.</doc>
+          </param>
+          <param name="_sort" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <doc xml:lang="en" title="_sort Parameter">Indica la lista de propiedades (separadas por comas) por la que se ordenaran los resultados, en caso de omitirse se utilizará la propiedad que actúa como primary key. Si el nombre de la propiedad está precedido por un guion (signo negativo) la ordenación será descendente.</doc>
+          </param>
+          <param name="_search" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <doc xml:lang="en" title="_search Parameter">Selecciona todos aquellos que en alguna de sus propiedades contenga el valor proporcionado.</doc>
+          </param>
+          <param name="_projection" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <doc xml:lang="en" title="_projection Parameter">Devuelve solo aquellas propiedades de la lista suministrada, los nombres de las propiedades deben ir separadas por comas.</doc>
+          </param>
+        </request>
+        <response status="200">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+    </resource>
+    <resource path="api/marcas/{id}" id="/api/marcas/{id}">
+      <doc xml:lang="en" title="/api/marcas/{id}"/>
+      <param name="id" type="xs:string" required="true" default="" style="template" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+        <doc xml:lang="en" title="id Parameter">Identificador del recurso</doc>
+      </param>
+      <method name="GET" id="GET">
+        <doc xml:lang="en" title="GET">Recuperar marca</doc>
+        <request>
+          <param name="_projection" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <doc xml:lang="en" title="_projection Parameter">Devuelve solo aquellas propiedades de la lista suministrada, los nombres de las propiedades deben ir separadas por comas.</doc>
+          </param>
+        </request>
+        <response status="200">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="404">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+    </resource>
+    <resource path="api/peliculas" id="/api/peliculas">
+      <doc xml:lang="en" title="/api/peliculas"/>
+      <method name="GET" id="GET">
+        <doc xml:lang="en" title="GET">Listar peliculas</doc>
+        <request>
+          <param name="_page" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <doc xml:lang="en" title="_page Parameter">Número de página empezando en 0 (primera página).</doc>
+          </param>
+          <param name="_rows" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <doc xml:lang="en" title="_rows Parameter">Número de filas por página, por defecto 20 si se omite pero aparece el parámetro *_page*.</doc>
+          </param>
+          <param name="_sort" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <doc xml:lang="en" title="_sort Parameter">Indica la lista de propiedades (separadas por comas) por la que se ordenaran los resultados, en caso de omitirse se utilizará la propiedad que actúa como primary key. Si el nombre de la propiedad está precedido por un guion (signo negativo) la ordenación será descendente.</doc>
+          </param>
+          <param name="_search" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <doc xml:lang="en" title="_search Parameter">Selecciona todos aquellos que en alguna de sus propiedades contenga el valor proporcionado.</doc>
+          </param>
+          <param name="_projection" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <doc xml:lang="en" title="_projection Parameter">Devuelve solo aquellas propiedades de la lista suministrada, los nombres de las propiedades deben ir separadas por comas.</doc>
+          </param>
+        </request>
+        <response status="200">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+      <method name="POST" id="POST">
+        <doc xml:lang="en" title="POST">Crear pelicula</doc>
+        <request>
+          <representation mediaType="application/json"/>
+          <representation mediaType="application/json"/>
+        </request>
+        <response status="">
+          <representation mediaType="application/json"/>
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="201">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="400">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+      <method name="OPTIONS" id="OPTIONS">
+        <doc xml:lang="en" title="OPTIONS">Sondeo CORS</doc>
+        <request/>
+        <response status="200">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+    </resource>
+    <resource path="api/peliculas/{id}" id="/api/peliculas/{id}">
+      <doc xml:lang="en" title="/api/peliculas/{id}"/>
+      <param name="id" type="xs:string" required="true" default="" style="template" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+        <doc xml:lang="en" title="id Parameter">Identificador del recurso</doc>
+      </param>
+      <method name="GET" id="GET">
+        <doc xml:lang="en" title="GET">Recuperar pelicula</doc>
+        <request>
+          <param name="_projection" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <doc xml:lang="en" title="_projection Parameter">Devuelve solo aquellas propiedades de la lista suministrada, los nombres de las propiedades deben ir separadas por comas.</doc>
+          </param>
+        </request>
+        <response status="200">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="404">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+      <method name="PUT" id="PUT">
+        <doc xml:lang="en" title="PUT">Reemplazar pelicula</doc>
+        <request>
+          <representation mediaType="application/json"/>
+          <representation mediaType="application/json"/>
+        </request>
+        <response status="">
+          <representation mediaType="application/json"/>
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="200">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="400">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="404">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+      <method name="DELETE" id="DELETE">
+        <doc xml:lang="en" title="DELETE">Borrar pelicula</doc>
+        <request/>
+        <response status="204">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="404">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+      <method name="PATCH" id="PATCH">
+        <doc xml:lang="en" title="PATCH">Actualizar parcialmente pelicula</doc>
+        <request>
+          <representation mediaType="application/json"/>
+          <representation mediaType="application/json"/>
+        </request>
+        <response status="">
+          <representation mediaType="application/json"/>
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="200">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="400">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="404">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+      <method name="OPTIONS" id="OPTIONS">
+        <doc xml:lang="en" title="OPTIONS">Sondeo CORS</doc>
+        <request/>
+        <response status="200">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+    </resource>
+    <resource path="api/personas" id="/api/personas">
+      <doc xml:lang="en" title="/api/personas"/>
+      <method name="GET" id="GET">
+        <doc xml:lang="en" title="GET">Listar personas</doc>
+        <request>
+          <param name="_page" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <doc xml:lang="en" title="_page Parameter">Número de página empezando en 0 (primera página).</doc>
+          </param>
+          <param name="_rows" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <doc xml:lang="en" title="_rows Parameter">Número de filas por página, por defecto 20 si se omite pero aparece el parámetro *_page*.</doc>
+          </param>
+          <param name="_sort" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <doc xml:lang="en" title="_sort Parameter">Indica la lista de propiedades (separadas por comas) por la que se ordenaran los resultados, en caso de omitirse se utilizará la propiedad que actúa como primary key. Si el nombre de la propiedad está precedido por un guion (signo negativo) la ordenación será descendente.</doc>
+          </param>
+          <param name="_search" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <doc xml:lang="en" title="_search Parameter">Selecciona todos aquellos que en alguna de sus propiedades contenga el valor proporcionado.</doc>
+          </param>
+          <param name="_projection" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <doc xml:lang="en" title="_projection Parameter">Devuelve solo aquellas propiedades de la lista suministrada, los nombres de las propiedades deben ir separadas por comas.</doc>
+          </param>
+        </request>
+        <response status="200">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+      <method name="POST" id="POST">
+        <doc xml:lang="en" title="POST">Crear persona</doc>
+        <request>
+          <representation mediaType="application/json"/>
+          <representation mediaType="application/json"/>
+        </request>
+        <response status="">
+          <representation mediaType="application/json"/>
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="201">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="400">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+    </resource>
+    <resource path="api/personas/{id}" id="/api/personas/{id}">
+      <doc xml:lang="en" title="/api/personas/{id}"/>
+      <param name="id" type="xs:string" required="true" default="" style="template" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+        <doc xml:lang="en" title="id Parameter">Identificador del recurso</doc>
+      </param>
+      <method name="GET" id="GET">
+        <doc xml:lang="en" title="GET">Recuperar persona</doc>
+        <request>
+          <param name="_projection" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <doc xml:lang="en" title="_projection Parameter">Devuelve solo aquellas propiedades de la lista suministrada, los nombres de las propiedades deben ir separadas por comas.</doc>
+          </param>
+        </request>
+        <response status="200">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="404">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+      <method name="PUT" id="PUT">
+        <doc xml:lang="en" title="PUT">Reemplazar persona</doc>
+        <request>
+          <representation mediaType="application/json"/>
+          <representation mediaType="application/json"/>
+        </request>
+        <response status="">
+          <representation mediaType="application/json"/>
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="200">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="400">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="404">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+      <method name="DELETE" id="DELETE">
+        <doc xml:lang="en" title="DELETE">Borrar persona</doc>
+        <request/>
+        <response status="204">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="404">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+    </resource>
+    <resource path="api/register" id="/api/register">
+      <doc xml:lang="en" title="/api/register"/>
+      <method name="GET" id="GET">
+        <doc xml:lang="en" title="GET">Consultar su usuario</doc>
+        <request/>
+        <response status="200">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+      <method name="POST" id="POST">
+        <doc xml:lang="en" title="POST">Registrar un nuevo usuario</doc>
+        <request>
+          <representation mediaType="application/json"/>
+          <representation mediaType="application/json"/>
+        </request>
+        <response status="">
+          <representation mediaType="application/json"/>
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="201">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="400">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+      <method name="PUT" id="PUT">
+        <doc xml:lang="en" title="PUT">Modificar el nombre de su usuario</doc>
+        <request>
+          <representation mediaType="application/json"/>
+          <representation mediaType="application/json"/>
+        </request>
+        <response status="">
+          <representation mediaType="application/json"/>
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="204">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="404">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+    </resource>
+    <resource path="api/register/password" id="/api/register/password">
+      <doc xml:lang="en" title="/api/register/password"/>
+      <method name="PUT" id="PUT">
+        <doc xml:lang="en" title="PUT">Es necesario conocer la contraseña actual antes de cambiarla
+Cambiar su contraseña</doc>
+        <request>
+          <representation mediaType="application/json"/>
+          <representation mediaType="application/json"/>
+        </request>
+        <response status="">
+          <representation mediaType="application/json"/>
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="204">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="400">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="404">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+    </resource>
+    <resource path="api/tarjetas" id="/api/tarjetas">
+      <doc xml:lang="en" title="/api/tarjetas"/>
+      <method name="GET" id="GET">
+        <doc xml:lang="en" title="GET">Listar tarjetas</doc>
+        <request>
+          <param name="_page" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <doc xml:lang="en" title="_page Parameter">Número de página empezando en 0 (primera página).</doc>
+          </param>
+          <param name="_rows" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <doc xml:lang="en" title="_rows Parameter">Número de filas por página, por defecto 20 si se omite pero aparece el parámetro *_page*.</doc>
+          </param>
+          <param name="_sort" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <doc xml:lang="en" title="_sort Parameter">Indica la lista de propiedades (separadas por comas) por la que se ordenaran los resultados, en caso de omitirse se utilizará la propiedad que actúa como primary key. Si el nombre de la propiedad está precedido por un guion (signo negativo) la ordenación será descendente.</doc>
+          </param>
+          <param name="_search" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <doc xml:lang="en" title="_search Parameter">Selecciona todos aquellos que en alguna de sus propiedades contenga el valor proporcionado.</doc>
+          </param>
+          <param name="_projection" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <doc xml:lang="en" title="_projection Parameter">Devuelve solo aquellas propiedades de la lista suministrada, los nombres de las propiedades deben ir separadas por comas.</doc>
+          </param>
+        </request>
+        <response status="200">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+      <method name="POST" id="POST">
+        <doc xml:lang="en" title="POST">Crear tarjeta</doc>
+        <request>
+          <representation mediaType="application/json"/>
+          <representation mediaType="application/json"/>
+        </request>
+        <response status="">
+          <representation mediaType="application/json"/>
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="201">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="400">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+    </resource>
+    <resource path="api/tarjetas/{id}" id="/api/tarjetas/{id}">
+      <doc xml:lang="en" title="/api/tarjetas/{id}"/>
+      <param name="id" type="xs:string" required="true" default="" style="template" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+        <doc xml:lang="en" title="id Parameter">Identificador del recurso</doc>
+      </param>
+      <method name="GET" id="GET">
+        <doc xml:lang="en" title="GET">Recuperar tarjeta</doc>
+        <request>
+          <param name="_projection" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <doc xml:lang="en" title="_projection Parameter">Devuelve solo aquellas propiedades de la lista suministrada, los nombres de las propiedades deben ir separadas por comas.</doc>
+          </param>
+        </request>
+        <response status="200">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="404">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+      <method name="PUT" id="PUT">
+        <doc xml:lang="en" title="PUT">Reemplazar tarjeta</doc>
+        <request>
+          <representation mediaType="application/json"/>
+          <representation mediaType="application/json"/>
+        </request>
+        <response status="">
+          <representation mediaType="application/json"/>
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="200">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="400">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="404">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+    </resource>
+    <resource path="api/vehiculos" id="/api/vehiculos">
+      <doc xml:lang="en" title="/api/vehiculos"/>
+      <method name="GET" id="GET">
+        <doc xml:lang="en" title="GET">Listar vehiculos</doc>
+        <request>
+          <param name="_page" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <doc xml:lang="en" title="_page Parameter">Número de página empezando en 0 (primera página).</doc>
+          </param>
+          <param name="_rows" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <doc xml:lang="en" title="_rows Parameter">Número de filas por página, por defecto 20 si se omite pero aparece el parámetro *_page*.</doc>
+          </param>
+          <param name="_sort" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <doc xml:lang="en" title="_sort Parameter">Indica la lista de propiedades (separadas por comas) por la que se ordenaran los resultados, en caso de omitirse se utilizará la propiedad que actúa como primary key. Si el nombre de la propiedad está precedido por un guion (signo negativo) la ordenación será descendente.</doc>
+          </param>
+          <param name="_search" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <doc xml:lang="en" title="_search Parameter">Selecciona todos aquellos que en alguna de sus propiedades contenga el valor proporcionado.</doc>
+          </param>
+          <param name="_projection" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <doc xml:lang="en" title="_projection Parameter">Devuelve solo aquellas propiedades de la lista suministrada, los nombres de las propiedades deben ir separadas por comas.</doc>
+          </param>
+        </request>
+        <response status="200">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+      <method name="POST" id="POST">
+        <doc xml:lang="en" title="POST">Crear vehiculo</doc>
+        <request>
+          <representation mediaType="application/json"/>
+          <representation mediaType="application/json"/>
+        </request>
+        <response status="">
+          <representation mediaType="application/json"/>
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="201">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="400">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+      <method name="OPTIONS" id="OPTIONS">
+        <doc xml:lang="en" title="OPTIONS">Sondeo CORS</doc>
+        <request/>
+        <response status="200">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+    </resource>
+    <resource path="api/vehiculos/{id}" id="/api/vehiculos/{id}">
+      <doc xml:lang="en" title="/api/vehiculos/{id}"/>
+      <param name="id" type="xs:string" required="true" default="" style="template" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+        <doc xml:lang="en" title="id Parameter">Identificador del recurso</doc>
+      </param>
+      <method name="GET" id="GET">
+        <doc xml:lang="en" title="GET">Recuperar vehiculo</doc>
+        <request>
+          <param name="_projection" type="xs:string" required="false" default="" style="query" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <doc xml:lang="en" title="_projection Parameter">Devuelve solo aquellas propiedades de la lista suministrada, los nombres de las propiedades deben ir separadas por comas.</doc>
+          </param>
+        </request>
+        <response status="200">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="404">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+      <method name="PUT" id="PUT">
+        <doc xml:lang="en" title="PUT">Reemplazar vehiculo</doc>
+        <request>
+          <representation mediaType="application/json"/>
+          <representation mediaType="application/json"/>
+        </request>
+        <response status="">
+          <representation mediaType="application/json"/>
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="200">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="400">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="404">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+      <method name="DELETE" id="DELETE">
+        <doc xml:lang="en" title="DELETE">Borrar vehiculo</doc>
+        <request/>
+        <response status="204">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="404">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+      <method name="PATCH" id="PATCH">
+        <doc xml:lang="en" title="PATCH">Actualizar parcialmente vehiculo</doc>
+        <request>
+          <representation mediaType="application/json"/>
+          <representation mediaType="application/json"/>
+        </request>
+        <response status="">
+          <representation mediaType="application/json"/>
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="200">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="400">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="404">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+      <method name="OPTIONS" id="OPTIONS">
+        <doc xml:lang="en" title="OPTIONS">Sondeo CORS</doc>
+        <request/>
+        <response status="200">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="401">
+          <representation mediaType="application/json"/>
+        </response>
+        <response status="403">
+          <representation mediaType="application/json"/>
+        </response>
+      </method>
+    </resource>
+  </resources>
+</application>
