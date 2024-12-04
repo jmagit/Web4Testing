@@ -64,9 +64,12 @@ describe('Pruebas de la calculadora', () => {
 		});
 		'a-,'.split('').forEach(digito => {
 			it(`ponDigito ${digito} como error`, () => {
-				calc.ponDigito(digito)
+				const out = jest.spyOn(console, 'error')
+				out.mockImplementation(() => {})
+					calc.ponDigito(digito)
 				expect(pantallaHasCalled).toBeFalsy()
 				expect(pantalla).toBeUndefined()
+				expect(out).toHaveBeenCalledWith('No es un valor numérico.')
 			})
 		});
 		for (let digito = 0; digito <= 9; digito++) {
@@ -107,10 +110,13 @@ describe('Pruebas de la calculadora', () => {
 		})
 
 		it('Repite la coma', () => {
+			const out = jest.spyOn(console, 'warn')
+            out.mockImplementation(() => {})
 			calc.ponOperando('0.1')
 			calc.ponComa()
 			calc.ponDigito(2)
 			expect(pantalla).toBe('0.12')
+			expect(out).toHaveBeenCalledWith('Ya está la coma')
 		})
 
 		it('Empieza por la coma', () => {
