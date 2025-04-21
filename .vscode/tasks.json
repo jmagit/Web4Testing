@@ -1,0 +1,12 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "SonarQube Scan",
+            "type": "shell",
+            "command": "sonar-scanner.bat -D\"sonar.projectKey=Web4Testing\" -D\"sonar.host.url=http://localhost:9000\" -D\"sonar.javascript.lcov.reportPaths=./coverage/lcov.info\" -D\"sonar.login=sqp_7a8f299abaf66e9c56fdb8796298fd5b697ccb03\""
+        }
+    ]
+}

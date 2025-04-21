@@ -1,3 +1,4 @@
+/* global Mustache */
 function LineaPedido(idProducto, nombreProducto, cantidad, precio) {
     this.id = 0;
     this.idProducto = idProducto;
@@ -53,6 +54,7 @@ const carrito = new (function () {
     };
 })();
 
+// eslint-disable-next-line no-unused-vars
 function CarritoManager() {
     let obj = this;
     let listaProductos;
@@ -109,7 +111,7 @@ function CarritoManager() {
         let prod = listaProductos.find(function (item) { return item.id == id; });
         if (prod) {
             carrito.add(prod.id, prod.titulo, prod.precio);
-            mng.Refresca();
+            obj.Refresca();
         }
     };
 

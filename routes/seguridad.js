@@ -289,7 +289,7 @@ router.post('/login', async function (req, res, next) {
     let data = await fs.readFile(config.security.USR_FILENAME, 'utf8')
     let list = JSON.parse(data)
     let element = list.find(item => item[config.security.PROP_USERNAME] == usr && item.activo)
-    if (element && await bcrypt.compare(pwd, element[config.security.PROP_PASSWORD])) {
+    if (element && (await bcrypt.compare(pwd, element[config.security.PROP_PASSWORD]))) {
         sendLogin(req, res, element)
     } else {
         res.status(200).json({ success: false })
@@ -545,7 +545,7 @@ router.get('/register/status', async function (req, res, next) {
     let usr;
     try {
         usr = CreatedTokenHMAC256.decode(req.query.instance).usr
-    } catch (ex) {
+    } catch {
         res.status(200).json({ status: 'canceled', result: 'timeout' }).end()
         return
     }
@@ -585,7 +585,7 @@ router.get('/register/confirm', async function (req, res, next) {
     let usr;
     try {
         usr = CreatedTokenHMAC256.decode(req.query.instance).usr
-    } catch (ex) {
+    } catch {
         return next(generateError(req, 'Ya no existe la instancia.', 400))
     }
     let data = await fs.readFile(config.security.USR_FILENAME, 'utf8')
@@ -628,7 +628,7 @@ router.get('/register/reject', async function (req, res, next) {
     let usr;
     try {
         usr = CreatedTokenHMAC256.decode(req.query.instance).usr
-    } catch (ex) {
+    } catch {
         return next(generateError(req, 'Ya no existe la instancia.', 400))
     }
     let data = await fs.readFile(config.security.USR_FILENAME, 'utf8')
@@ -820,7 +820,7 @@ autenticados.put('/password', async function (req, res, next) {
     let index = list.findIndex(row => row[config.security.PROP_USERNAME] == res.locals.usr)
     if (index == -1) {
         return next(generateErrorByStatus(req, 404))
-    } else if (config.security.PASSWORD_PATTERN.test(element.newPassword) && await bcrypt.compare(element.oldPassword, list[index][config.security.PROP_PASSWORD])) {
+    } else if (config.security.PASSWORD_PATTERN.test(element.newPassword) && (await bcrypt.compare(element.oldPassword, list[index][config.security.PROP_PASSWORD]))) {
         list[index][config.security.PROP_PASSWORD] = await encriptaPassword(element.newPassword)
         fs.writeFile(config.security.USR_FILENAME, JSON.stringify(list))
             .then(() => { res.sendStatus(204) })

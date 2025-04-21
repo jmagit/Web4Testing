@@ -1,4 +1,3 @@
-// eslint-disable-next-line node/no-unpublished-require
 const request = require('supertest');
 const app = require('../../app');
 
@@ -22,13 +21,13 @@ describe("Test the root path", () => {
       .get('/esta/ruta/no/existe')
       .accept('text/html')
       .expect(404)
-      .expect('Content-Type', /html/)
+      .expect('Content-Type', /html/);
   });
   it("NOT FOUND - JSON", async () => {
     return await request(app)
       .get('/esta/ruta/no/existe')
       .expect(404)
-      .expect('Content-Type', /json/)
+      .expect('Content-Type', /json/);
   });
   it("GET /fileupload", done => {
     request(app)
@@ -55,6 +54,20 @@ describe("Test the root path", () => {
     request(app)
       .get("/index.html/ruta/interna")
       .expect(404)
+      .end(done)
+  });
+  it.each([
+    'calculadora',
+    'compras',
+    'biblioteca',
+    'contactos',
+    'alertas',
+    'documentacion',
+    'api'
+  ])("/%s", (path, done) => {
+    request(app)
+      .get(`/${path}`)
+      .expect(200)
       .end(done)
   });
 });

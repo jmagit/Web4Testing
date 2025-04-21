@@ -24,6 +24,11 @@ module.exports.emptyPropertiesToNull = source => {
     })
     return target
 }
+module.exports.parseBoolFromString = (string) => {
+    if (!string) return
+    const value = string.toLowerCase()
+    return value === 'true' ? true : (value === 'false' ? false : string)
+}
 
 // Unificación de los errores
 

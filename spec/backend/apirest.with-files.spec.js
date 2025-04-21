@@ -1,5 +1,3 @@
-/* eslint-disable jest/prefer-lowercase-title */
-// eslint-disable-next-line node/no-unpublished-require
 const request = require('supertest');
 const seguridad = require('../../routes/seguridad')
 const utils = require('../../routes/utils')

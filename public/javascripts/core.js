@@ -1,7 +1,7 @@
 // if (!Web4Testing)
 const Web4Testing = new Object();
 
-Web4Testing.AuthService = new function () {
+Web4Testing.AuthService = new (function() {
     let obj = this;
     obj.isAuth = false;
     obj.authToken = '';
@@ -208,4 +208,4 @@ Web4Testing.AuthService = new function () {
             } else decodeError(response)
         })
     };
-}
+})

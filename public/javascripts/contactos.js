@@ -1,3 +1,5 @@
+/* global Mustache Web4Testing */
+// eslint-disable-next-line no-unused-vars
 const Contactos = new (
     function () {
         let obj = this;

@@ -54,6 +54,7 @@ La documentación está disponible en formato HTML, YAML y JSOM:
 
 1. En el subdirectorio `/data`, añadir un fichero .json con el array de objetos con los valores iniciales del resource. Para generar el fichero se pueden utilizar herramientas de generación automatizada de juegos de datos como <http://www.generatedata.com/?lang=es> o <https://www.mockaroo.com/>.
 2. Dar de alta el servicio añadiendo una entrada en el fichero de configuración de servicios `data/__servicios.json` indicando:
+
    | Propiedad             | Tipo                  | Descripción                               |
    | --------------------- | --------------------- | ----------------------------------------- |
    | *endpoint* | string | Nombre en minúsculas del recurso para crear la url con la dirección del servicio *(Obligatoria)* |
@@ -68,6 +69,7 @@ La documentación está disponible en formato HTML, YAML y JSOM:
    | operations | array[string] |  Lista de operaciones `["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]` disponibles para el servicio, si está vacía, estarán todas disponibles |
    | security | boolean o string | `true` para indicar que el usuario debe estar autenticado para acceder al servicio. Acepta una cadena con los roles, separados por comas, a los que se autoriza el acceso (requiere autenticación). |
    | schema | string | Esquema OpenApi para la validación y definición de la documentación |
+
 3. Rearrancar el servidor.
 4. Probar: <http://localhost:8181/api/nuevoservicio>
 
@@ -80,6 +82,7 @@ Se han incorporado una serie de parámetros (querystring) para ampliar el contro
 * **_sort=*propiedad*:** Indica la lista de propiedades (separadas por comas) por la que se ordenaran los resultados, en caso de omitirse se utilizará la propiedad que actúa como primary key. Si el nombre de la propiedad está precedido por un guion (signo negativo) la ordenación será descendente.
 * **_projection=*propiedades*:** Devuelve solo aquellas propiedades de la lista suministrada, los nombres de las propiedades deben ir separadas por comas.
 * **_page=*número*:** Número de página empezando en 0 (primera página). Si se omite, pero aparece el parámetro *_rows*, tomara el valor 0 por defecto. La estructura devuelta es:  
+
     | Propiedad             | Tipo                  | Descripción                               |
     | --------------------- | --------------------- | ----------------------------------------- |
     | content               | array                 | Listado de elementos                      |
@@ -91,6 +94,7 @@ Se han incorporado una serie de parámetros (querystring) para ampliar el contro
     | empty                 | boolean               | Si la página está vacía                   |
     | first                 | boolean               | Si la página es la primera                |
     | last                  | boolean               | Si la página es la última                 |
+
 * **_page=count:** Devuelve el número de páginas y filas de la fuente de datos. Si se omite el Número de filas por página tomara 20 por defecto. Ej:  
 `{  
   "pages": 10,
@@ -116,7 +120,7 @@ Los detalles del problema puede tener las siguientes propiedades:
 
 Para evitar conflictos con los navegadores se han habilitado las siguientes cabeceras CORS:
 
-* Access-Control-Allow-Origin: _dominio-origen-de-la-petición_
+* Access-Control-Allow-Origin: *dominio-origen-de-la-petición*
 * Access-Control-Allow-Headers: Origin, Content-Type, Accept, Authorization, X-Requested-With, X-SRF-TOKEN
 * Access-Control-Allow-Methods: GET, POST, PUT, DELETE, PATCH, OPTIONS
 * Access-Control-Allow-Credentials: true
@@ -179,14 +183,14 @@ Por ejemplo: <http://localhost:8181/eco/personas/1?_page=1&_rows=10>
 Para simular la autenticación con token JWT de cabecera está disponible el servicio `http://localhost:4321/login` con el método POST.
 
 * **Formularios**
-  * action="http://localhost:4321/login"
-  * method="post"
-  * body="username=admin&password=P@$$w0rd"
+  * action="`http://localhost:4321/login`"
+  * method="`post`"
+  * body="`username=admin&password=P@$$w0rd`"
 * **API**
   * Content-Type: application/json
-  * body: { "username": "admin", "password": "P@$$w0rd" }
+  * body: `{ "username": "admin", "password": "P@$$w0rd" }`
 
-#### Respuesta JSON:
+#### Respuesta JSON
 
     {
         "success": true,
@@ -202,12 +206,12 @@ Para simular la autenticación con token JWT de cabecera está disponible el ser
 
 Se obtiene un token de acceso (RS256), un token de refresco (HMAC256) y la expiración del token de acceso en segundos. El token de refresco no se activa hasta que expire el token de acceso.
 
-#### Envío del token de acceso en la cabecera:
+#### Envío del token de acceso en la cabecera
 
     GET http://localhost:4321/auth
     Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIiwicm9sZXMiOlsiVXN1YXJpb3MiLCJBZG1pbmlzdHJhZG9yZXMiXSwiaWF0IjoxNjQ4NTc4NTYxLCJleHAiOjE2NDg1ODIxNjF9.WF-z8UHEOtqh0NSttxkV4VSp8evKEKLvW1fIh4CwEJ0
 
-#### Envío del token de refresco:
+#### Envío del token de refresco
 
     POST http://localhost:4321/login/refresh
 
@@ -263,7 +267,8 @@ Se obtiene un 200 cuando el estado pase complete o canceled (dispone de un día 
 Los webhooks confirmGetUri y rejectGetUri se invocan con peticiones get para poder ser invocados desde correos electrónicos. Ambos devuelven un 204 cuando se completan.
 
 #### Contraseñas
-La contraseñas sigue el patrón /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/ (al menos 8 caracteres con minúsculas, mayúsculas, dígitos y símbolos). Para el encriptado de contraseñas en la persistencia se utiliza bcrypt (función de hashing de contraseñas basada en el cifrado Blowfish), utilizado al Registrar usuario y se ignora la contraseña en el resto de los casos. Para cambiar la contraseña se ha habilitado el método PUT <http://localhost:4321/register/password> que requiere el usuario autenticado y la contraseña anterior como medida de seguridad:
+
+La contraseñas sigue el patrón `/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/` (al menos 8 caracteres con minúsculas, mayúsculas, dígitos y símbolos). Para el encriptado de contraseñas en la persistencia se utiliza bcrypt (función de hashing de contraseñas basada en el cifrado Blowfish), utilizado al Registrar usuario y se ignora la contraseña en el resto de los casos. Para cambiar la contraseña se ha habilitado el método PUT <http://localhost:4321/register/password> que requiere el usuario autenticado y la contraseña anterior como medida de seguridad:
 
     PUT http://localhost:4321/register/password
     Content-Type: application/json
