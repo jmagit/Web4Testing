@@ -1,8 +1,6 @@
-name: Publish to Docker Hub
+name: Publish new version to Docker Hub
 
 on:
-  schedule:
-    - cron: '29 19 * * *'
   push:
     tags:
       - 'v*.*.*' # Se ejecuta al hacer push a un tag como v1.0.0
