@@ -1,31 +1,41 @@
-get http://localhost:8181/api/personas
+@hostname = http://localhost:8181
+
+###
+GET {{hostname}}/api-docs/v1/openapi.yaml
+
+###
+GET {{hostname}}/api-docs/v1/openapi.json
 
 ###
 
-get http://localhost:8181/api/personas/2
+get {{hostname}}/api/personas
+
+###
+
+get {{hostname}}/api/personas/2
 
 
 ###
 
-put http://localhost:8181/api/personas/2
+put {{hostname}}/api/personas/2
 Content-Type: application/json
 
 { "id": 2, "nombre": "Pepito", "apellidos": "Grillo", "edad": 67 }
 
 ###
 
-patch http://localhost:8181/api/personas/2
+patch {{hostname}}/api/personas/2
 Content-Type: application/json
 
 { "nombre": "Pepito" }
 
 ###
 
-OPTIONS  http://localhost:8181/api/login
+OPTIONS  {{hostname}}/api/login
 
 ###
 
-POST http://localhost:8181/api/login
+POST {{hostname}}/api/login
 Content-Type: application/json
 #x-xsrf-token: 123456790ABCDEF
 
@@ -34,16 +44,16 @@ Content-Type: application/json
     "password": "P@$$w0rd" 
 }
 ###
-GET http://localhost:8181/api/auth
+GET {{hostname}}/api/auth
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsIm5hbWUiOiJBZG1pbmlaaaJhZG9yIiwicm9sZXMiOlsiVXN1YXJpb3MiLCJBZG1pbmlzdHJhZG9yZXMiXSwiaWF0IjoxNjQ5MzM0MDQzLCJleHAiOjE2NDkzMzc2NDN9._KrvnPd7CnvcwoQiwO0ztIRMvFVVVM2Nrbex_2OGKxo
 
 ###
 
-GET http://localhost:8181/api/register
+GET {{hostname}}/api/register
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJra0BrayIsIm5hbWUiOiJkZW1vIiwicm9sZXMiOlsiVXN1YXJpb3MiXSwiaWF0IjoxNjU3MzkzNDk5LCJleHAiOjE2NTczOTcwOTl9.eIij3lAGiQKxsR6stMGPFAHw95kkHD7-m4y2Y9gz8wI
 
 ###
-POST http://localhost:8181/api/register
+POST {{hostname}}/api/register
 Content-Type: application/json
 
 {
@@ -56,7 +66,7 @@ Content-Type: application/json
 }
 ###
 
-POST http://localhost:8181/api/login
+POST {{hostname}}/api/login
 Content-Type: application/json
 
 {
@@ -64,7 +74,7 @@ Content-Type: application/json
     "password": "P@$$w0rd" 
 }
 ###
-PUT http://localhost:8181/api/register
+PUT {{hostname}}/api/register
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJra0BrayIsIm5hbWUiOiJkZW1vIiwicm9sZXMiOlsiVXN1YXJpb3MiXSwiaWF0IjoxNjU3MzkzNDk5LCJleHAiOjE2NTczOTcwOTl9.eIij3lAGiQKxsR6stMGPFAHw95kkHD7-m4y2Y9gz8wI
 
@@ -78,7 +88,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJra0BrayIsI
 }
 
 ###
-PUT http://localhost:8181/api/register/password
+PUT {{hostname}}/api/register/password
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJra0BrayIsIm5hbWUiOiJkZW1vIiwicm9sZXMiOlsiVXN1YXJpb3MiXSwiaWF0IjoxNjU3MzkzNDk5LCJleHAiOjE2NTczOTcwOTl9.eIij3lAGiQKxsR6stMGPFAHw95kkHD7-m4y2Y9gz8wI
 

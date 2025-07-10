@@ -16,10 +16,14 @@ async function encriptaPassword(password) {
     return bcrypt.hash(password, salt)
 }
 
+const generarRealm = () => {
+    return `${config.security.AUTHENTICATION_SCHEME}realm="MicroserviciosJWT"`
+}
+
 const RefreshTokenHMAC256 = {
     generar: (usuario) => {
         return jwt.sign({
-            usr: usuario[config.security.PROP_USERNAME],
+            sub: usuario[config.security.PROP_USERNAME],
         }, config.security.REFRESH_KEY, { issuer: 'MicroserviciosJWT', audience: 'authorization', expiresIn: config.security.EXPIRACION_MIN * config.security.REFRESH_FACTOR + 'm', notBefore: config.security.EXPIRACION_MIN + 'm' })
     },
     decode: (token) => {
@@ -32,8 +36,7 @@ const TokenRS256 = {
         let buff = Buffer.from(config.security.PRIVATE_KEY, 'base64');
 
         return jwt.sign({
-            usr: usuario[config.security.PROP_USERNAME],
-            name: usuario.nombre,
+            sub: usuario[config.security.PROP_USERNAME],
             roles: usuario.roles
         }, createPrivateKey({ key: buff, format: 'der', type: 'pkcs8' }), { issuer: 'MicroserviciosJWT', audience: 'authorization', algorithm: 'RS256', expiresIn: config.security.EXPIRACION_MIN + 'm' })
     },
@@ -45,19 +48,20 @@ const TokenRS256 = {
 const CreatedTokenHMAC256 = {
     generar: (usuario) => {
         return jwt.sign({
-            usr: usuario[config.security.PROP_USERNAME],
+            sub: usuario[config.security.PROP_USERNAME],
         }, config.security.REFRESH_KEY, { expiresIn: '24h' })
     },
     decode: (token) => {
         return jwt.verify(token, config.security.REFRESH_KEY);
     }
 }
+
 module.exports.CreatedTokenHMAC256 = CreatedTokenHMAC256;
 
 module.exports.generarTokenJWT = TokenRS256.generar
 
 module.exports.generarTokenScheme = (usuario) => {
-    return config.security.AUTHENTICATION_SCHEME + module.exports.generarTokenJWT(usuario)
+    return `${config.security.AUTHENTICATION_SCHEME}${module.exports.generarTokenJWT(usuario)}`
 }
 
 // Middleware: Cross-origin resource sharing (CORS)
@@ -67,10 +71,11 @@ module.exports.useCORS = (req, res, next) => {
         return next()
     }
     res.header('Access-Control-Allow-Origin', origen)
-    res.header('Access-Control-Allow-Headers', 'Origin, Content-Type, Accept, authorization, X-Requested-With, X-XSRF-TOKEN')
+    // res.header('Access-Control-Allow-Headers', 'Origin, Content-Type, Accept, authorization, X-Requested-With, X-XSRF-TOKEN, accept-language')
+    res.header('Access-Control-Allow-Headers', '*')
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS')
     res.header('Access-Control-Allow-Credentials', validator.isURL(origen, { require_tld: false }))
-    next()
+    return next()
 }
 
 // Middleware: Autenticación
@@ -88,16 +93,16 @@ module.exports.useAuthentication = (req, res, next) => {
     try {
         let decoded = TokenRS256.decode(token);
         res.locals.isAuthenticated = true;
-        res.locals.usr = decoded.usr;
-        res.locals.name = decoded.name;
+        res.locals.usr = decoded.sub;
         res.locals.roles = decoded.roles;
         res.locals.isInRole = role => res.locals.roles.includes(role)
         next();
     } catch (err) {
         if (err.name === 'TokenExpiredError') {
-            res.set('WWW-Authenticate', 'Bearer realm="MicroserviciosJWT", error="invalid_token", error_description="The access token expired"')
-            return next(generateError(req, `Invalid token: token expired`, 403, [{ expiredAt: err.expiredAt }]))
+            res.set('WWW-Authenticate', `${generarRealm()}, error="invalid_token", error_description="The access token expired"`)
+            return next(generateError(req, `Invalid token: token expired`, 401, [{ expiredAt: err.expiredAt }]))
         }
+        res.set('WWW-Authenticate', `${generarRealm()}, error="invalid_token", error_description="The access is invalid"`)
         return next(generateError(req, 'Invalid token', 401))
     }
 }
@@ -107,6 +112,7 @@ module.exports.onlyAuthenticated = (req, res, next) => {
         return next()
     }
     if (!res.locals.isAuthenticated) {
+        res.set('WWW-Authenticate', generarRealm())
         return next(generateErrorByStatus(req, 401))
     }
     next()
@@ -116,12 +122,14 @@ module.exports.onlyInRole = (roles) => (req, res, next) => {
         return next()
     }
     if (!res.locals.isAuthenticated) {
+        res.set('WWW-Authenticate', generarRealm())
         return next(generateErrorByStatus(req, 401))
     }
 
     if (roles.split(',').some(role => res.locals.isInRole(role))) {
         next()
     } else {
+        res.set('WWW-Authenticate', generarRealm() + ', error="insufficient_scope", error_description="Requires higher privileges"')
         return next(generateErrorByStatus(req, 403))
     }
 }
@@ -131,6 +139,7 @@ module.exports.onlySelf = (_req, res, next) => {
 }
 module.exports.readOnly = (req, res, next) => {
     if (req.method !== 'GET' && req.method !== 'OPTIONS' && !res.locals.isAuthenticated) {
+        res.set('WWW-Authenticate', generarRealm())
         return next(generateErrorByStatus(req, 401))
     }
     next()
@@ -164,10 +173,24 @@ module.exports.useXSRF = (req, res, next) => {
     if ('POST|PUT|DELETE|PATCH'.includes(req.method.toUpperCase()) && isInvalidXsrfToken(req)) {
         if (req.cookies['XSRF-TOKEN'] !== module.exports.generateXsrfToken(req))
             generateXsrfCookie(req, res)
+        res.set('WWW-Authenticate', generarRealm())
         return next(generateError(req, 'Invalid XSRF-TOKEN', 401))
     }
     res.XsrfToken = module.exports.generateXsrfToken(req)
     next()
+}
+// Auxiliares
+async function getUserElementAndList(username) {
+    const data = await fs.readFile(config.security.USR_FILENAME, 'utf8')
+    const list = JSON.parse(data)
+    const element = list.find(item => item[config.security.PROP_USERNAME] == username)
+    return { element, list }
+}
+async function getUserIndexAndList(username) {
+    const data = await fs.readFile(config.security.USR_FILENAME, 'utf8')
+    const list = JSON.parse(data)
+    const index = list.findIndex(item => item[config.security.PROP_USERNAME] == username)
+    return { index, list }
 }
 
 // Rutas: Control de acceso
@@ -197,16 +220,18 @@ module.exports.useXSRF = (req, res, next) => {
  *         password:
  *           type: string
  *           format: password
- *           example: 'P@$$w0rd'
+ *           example: 'P@$$$w0rd'
  *     RespuestaLogin:
  *       type: object
  *       title: Respuesta Login
  *       properties:
  *         success:
  *           type: boolean
- *         token:
+ *         access_token:
  *           type: string
- *         refresh:
+ *         token_type:
+ *           type: string
+ *         refresh_token:
  *           type: string
  *         name:
  *           type: string
@@ -275,8 +300,8 @@ router.options('/login', function (_req, res) {
  *       "400":
  *         $ref: "#/components/responses/BadRequest"
  */
-router.post('/login', async function (req, res, next) {
-    if (!req.body || !req.body.username || !req.body.password) {
+router.post('/login', function (req, res, next) {
+    if (!req.body?.username || !req.body?.password) {
         // setTimeout(() => next(generateErrorByStatus(req, 400)), 1000)
         return next(generateErrorByStatus(req, 400))
     }
@@ -286,14 +311,18 @@ router.post('/login', async function (req, res, next) {
         // setTimeout(() => next(generateErrorByStatus(req, 400)), 1000)
         return next(generateErrorByStatus(req, 400))
     }
-    let data = await fs.readFile(config.security.USR_FILENAME, 'utf8')
-    let list = JSON.parse(data)
-    let element = list.find(item => item[config.security.PROP_USERNAME] == usr && item.activo)
-    if (element && (await bcrypt.compare(pwd, element[config.security.PROP_PASSWORD]))) {
-        sendLogin(req, res, element)
-    } else {
-        res.status(200).json({ success: false })
-    }
+    (async () => {
+        try {
+            const { element } = await getUserElementAndList(usr)
+            if (element && element.activo && (await bcrypt.compare(pwd, element[config.security.PROP_PASSWORD]))) {
+                sendLogin(req, res, element)
+            } else {
+                res.status(200).json({ success: false })
+            }
+        } catch (error) {
+            res.status(500).json(generateError(req, error.message, 500).payload)
+        }
+    })()
 })
 
 /**
@@ -332,37 +361,39 @@ router.post('/login', async function (req, res, next) {
  *       "403":
  *         $ref: "#/components/responses/Forbidden"
  */
-router.post('/login/refresh', async function (req, res, next) {
-    if (!req.body || !req.body.token) {
+router.post('/login/refresh', function (req, res, next) {
+    if (!req.body?.token) {
         return next(generateErrorByStatus(req, 400))
     }
-    try {
-        let decoded = RefreshTokenHMAC256.decode(req.body.token);
-        let data = await fs.readFile(config.security.USR_FILENAME, 'utf8')
-        let list = JSON.parse(data)
-        let element = list.find(item => item[config.security.PROP_USERNAME] == decoded.usr && item.activo)
-        if (element) {
-            sendLogin(req, res, element)
-        } else {
-            res.status(200).json({ success: false })
-        }
-    } catch (err) {
-        let rslt;
-        switch (err.name) {
-            case 'TokenExpiredError':
-                res.set('WWW-Authenticate', 'Bearer realm="MicroserviciosJWT", error="invalid_token", error_description="The access token expired"')
-                rslt = generateError(req, `Invalid token: token expired`, 403, [{ expiredAt: err.expiredAt }])
-                break;
-            case 'NotBeforeError':
-                rslt = generateError(req, `Invalid token: token not active`, 403, [{ notBefore: err.date }])
-                break;
-            default:
-                rslt = generateError(req, 'Invalid token', 403)
-                break;
+    (async () => {
+        try {
+            let decoded = RefreshTokenHMAC256.decode(req.body.token);
+            const { element } = await getUserElementAndList(decoded.sub)
+            if (element && element.activo) {
+                sendLogin(req, res, element)
+            } else {
+                res.status(200).json({ success: false })
+            }
+        } catch (err) {
+            let rslt;
+            switch (err.name) {
+                case 'TokenExpiredError':
+                    res.set('WWW-Authenticate', `${generarRealm()}, error="invalid_token", error_description="The access token expired"`)
+                    rslt = generateError(req, `Invalid token: token expired`, 401, [{ expiredAt: err.expiredAt }])
+                    break;
+                case 'NotBeforeError':
+                    res.set('WWW-Authenticate', `${generarRealm()}, error="insufficient_scope", error_description="The refresh token not active"`)
+                    rslt = generateError(req, `Invalid token: token not active`, 403, [{ notBefore: err.date }])
+                    break;
+                default:
+                    res.set('WWW-Authenticate', `${generarRealm()}, error="insufficient_scope", error_description="Requires higher privileges"`)
+                    rslt = generateError(req, 'Invalid token', 403)
+                    break;
 
+            }
+            res.status(403).json(rslt.payload)
         }
-        res.status(403).json(rslt.payload)
-    }
+    })()
 })
 /**
  * @swagger
@@ -380,15 +411,21 @@ router.post('/login/refresh', async function (req, res, next) {
  *               type: string
  */
 router.get('/login/signature', function (_req, res) {
-    res.contentType('text/plain').send(config.security.PUBLIC_KEY)
+    const BLOCK_LENGTH = 64
+    let pem = '-----BEGIN PUBLIC KEY-----\n'
+    for (let i = 0; i < config.security.PUBLIC_KEY.length; i += BLOCK_LENGTH)
+        pem += config.security.PUBLIC_KEY.substring(i, Math.min(i + BLOCK_LENGTH, config.security.PUBLIC_KEY.length)) + '\n'
+    pem += '-----END PUBLIC KEY-----\n'
+    res.contentType('application/pem-certificate-chain').send(pem)
 })
 
 function sendLogin(req, res, element) {
     let token = module.exports.generarTokenScheme(element)
     let payload = {
         success: true,
-        token: module.exports.generarTokenScheme(element),
-        refresh: RefreshTokenHMAC256.generar(element),
+        token_type: config.security.AUTHENTICATION_SCHEME.trim(),
+        access_token: module.exports.generarTokenJWT(element),
+        refresh_token: RefreshTokenHMAC256.generar(element),
         name: element.nombre || element[config.security.PROP_NAME],
         roles: element.roles,
         expires_in: config.security.EXPIRACION_MIN * 60
@@ -460,33 +497,35 @@ router.all('/logout', function (_req, res) {
  *       "400":
  *         $ref: "#/components/responses/BadRequest"
  */
-router.post('/register', async function (req, res, next) {
-    let data = await fs.readFile(config.security.USR_FILENAME, 'utf8')
-    let list = JSON.parse(data)
-    let element = req.body
-    if (element[config.security.PROP_USERNAME] == undefined) {
-        return next(generateError(req, 'Falta el nombre de usuario.', 400))
-    } else if (list.find(item => item[config.security.PROP_USERNAME] == element[config.security.PROP_USERNAME])) {
-        return next(generateError(req, 'El usuario ya existe.', 400))
-    } else if (config.security.PASSWORD_PATTERN.test(element[config.security.PROP_PASSWORD])) {
-        element[config.security.PROP_PASSWORD] = await encriptaPassword(element[config.security.PROP_PASSWORD])
-        element.roles = ["Usuarios"]
-        delete element.activo
-        list.push(element)
-        fs.writeFile(config.security.USR_FILENAME, JSON.stringify(list))
-            .then(() => {
-                const token = CreatedTokenHMAC256.generar(element)
-                const location = `${req.protocol}://${req.hostname}:${req.connection.localPort}${req.originalUrl}`
-                res.status(202).json({
-                    statusGetUri: `${location}/status?instance=${token}`,
-                    confirmGetUri: `${location}/confirm?instance=${token}`,
-                    rejectGetUri: `${location}/reject?instance=${token}`
+router.post('/register', function (req, res, next) {
+    (async () => {
+        let data = await fs.readFile(config.security.USR_FILENAME, 'utf8')
+        let list = JSON.parse(data)
+        let element = req.body
+        if (element[config.security.PROP_USERNAME] == undefined) {
+            return next(generateError(req, 'Falta el nombre de usuario.', 400))
+        } else if (list.find(item => item[config.security.PROP_USERNAME] == element[config.security.PROP_USERNAME])) {
+            return next(generateError(req, 'El usuario ya existe.', 400))
+        } else if (config.security.PASSWORD_PATTERN.test(element[config.security.PROP_PASSWORD])) {
+            element[config.security.PROP_PASSWORD] = await encriptaPassword(element[config.security.PROP_PASSWORD])
+            element.roles = ["Usuarios"]
+            delete element.activo
+            list.push(element)
+            fs.writeFile(config.security.USR_FILENAME, JSON.stringify(list))
+                .then(() => {
+                    const token = CreatedTokenHMAC256.generar(element)
+                    const location = `${req.protocol}://${req.hostname}:${req.socket.localPort}${req.originalUrl}`
+                    res.status(202).json({
+                        statusGetUri: `${location}/status?instance=${token}`,
+                        confirmGetUri: `${location}/confirm?instance=${token}`,
+                        rejectGetUri: `${location}/reject?instance=${token}`
+                    })
                 })
-            })
-            .catch(err => { return next(generateErrorByError(req, err, 500)) })
-    } else {
-        return next(generateError(req, 'Formato incorrecto de la password.', 400))
-    }
+                .catch(err => { return next(generateErrorByError(req, err, 500)) })
+        } else {
+            return next(generateError(req, 'Formato incorrecto de la password.', 400))
+        }
+    })()
 })
 /**
  * @swagger
@@ -538,27 +577,27 @@ router.post('/register', async function (req, res, next) {
  *       "400":
  *         $ref: "#/components/responses/BadRequest"
  */
-router.get('/register/status', async function (req, res, next) {
+router.get('/register/status', function (req, res, next) {
     if (!req.query.instance) {
         return next(generateError(req, 'Falta la instancia.', 400))
     }
     let usr;
     try {
-        usr = CreatedTokenHMAC256.decode(req.query.instance).usr
+        usr = CreatedTokenHMAC256.decode(req.query.instance).sub
     } catch {
         res.status(200).json({ status: 'canceled', result: 'timeout' }).end()
         return
     }
-    let data = await fs.readFile(config.security.USR_FILENAME, 'utf8')
-    let list = JSON.parse(data)
-    let element = list.find(item => item[config.security.PROP_USERNAME] == usr)
-    if (!element) {
-        res.status(200).json({ status: 'complete', result: 'reject' }).end()
-    } else if (typeof (element.activo) === 'undefined') {
-        res.status(202).json({ status: 'pending' }).end()
-    } else {
-        res.status(200).json({ status: 'complete', result: element.activo ? 'confirm' : 'reject' }).end()
-    }
+    (async () => {
+        const { element } = await getUserElementAndList(usr)
+        if (!element) {
+            res.status(200).json({ status: 'complete', result: 'reject' }).end()
+        } else if (typeof (element.activo) === 'undefined') {
+            res.status(202).json({ status: 'pending' }).end()
+        } else {
+            res.status(200).json({ status: 'complete', result: element.activo ? 'confirm' : 'reject' }).end()
+        }
+    })()
 })
 /**
 * @swagger
@@ -578,30 +617,29 @@ router.get('/register/status', async function (req, res, next) {
 *       "400": { $ref: "#/components/responses/BadRequest" }
 *       "404": { "$ref": "#/components/responses/NotFound" }
 */
-router.get('/register/confirm', async function (req, res, next) {
+router.get('/register/confirm', function (req, res, next) {
     if (!req.query.instance) {
         return next(generateError(req, 'Falta la instancia.', 400))
     }
     let usr;
     try {
-        usr = CreatedTokenHMAC256.decode(req.query.instance).usr
+        usr = CreatedTokenHMAC256.decode(req.query.instance).sub
     } catch {
         return next(generateError(req, 'Ya no existe la instancia.', 400))
     }
-    let data = await fs.readFile(config.security.USR_FILENAME, 'utf8')
-    let list = JSON.parse(data)
-    let index = list.findIndex(row => row[config.security.PROP_USERNAME] == usr)
-    if (index == -1) {
-        return next(generateErrorByStatus(req, 404))
-    }
-    let element = list.find(item => item[config.security.PROP_USERNAME] == usr)
-    if (!element.activo) {
-        element.activo = true
-        fs.writeFile(config.security.USR_FILENAME, JSON.stringify(list))
-            .then(() => { res.sendStatus(204) })
-            .catch(err => { return next(generateErrorByError(req, err, 500)) })
-    }
-    res.sendStatus(204)
+    (async () => {
+        const { element, list } = await getUserElementAndList(usr)
+        if (!element) {
+            return next(generateErrorByStatus(req, 404))
+        }
+        if (!element.activo) {
+            element.activo = true
+            fs.writeFile(config.security.USR_FILENAME, JSON.stringify(list))
+                .then(() => { res.sendStatus(204) })
+                .catch(err => { return next(generateErrorByError(req, err, 500)) })
+        }
+        res.sendStatus(204)
+    })()
 })
 /**
 * @swagger
@@ -621,29 +659,29 @@ router.get('/register/confirm', async function (req, res, next) {
 *       "400": { $ref: "#/components/responses/BadRequest" }
 *       "404": { "$ref": "#/components/responses/NotFound" }
 */
-router.get('/register/reject', async function (req, res, next) {
+router.get('/register/reject', function (req, res, next) {
     if (!req.query.instance) {
         return next(generateError(req, 'Falta la instancia.', 400))
     }
     let usr;
     try {
-        usr = CreatedTokenHMAC256.decode(req.query.instance).usr
+        usr = CreatedTokenHMAC256.decode(req.query.instance).sub
     } catch {
         return next(generateError(req, 'Ya no existe la instancia.', 400))
     }
-    let data = await fs.readFile(config.security.USR_FILENAME, 'utf8')
-    let list = JSON.parse(data)
-    let index = list.findIndex(row => row[config.security.PROP_USERNAME] == usr)
-    if (index == -1) {
-        return next(generateErrorByStatus(req, 404))
-    }
-    if (list[index].activo) {
-        return next(generateError(req, 'Ya esta confirmado.', 400))
-    }
-    list.splice(index, 1)
-    fs.writeFile(config.security.USR_FILENAME, JSON.stringify(list))
-        .then(() => { res.sendStatus(204) })
-        .catch(err => { return next(generateErrorByError(req, err, 500)) })
+    (async () => {
+        const { index, list } = await getUserIndexAndList(usr)
+        if (index == -1) {
+            return next(generateErrorByStatus(req, 404))
+        }
+        if (list[index].activo) {
+            return next(generateError(req, 'Ya esta confirmado.', 400))
+        }
+        list.splice(index, 1)
+        fs.writeFile(config.security.USR_FILENAME, JSON.stringify(list))
+            .then(() => { res.sendStatus(204) })
+            .catch(err => { return next(generateErrorByError(req, err, 500)) })
+    })()
 })
 
 let autenticados = express.Router();
@@ -678,7 +716,7 @@ autenticados.use(module.exports.useAuthentication)
  *                    type: string
  */
 autenticados.get('/', function (_req, res) {
-    res.status(200).json({ isAuthenticated: res.locals.isAuthenticated, usr: res.locals.usr, name: res.locals.name, roles: res.locals.roles })
+    res.status(200).json({ isAuthenticated: res.locals.isAuthenticated, subject: res.locals.usr, roles: res.locals.roles })
 })
 router.use('/auth', autenticados)
 
@@ -717,17 +755,18 @@ autenticados.use(module.exports.onlySelf)
  *       "401":
  *         $ref: "#/components/responses/Unauthorized"
  */
-autenticados.get('/', async function (req, res, next) {
+autenticados.get('/', function (req, res, next) {
     let usr = res.locals.usr;
-    let data = await fs.readFile(config.security.USR_FILENAME, 'utf8')
-    let list = JSON.parse(data)
-    let element = list.find(item => item[config.security.PROP_USERNAME] == usr)
-    if (element) {
-        delete element[config.security.PROP_PASSWORD]
-        res.status(200).json(element)
-    } else {
-        return next(generateErrorByStatus(req, 401))
-    }
+    (async () => {
+        const { element } = await getUserElementAndList(usr)
+        if (element) {
+            delete element[config.security.PROP_PASSWORD]
+            res.status(200).json(element)
+        } else {
+            res.set('WWW-Authenticate', generarRealm())
+            return next(generateErrorByStatus(req, 401))
+        }
+    })()
 })
 /**
  * @swagger
@@ -760,22 +799,24 @@ autenticados.get('/', async function (req, res, next) {
  *       "404":
  *         $ref: "#/components/responses/NotFound"
  */
-autenticados.put('/', async function (req, res, next) {
-    if (!isSelf(res, req.body.idUsuario))
+autenticados.put('/', function (req, res, next) {
+    if (!isSelf(res, req.body.idUsuario)) {
+        res.set('WWW-Authenticate', `${generarRealm()}, error="insufficient_scope", error_description="Requires higher privileges"`)
         return next(generateErrorByStatus(req, 403))
-    let element = req.body
-    let data = await fs.readFile(config.security.USR_FILENAME, 'utf8')
-    let list = JSON.parse(data)
-    let index = list.findIndex(row => row[config.security.PROP_USERNAME] == res.locals.usr)
-    if (index == -1) {
-        return next(generateErrorByStatus(req, 404))
-    } else {
-        if (element.nombre)
-            list[index].nombre = element.nombre;
-        fs.writeFile(config.security.USR_FILENAME, JSON.stringify(list))
-            .then(() => { res.sendStatus(204) })
-            .catch(err => { return next(generateErrorByError(req, err, 500)) })
     }
+    let element = req.body;
+    (async () => {
+        const { index, list } = await getUserIndexAndList(res.locals.usr)
+        if (index == -1) {
+            return next(generateErrorByStatus(req, 404))
+        } else {
+            if (element.nombre)
+                list[index].nombre = element.nombre;
+            fs.writeFile(config.security.USR_FILENAME, JSON.stringify(list))
+                .then(() => { res.sendStatus(204) })
+                .catch(err => { return next(generateErrorByError(req, err, 500)) })
+        }
+    })()
 })
 /**
  * @swagger
@@ -813,21 +854,21 @@ autenticados.put('/', async function (req, res, next) {
  *       "404":
  *         $ref: "#/components/responses/NotFound"
  */
-autenticados.put('/password', async function (req, res, next) {
-    let element = req.body
-    let data = await fs.readFile(config.security.USR_FILENAME, 'utf8')
-    let list = JSON.parse(data)
-    let index = list.findIndex(row => row[config.security.PROP_USERNAME] == res.locals.usr)
-    if (index == -1) {
-        return next(generateErrorByStatus(req, 404))
-    } else if (config.security.PASSWORD_PATTERN.test(element.newPassword) && (await bcrypt.compare(element.oldPassword, list[index][config.security.PROP_PASSWORD]))) {
-        list[index][config.security.PROP_PASSWORD] = await encriptaPassword(element.newPassword)
-        fs.writeFile(config.security.USR_FILENAME, JSON.stringify(list))
-            .then(() => { res.sendStatus(204) })
-            .catch(err => { return next(generateErrorByError(req, err, 500)) })
-    } else {
-        return next(generateError(req, 'Invalid data', 400))
-    }
+autenticados.put('/password', function (req, res, next) {
+    let element = req.body;
+    (async () => {
+        const { index, list } = await getUserIndexAndList(res.locals.usr)
+        if (index == -1) {
+            return next(generateErrorByStatus(req, 404))
+        } else if (config.security.PASSWORD_PATTERN.test(element.newPassword) && (await bcrypt.compare(element.oldPassword, list[index][config.security.PROP_PASSWORD]))) {
+            list[index][config.security.PROP_PASSWORD] = await encriptaPassword(element.newPassword)
+            fs.writeFile(config.security.USR_FILENAME, JSON.stringify(list))
+                .then(() => { res.sendStatus(204) })
+                .catch(err => { return next(generateErrorByError(req, err, 500)) })
+        } else {
+            return next(generateError(req, 'Invalid data', 400))
+        }
+    })()
 })
 
 router.use('/register', autenticados)

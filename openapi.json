@@ -1,12 +1,12 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "MOCK Web Server",
-    "version": "1.0.0",
-    "description": "Versión NodeJS del **servidor de pruebas** para cursos de FrontEnd",
+    "title": "Web4Testing",
+    "version": "2.0.0",
+    "description": "Versión NodeJS del **servidor de pruebas** para cursos de FrontEnd  y con un sitio web de ejemplo donde aplicar casos de prueba E2E.",
     "contact": {
       "name": "Javier Martín",
-      "url": "https://www.example.com/support",
+      "url": "https://github.com/jmagit",
       "email": "support@example.com"
     },
     "license": {
@@ -31,14 +31,14 @@
             "4321",
             "8181"
           ],
-          "default": "4321"
+          "default": "8181"
         }
       }
     }
   ],
   "externalDocs": {
     "description": "Repositorio del proyecto",
-    "url": "https://github.com/jmagit/MOCKWebServer"
+    "url": "https://github.com/jmagit/Web4Testing"
   },
   "tags": [
     {
@@ -46,8 +46,8 @@
       "description": "Gestión de contactos"
     },
     {
-      "name": "books",
-      "description": "Mantenimiento de books"
+      "name": "peliculas",
+      "description": "Mantenimiento de peliculas"
     },
     {
       "name": "personas",
@@ -246,15 +246,8 @@
           "required": true
         },
         "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ContactoProjection"
-                }
-              }
-            }
+          "204": {
+            "$ref": "#/components/responses/NoContent"
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
@@ -348,12 +341,12 @@
         }
       }
     },
-    "/api/books": {
+    "/api/peliculas": {
       "get": {
         "tags": [
-          "books"
+          "peliculas"
         ],
-        "summary": "Listar books",
+        "summary": "Listar peliculas",
         "parameters": [
           {
             "$ref": "#/components/parameters/pagina"
@@ -379,10 +372,10 @@
                 "schema": {
                   "oneOf": [
                     {
-                      "$ref": "#/components/schemas/Books"
+                      "$ref": "#/components/schemas/Peliculas"
                     },
                     {
-                      "$ref": "#/components/schemas/BooksPage"
+                      "$ref": "#/components/schemas/PeliculasPage"
                     }
                   ]
                 }
@@ -399,14 +392,14 @@
       },
       "post": {
         "tags": [
-          "books"
+          "peliculas"
         ],
-        "summary": "Crear book",
+        "summary": "Crear pelicula",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/BookModel"
+                "$ref": "#/components/schemas/PeliculaModel"
               }
             }
           },
@@ -429,7 +422,7 @@
       },
       "options": {
         "tags": [
-          "books"
+          "peliculas"
         ],
         "summary": "Sondeo CORS",
         "responses": {
@@ -445,7 +438,7 @@
         }
       }
     },
-    "/api/books/{id}": {
+    "/api/peliculas/{id}": {
       "parameters": [
         {
           "name": "id",
@@ -459,9 +452,9 @@
       ],
       "get": {
         "tags": [
-          "books"
+          "peliculas"
         ],
-        "summary": "Recuperar book",
+        "summary": "Recuperar pelicula",
         "parameters": [
           {
             "in": "query",
@@ -479,7 +472,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/BookProjection"
+                  "$ref": "#/components/schemas/PeliculaProjection"
                 }
               }
             }
@@ -497,29 +490,22 @@
       },
       "put": {
         "tags": [
-          "books"
+          "peliculas"
         ],
-        "summary": "Reemplazar book",
+        "summary": "Reemplazar pelicula",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/BookModel"
+                "$ref": "#/components/schemas/PeliculaModel"
               }
             }
           },
           "required": true
         },
         "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BookProjection"
-                }
-              }
-            }
+          "204": {
+            "$ref": "#/components/responses/NoContent"
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
@@ -537,7 +523,7 @@
       },
       "options": {
         "tags": [
-          "books"
+          "peliculas"
         ],
         "summary": "Sondeo CORS",
         "responses": {
@@ -554,14 +540,14 @@
       },
       "patch": {
         "tags": [
-          "books"
+          "peliculas"
         ],
-        "summary": "Actualizar parcialmente book",
+        "summary": "Actualizar parcialmente pelicula",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/BookProjection"
+                "$ref": "#/components/schemas/PeliculaProjection"
               }
             }
           },
@@ -573,7 +559,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/BookProjection"
+                  "$ref": "#/components/schemas/PeliculaProjection"
                 }
               }
             }
@@ -594,9 +580,9 @@
       },
       "delete": {
         "tags": [
-          "books"
+          "peliculas"
         ],
-        "summary": "Borrar book",
+        "summary": "Borrar pelicula",
         "responses": {
           "204": {
             "$ref": "#/components/responses/NoContent"
@@ -759,15 +745,8 @@
           "required": true
         },
         "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PersonaProjection"
-                }
-              }
-            }
+          "204": {
+            "$ref": "#/components/responses/NoContent"
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
@@ -974,15 +953,8 @@
           "required": true
         },
         "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TarjetaProjection"
-                }
-              }
-            }
+          "204": {
+            "$ref": "#/components/responses/NoContent"
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
@@ -1202,15 +1174,8 @@
           "required": true
         },
         "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ArticuloProjection"
-                }
-              }
-            }
+          "204": {
+            "$ref": "#/components/responses/NoContent"
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
@@ -1531,15 +1496,8 @@
           "required": true
         },
         "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/LibroProjection"
-                }
-              }
-            }
+          "204": {
+            "$ref": "#/components/responses/NoContent"
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
@@ -1836,15 +1794,8 @@
           "required": true
         },
         "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/VolumenProjection"
-                }
-              }
-            }
+          "204": {
+            "$ref": "#/components/responses/NoContent"
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
@@ -2157,15 +2108,8 @@
           "required": true
         },
         "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/VehiculoProjection"
-                }
-              }
-            }
+          "204": {
+            "$ref": "#/components/responses/NoContent"
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
@@ -2392,7 +2336,18 @@
         }
       }
     },
-    "/login": {
+    "/api/login": {
+      "options": {
+        "tags": [
+          "autenticación"
+        ],
+        "summary": "Sondeo CORS",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
       "post": {
         "tags": [
           "autenticación"
@@ -2418,18 +2373,7 @@
             },
             "application/x-www-form-urlencoded": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "description": "Usuario",
-                    "type": "string"
-                  },
-                  "password": {
-                    "description": "Contraseña",
-                    "type": "string",
-                    "format": "password"
-                  }
-                }
+                "$ref": "#/components/schemas/Login"
               }
             }
           },
@@ -2457,20 +2401,83 @@
             "$ref": "#/components/responses/BadRequest"
           }
         }
-      },
-      "options": {
+      }
+    },
+    "/api/login/refresh": {
+      "post": {
         "tags": [
           "autenticación"
         ],
-        "summary": "Sondeo CORS",
+        "summary": "Volver a iniciar sesión con el token de refresco",
+        "parameters": [
+          {
+            "name": "cookie",
+            "in": "query",
+            "required": false,
+            "description": "true para que genere y envíe la cookie",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshToken"
+              }
+            }
+          },
+          "required": true
+        },
         "responses": {
           "200": {
-            "description": "OK"
+            "headers": {
+              "Set-Cookie": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Resultado de la autenticación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RespuestaLogin"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
           }
         }
       }
     },
-    "/logout": {
+    "/api/login/signature": {
+      "get": {
+        "tags": [
+          "autenticación"
+        ],
+        "summary": "Clave publica para validar el token JWT",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/logout": {
       "post": {
         "tags": [
           "autenticación"
@@ -2483,52 +2490,7 @@
         }
       }
     },
-    "/auth": {
-      "get": {
-        "tags": [
-          "autenticación"
-        ],
-        "summary": "Obtener estado de sesión",
-        "security": [
-          {
-            "bearerAuth": []
-          },
-          {
-            "cookieAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "isAuthenticated": {
-                      "type": "boolean"
-                    },
-                    "usr": {
-                      "type": "string"
-                    },
-                    "name": {
-                      "type": "string"
-                    },
-                    "roles": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/register": {
+    "/api/register": {
       "post": {
         "tags": [
           "registro"
@@ -2558,8 +2520,33 @@
           "required": true
         },
         "responses": {
-          "201": {
-            "description": "Created"
+          "202": {
+            "description": "Accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "webhook para controlar el registro del usuario",
+                  "properties": {
+                    "statusGetUri": {
+                      "description": "webhook vía GET para consultar el estado del registro",
+                      "type": "string",
+                      "format": "uri"
+                    },
+                    "confirmGetUri": {
+                      "description": "webhook vía GET para confirmar el email y activar al usuario",
+                      "type": "string",
+                      "format": "uri"
+                    },
+                    "rejectGetUri": {
+                      "description": "webhook vía GET para rechazar el email y borrar al usuario",
+                      "type": "string",
+                      "format": "uri"
+                    }
+                  }
+                }
+              }
+            }
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
@@ -2645,6 +2632,9 @@
           "204": {
             "$ref": "#/components/responses/NoContent"
           },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
           "403": {
             "$ref": "#/components/responses/Forbidden"
           },
@@ -2654,7 +2644,156 @@
         }
       }
     },
-    "/register/password": {
+    "/api/register/status": {
+      "get": {
+        "tags": [
+          "registro"
+        ],
+        "summary": "Estado del registro un nuevo usuario",
+        "parameters": [
+          {
+            "name": "instance",
+            "in": "query",
+            "required": true,
+            "description": "Identificador la instancia",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Finalize",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegisterStatus"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "Pending",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegisterStatus"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          }
+        }
+      }
+    },
+    "/api/register/confirm": {
+      "get": {
+        "tags": [
+          "registro"
+        ],
+        "summary": "Confirmar el email y activar al usuario",
+        "parameters": [
+          {
+            "name": "instance",
+            "in": "query",
+            "required": true,
+            "description": "Identificador la instancia",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "$ref": "#/components/responses/NoContent"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/api/register/reject": {
+      "get": {
+        "tags": [
+          "registro"
+        ],
+        "summary": "Rechazar el email y borrar al usuario",
+        "parameters": [
+          {
+            "name": "instance",
+            "in": "query",
+            "required": true,
+            "description": "Identificador la instancia",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "$ref": "#/components/responses/NoContent"
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/api/auth": {
+      "get": {
+        "tags": [
+          "autenticación"
+        ],
+        "summary": "Obtener estado de sesión",
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "cookieAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "isAuthenticated": {
+                      "type": "boolean"
+                    },
+                    "usr": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "roles": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/register/password": {
       "put": {
         "tags": [
           "registro"
@@ -2696,6 +2835,9 @@
           "400": {
             "$ref": "#/components/responses/BadRequest"
           },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
           "403": {
             "$ref": "#/components/responses/Forbidden"
           },
@@ -2710,7 +2852,8 @@
     "schemas": {
       "ErrorMessage": {
         "type": "object",
-        "title": "Error message",
+        "title": "Problem Details",
+        "description": "Problem Details for HTTP APIs ([RFC 7807](https://datatracker.ietf.org/doc/html/rfc7807))",
         "required": [
           "type",
           "status",
@@ -2718,19 +2861,37 @@
         ],
         "properties": {
           "type": {
-            "type": "string"
-          },
-          "status": {
-            "type": "integer"
+            "type": "string",
+            "description": "URI que identifica el tipo de problema y proporciona documentación legible por humanos para el tipo de problema."
           },
           "title": {
-            "type": "string"
+            "type": "string",
+            "description": "Breve resumen legible por humanos del problema escribe."
+          },
+          "status": {
+            "type": "integer",
+            "description": "Código de estado HTTP."
           },
           "detail": {
-            "type": "string"
+            "type": "string",
+            "description": "Explicación legible por humanos específica de la ocurrencia concreta del problema."
+          },
+          "instance": {
+            "type": "string",
+            "description": "URI de referencia que identifica el origen de la ocurrencia del problema."
+          },
+          "errors": {
+            "type": "array",
+            "description": "Lista de errores de validación",
+            "items": {
+              "type": "object",
+              "minProperties": 1,
+              "additionalProperties": true
+            }
           },
           "source": {
-            "type": "string"
+            "type": "string",
+            "description": "En modo depuración, información complementaria sobre el origen del error."
           }
         }
       },
@@ -2787,8 +2948,8 @@
           "telefono": {
             "title": "Telefono",
             "type": "string",
-            "example": "642 051 348",
-            "pattern": "^(\\d{3}\\s){2}\\d{3}$"
+            "pattern": "^(\\d{3}\\s){2}\\d{3}$",
+            "example": "642 051 348"
           },
           "email": {
             "title": "Email",
@@ -2929,15 +3090,15 @@
           }
         }
       },
-      "BookModel": {
-        "title": "Book (Modelo)",
+      "PeliculaModel": {
+        "title": "Pelicula (Modelo)",
         "allOf": [
           {
-            "$ref": "#/components/schemas/BookProjection"
+            "$ref": "#/components/schemas/PeliculaProjection"
           }
         ]
       },
-      "BookProjection": {
+      "PeliculaProjection": {
         "type": "object",
         "properties": {
           "id": {
@@ -2948,22 +3109,21 @@
           }
         },
         "minProperties": 1,
-        "title": "Book (Proyección)",
-        "additionalProperties": false
+        "title": "Pelicula (Proyección)"
       },
-      "Books": {
+      "Peliculas": {
         "type": "array",
-        "title": "Books (Listado)",
+        "title": "Peliculas (Listado)",
         "items": {
-          "$ref": "#/components/schemas/BookProjection"
+          "$ref": "#/components/schemas/PeliculaProjection"
         }
       },
-      "BooksPage": {
+      "PeliculasPage": {
         "type": "object",
-        "title": "Books (Página)",
+        "title": "Peliculas (Página)",
         "properties": {
           "content": {
-            "$ref": "#/components/schemas/Books"
+            "$ref": "#/components/schemas/Peliculas"
           },
           "totalElements": {
             "type": "integer",
@@ -3786,12 +3946,15 @@
           "password"
         ],
         "properties": {
-          "name": {
-            "type": "string"
+          "username": {
+            "type": "string",
+            "format": "email",
+            "example": "adm@example.com"
           },
           "password": {
             "type": "string",
-            "format": "password"
+            "format": "password",
+            "example": "P@$$$w0rd"
           }
         }
       },
@@ -3802,7 +3965,13 @@
           "success": {
             "type": "boolean"
           },
-          "token": {
+          "access_token": {
+            "type": "string"
+          },
+          "token_type": {
+            "type": "string"
+          },
+          "refresh_token": {
             "type": "string"
           },
           "name": {
@@ -3813,6 +3982,43 @@
             "items": {
               "type": "string"
             }
+          },
+          "expires_in": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "RefreshToken": {
+        "type": "object",
+        "title": "Token de petición de refresco",
+        "properties": {
+          "token": {
+            "type": "string"
+          }
+        }
+      },
+      "RegisterStatus": {
+        "title": "Estado Registro",
+        "description": "Credenciales de autenticación",
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "complete",
+              "canceled"
+            ]
+          },
+          "result": {
+            "type": "string",
+            "enum": [
+              "confirm",
+              "reject",
+              "canceled",
+              "timeout"
+            ]
           }
         }
       }
@@ -3837,7 +4043,7 @@
       "BadRequest": {
         "description": "Invalid data",
         "content": {
-          "application/json": {
+          "application/problem+json": {
             "schema": {
               "$ref": "#/components/schemas/ErrorMessage"
             }
@@ -3846,8 +4052,16 @@
       },
       "Unauthorized": {
         "description": "Unauthorized",
+        "headers": {
+          "www-authenticate": {
+            "description": "Información de autenticación",
+            "schema": {
+              "type": "string"
+            }
+          }
+        },
         "content": {
-          "application/json": {
+          "application/problem+json": {
             "schema": {
               "$ref": "#/components/schemas/ErrorMessage"
             }
@@ -3856,8 +4070,16 @@
       },
       "Forbidden": {
         "description": "Forbidden",
+        "headers": {
+          "www-authenticate": {
+            "description": "Información de autenticación",
+            "schema": {
+              "type": "string"
+            }
+          }
+        },
         "content": {
-          "application/json": {
+          "application/problem+json": {
             "schema": {
               "$ref": "#/components/schemas/ErrorMessage"
             }
@@ -3867,7 +4089,7 @@
       "NotFound": {
         "description": "Not found",
         "content": {
-          "application/json": {
+          "application/problem+json": {
             "schema": {
               "$ref": "#/components/schemas/ErrorMessage"
             }
@@ -3890,6 +4112,7 @@
             {
               "type": "string",
               "enum": [
+                "count",
                 "COUNT"
               ]
             }
@@ -3911,6 +4134,7 @@
         "name": "_sort",
         "description": "Indica la lista de propiedades (separadas por comas) por la que se ordenaran los resultados, en caso de omitirse se utilizará la propiedad que actúa como primary key. Si el nombre de la propiedad está precedido por un guion (signo negativo) la ordenación será descendente.",
         "required": false,
+        "allowReserved": true,
         "schema": {
           "type": "string"
         }
@@ -3920,6 +4144,7 @@
         "name": "_search",
         "description": "Selecciona todos aquellos que en alguna de sus propiedades contenga el valor proporcionado.",
         "required": false,
+        "allowReserved": true,
         "schema": {
           "type": "string"
         }
@@ -3929,6 +4154,7 @@
         "name": "_projection",
         "description": "Devuelve solo aquellas propiedades de la lista suministrada, los nombres de las propiedades deben ir separadas por comas.",
         "required": false,
+        "allowReserved": true,
         "schema": {
           "type": "string"
         }

@@ -1,11 +1,12 @@
 openapi: 3.0.0
 info:
-  title: MOCK Web Server
-  version: 1.0.0
-  description: Versión NodeJS del **servidor de pruebas** para cursos de FrontEnd
+  title: Web4Testing
+  version: 2.0.0
+  description: Versión NodeJS del **servidor de pruebas** para cursos de
+    FrontEnd  y con un sitio web de ejemplo donde aplicar casos de prueba E2E.
   contact:
     name: Javier Martín
-    url: https://www.example.com/support
+    url: https://github.com/jmagit
     email: support@example.com
   license:
     name: Apache 2.0
@@ -23,15 +24,15 @@ servers:
         enum:
           - "4321"
           - "8181"
-        default: "4321"
+        default: "8181"
 externalDocs:
   description: Repositorio del proyecto
-  url: https://github.com/jmagit/MOCKWebServer
+  url: https://github.com/jmagit/Web4Testing
 tags:
   - name: contactos
     description: Gestión de contactos
-  - name: books
-    description: Mantenimiento de books
+  - name: peliculas
+    description: Mantenimiento de peliculas
   - name: personas
     description: Mantenimiento de personas
   - name: tarjetas
@@ -103,7 +104,7 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
-  "/api/contactos/{id}":
+  /api/contactos/{id}:
     parameters:
       - name: id
         in: path
@@ -147,12 +148,8 @@ paths:
               $ref: "#/components/schemas/ContactoModel"
         required: true
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ContactoProjection"
+        "204":
+          $ref: "#/components/responses/NoContent"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -210,11 +207,11 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "404":
           $ref: "#/components/responses/NotFound"
-  /api/books:
+  /api/peliculas:
     get:
       tags:
-        - books
-      summary: Listar books
+        - peliculas
+      summary: Listar peliculas
       parameters:
         - $ref: "#/components/parameters/pagina"
         - $ref: "#/components/parameters/filas"
@@ -228,21 +225,21 @@ paths:
             application/json:
               schema:
                 oneOf:
-                  - $ref: "#/components/schemas/Books"
-                  - $ref: "#/components/schemas/BooksPage"
+                  - $ref: "#/components/schemas/Peliculas"
+                  - $ref: "#/components/schemas/PeliculasPage"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
     post:
       tags:
-        - books
-      summary: Crear book
+        - peliculas
+      summary: Crear pelicula
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/BookModel"
+              $ref: "#/components/schemas/PeliculaModel"
         required: true
       responses:
         "201":
@@ -255,7 +252,7 @@ paths:
           $ref: "#/components/responses/Forbidden"
     options:
       tags:
-        - books
+        - peliculas
       summary: Sondeo CORS
       responses:
         "200":
@@ -264,7 +261,7 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
-  "/api/books/{id}":
+  /api/peliculas/{id}:
     parameters:
       - name: id
         in: path
@@ -274,8 +271,8 @@ paths:
           type: integer
     get:
       tags:
-        - books
-      summary: Recuperar book
+        - peliculas
+      summary: Recuperar pelicula
       parameters:
         - in: query
           name: _projection
@@ -290,7 +287,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/BookProjection"
+                $ref: "#/components/schemas/PeliculaProjection"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
@@ -299,21 +296,17 @@ paths:
           $ref: "#/components/responses/NotFound"
     put:
       tags:
-        - books
-      summary: Reemplazar book
+        - peliculas
+      summary: Reemplazar pelicula
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/BookModel"
+              $ref: "#/components/schemas/PeliculaModel"
         required: true
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/BookProjection"
+        "204":
+          $ref: "#/components/responses/NoContent"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -324,7 +317,7 @@ paths:
           $ref: "#/components/responses/NotFound"
     options:
       tags:
-        - books
+        - peliculas
       summary: Sondeo CORS
       responses:
         "200":
@@ -335,13 +328,13 @@ paths:
           $ref: "#/components/responses/Forbidden"
     patch:
       tags:
-        - books
-      summary: Actualizar parcialmente book
+        - peliculas
+      summary: Actualizar parcialmente pelicula
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/BookProjection"
+              $ref: "#/components/schemas/PeliculaProjection"
         required: true
       responses:
         "200":
@@ -349,7 +342,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/BookProjection"
+                $ref: "#/components/schemas/PeliculaProjection"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -360,8 +353,8 @@ paths:
           $ref: "#/components/responses/NotFound"
     delete:
       tags:
-        - books
-      summary: Borrar book
+        - peliculas
+      summary: Borrar pelicula
       responses:
         "204":
           $ref: "#/components/responses/NoContent"
@@ -414,7 +407,7 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
-  "/api/personas/{id}":
+  /api/personas/{id}:
     parameters:
       - name: id
         in: path
@@ -458,12 +451,8 @@ paths:
               $ref: "#/components/schemas/PersonaModel"
         required: true
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/PersonaProjection"
+        "204":
+          $ref: "#/components/responses/NoContent"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -534,7 +523,7 @@ paths:
       security:
         - bearerAuth: []
         - cookieAuth: []
-  "/api/tarjetas/{id}":
+  /api/tarjetas/{id}:
     parameters:
       - name: id
         in: path
@@ -581,12 +570,8 @@ paths:
               $ref: "#/components/schemas/TarjetaModel"
         required: true
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/TarjetaProjection"
+        "204":
+          $ref: "#/components/responses/NoContent"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -661,7 +646,7 @@ paths:
       security:
         - bearerAuth: []
         - cookieAuth: []
-  "/api/blog/{id}":
+  /api/blog/{id}:
     parameters:
       - name: id
         in: path
@@ -708,12 +693,8 @@ paths:
               $ref: "#/components/schemas/ArticuloModel"
         required: true
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ArticuloProjection"
+        "204":
+          $ref: "#/components/responses/NoContent"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -846,7 +827,7 @@ paths:
       security:
         - bearerAuth: []
         - cookieAuth: []
-  "/api/libros/{id}":
+  /api/libros/{id}:
     parameters:
       - name: id
         in: path
@@ -893,12 +874,8 @@ paths:
               $ref: "#/components/schemas/LibroModel"
         required: true
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/LibroProjection"
+        "204":
+          $ref: "#/components/responses/NoContent"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -1025,7 +1002,7 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
-  "/api/biblioteca/{id}":
+  /api/biblioteca/{id}:
     parameters:
       - name: id
         in: path
@@ -1069,12 +1046,8 @@ paths:
               $ref: "#/components/schemas/VolumenModel"
         required: true
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/VolumenProjection"
+        "204":
+          $ref: "#/components/responses/NoContent"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -1204,7 +1177,7 @@ paths:
       security:
         - bearerAuth: []
         - cookieAuth: []
-  "/api/vehiculos/{id}":
+  /api/vehiculos/{id}:
     parameters:
       - name: id
         in: path
@@ -1251,12 +1224,8 @@ paths:
               $ref: "#/components/schemas/VehiculoModel"
         required: true
       responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/VehiculoProjection"
+        "204":
+          $ref: "#/components/responses/NoContent"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -1350,7 +1319,7 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
-  "/api/marcas/{id}":
+  /api/marcas/{id}:
     parameters:
       - name: id
         in: path
@@ -1383,7 +1352,14 @@ paths:
           $ref: "#/components/responses/Forbidden"
         "404":
           $ref: "#/components/responses/NotFound"
-  /login:
+  /api/login:
+    options:
+      tags:
+        - autenticación
+      summary: Sondeo CORS
+      responses:
+        "200":
+          description: OK
     post:
       tags:
         - autenticación
@@ -1402,15 +1378,7 @@ paths:
               $ref: "#/components/schemas/Login"
           application/x-www-form-urlencoded:
             schema:
-              type: object
-              properties:
-                name:
-                  description: Usuario
-                  type: string
-                password:
-                  description: Contraseña
-                  type: string
-                  format: password
+              $ref: "#/components/schemas/Login"
         required: true
       responses:
         "200":
@@ -1425,14 +1393,52 @@ paths:
                 $ref: "#/components/schemas/RespuestaLogin"
         "400":
           $ref: "#/components/responses/BadRequest"
-    options:
+  /api/login/refresh:
+    post:
       tags:
         - autenticación
-      summary: Sondeo CORS
+      summary: Volver a iniciar sesión con el token de refresco
+      parameters:
+        - name: cookie
+          in: query
+          required: false
+          description: true para que genere y envíe la cookie
+          schema:
+            type: boolean
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RefreshToken"
+        required: true
+      responses:
+        "200":
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+          description: Resultado de la autenticación
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RespuestaLogin"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /api/login/signature:
+    get:
+      tags:
+        - autenticación
+      summary: Clave publica para validar el token JWT
       responses:
         "200":
           description: OK
-  /logout:
+          content:
+            text/plain:
+              schema:
+                type: string
+  /api/logout:
     post:
       tags:
         - autenticación
@@ -1440,33 +1446,7 @@ paths:
       responses:
         "200":
           description: OK
-  /auth:
-    get:
-      tags:
-        - autenticación
-      summary: Obtener estado de sesión
-      security:
-        - bearerAuth: []
-        - cookieAuth: []
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  isAuthenticated:
-                    type: boolean
-                  usr:
-                    type: string
-                  name:
-                    type: string
-                  roles:
-                    type: array
-                    items:
-                      type: string
-  /register:
+  /api/register:
     post:
       tags:
         - registro
@@ -1487,8 +1467,26 @@ paths:
                   format: password
         required: true
       responses:
-        "201":
-          description: Created
+        "202":
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                type: object
+                description: webhook para controlar el registro del usuario
+                properties:
+                  statusGetUri:
+                    description: webhook vía GET para consultar el estado del registro
+                    type: string
+                    format: uri
+                  confirmGetUri:
+                    description: webhook vía GET para confirmar el email y activar al usuario
+                    type: string
+                    format: uri
+                  rejectGetUri:
+                    description: webhook vía GET para rechazar el email y borrar al usuario
+                    type: string
+                    format: uri
         "400":
           $ref: "#/components/responses/BadRequest"
     get:
@@ -1538,11 +1536,104 @@ paths:
       responses:
         "204":
           $ref: "#/components/responses/NoContent"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
         "404":
           $ref: "#/components/responses/NotFound"
-  /register/password:
+  /api/register/status:
+    get:
+      tags:
+        - registro
+      summary: Estado del registro un nuevo usuario
+      parameters:
+        - name: instance
+          in: query
+          required: true
+          description: Identificador la instancia
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Finalize
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RegisterStatus"
+        "202":
+          description: Pending
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RegisterStatus"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+  /api/register/confirm:
+    get:
+      tags:
+        - registro
+      summary: Confirmar el email y activar al usuario
+      parameters:
+        - name: instance
+          in: query
+          required: true
+          description: Identificador la instancia
+          schema:
+            type: string
+      responses:
+        "204":
+          $ref: "#/components/responses/NoContent"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /api/register/reject:
+    get:
+      tags:
+        - registro
+      summary: Rechazar el email y borrar al usuario
+      parameters:
+        - name: instance
+          in: query
+          required: true
+          description: Identificador la instancia
+          schema:
+            type: string
+      responses:
+        "204":
+          $ref: "#/components/responses/NoContent"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /api/auth:
+    get:
+      tags:
+        - autenticación
+      summary: Obtener estado de sesión
+      security:
+        - bearerAuth: []
+        - cookieAuth: []
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  isAuthenticated:
+                    type: boolean
+                  usr:
+                    type: string
+                  name:
+                    type: string
+                  roles:
+                    type: array
+                    items:
+                      type: string
+  /api/register/password:
     put:
       tags:
         - registro
@@ -1569,6 +1660,8 @@ paths:
           $ref: "#/components/responses/NoContent"
         "400":
           $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
         "404":
@@ -1577,7 +1670,9 @@ components:
   schemas:
     ErrorMessage:
       type: object
-      title: Error message
+      title: Problem Details
+      description: Problem Details for HTTP APIs ([RFC
+        7807](https://datatracker.ietf.org/doc/html/rfc7807))
       required:
         - type
         - status
@@ -1585,14 +1680,33 @@ components:
       properties:
         type:
           type: string
-        status:
-          type: integer
+          description: URI que identifica el tipo de problema y proporciona documentación
+            legible por humanos para el tipo de problema.
         title:
           type: string
+          description: Breve resumen legible por humanos del problema escribe.
+        status:
+          type: integer
+          description: Código de estado HTTP.
         detail:
           type: string
+          description: Explicación legible por humanos específica de la ocurrencia
+            concreta del problema.
+        instance:
+          type: string
+          description: URI de referencia que identifica el origen de la ocurrencia del
+            problema.
+        errors:
+          type: array
+          description: Lista de errores de validación
+          items:
+            type: object
+            minProperties: 1
+            additionalProperties: true
         source:
           type: string
+          description: En modo depuración, información complementaria sobre el origen del
+            error.
     ContactoModel:
       title: Contacto (Modelo)
       allOf:
@@ -1636,8 +1750,8 @@ components:
         telefono:
           title: Telefono
           type: string
-          example: 642 051 348
           pattern: ^(\d{3}\s){2}\d{3}$
+          example: 642 051 348
         email:
           title: Email
           type: string
@@ -1746,11 +1860,11 @@ components:
         last:
           type: boolean
           description: Si la página es la última
-    BookModel:
-      title: Book (Modelo)
+    PeliculaModel:
+      title: Pelicula (Modelo)
       allOf:
-        - $ref: "#/components/schemas/BookProjection"
-    BookProjection:
+        - $ref: "#/components/schemas/PeliculaProjection"
+    PeliculaProjection:
       type: object
       properties:
         id:
@@ -1759,19 +1873,18 @@ components:
           minimum: 0
           description: El 0 actúa como autonumérico en la creación
       minProperties: 1
-      title: Book (Proyección)
-      additionalProperties: false
-    Books:
+      title: Pelicula (Proyección)
+    Peliculas:
       type: array
-      title: Books (Listado)
+      title: Peliculas (Listado)
       items:
-        $ref: "#/components/schemas/BookProjection"
-    BooksPage:
+        $ref: "#/components/schemas/PeliculaProjection"
+    PeliculasPage:
       type: object
-      title: Books (Página)
+      title: Peliculas (Página)
       properties:
         content:
-          $ref: "#/components/schemas/Books"
+          $ref: "#/components/schemas/Peliculas"
         totalElements:
           type: integer
           description: Número total de elementos
@@ -2390,18 +2503,25 @@ components:
         - username
         - password
       properties:
-        name:
+        username:
           type: string
+          format: email
+          example: adm@example.com
         password:
           type: string
           format: password
+          example: P@$$$w0rd
     RespuestaLogin:
       type: object
       title: Respuesta Login
       properties:
         success:
           type: boolean
-        token:
+        access_token:
+          type: string
+        token_type:
+          type: string
+        refresh_token:
           type: string
         name:
           type: string
@@ -2409,6 +2529,33 @@ components:
           type: array
           items:
             type: string
+        expires_in:
+          type: integer
+          format: int32
+    RefreshToken:
+      type: object
+      title: Token de petición de refresco
+      properties:
+        token:
+          type: string
+    RegisterStatus:
+      title: Estado Registro
+      description: Credenciales de autenticación
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+            - pending
+            - complete
+            - canceled
+        result:
+          type: string
+          enum:
+            - confirm
+            - reject
+            - canceled
+            - timeout
   requestBodies: {}
   responses:
     Created:
@@ -2424,25 +2571,35 @@ components:
     BadRequest:
       description: Invalid data
       content:
-        application/json:
+        application/problem+json:
           schema:
             $ref: "#/components/schemas/ErrorMessage"
     Unauthorized:
       description: Unauthorized
+      headers:
+        www-authenticate:
+          description: Información de autenticación
+          schema:
+            type: string
       content:
-        application/json:
+        application/problem+json:
           schema:
             $ref: "#/components/schemas/ErrorMessage"
     Forbidden:
       description: Forbidden
+      headers:
+        www-authenticate:
+          description: Información de autenticación
+          schema:
+            type: string
       content:
-        application/json:
+        application/problem+json:
           schema:
             $ref: "#/components/schemas/ErrorMessage"
     NotFound:
       description: Not found
       content:
-        application/json:
+        application/problem+json:
           schema:
             $ref: "#/components/schemas/ErrorMessage"
   parameters:
@@ -2457,6 +2614,7 @@ components:
             minimum: 0
           - type: string
             enum:
+              - count
               - COUNT
     filas:
       in: query
@@ -2475,6 +2633,7 @@ components:
         que actúa como primary key. Si el nombre de la propiedad está precedido
         por un guion (signo negativo) la ordenación será descendente.
       required: false
+      allowReserved: true
       schema:
         type: string
     buscar:
@@ -2483,6 +2642,7 @@ components:
       description: Selecciona todos aquellos que en alguna de sus propiedades contenga
         el valor proporcionado.
       required: false
+      allowReserved: true
       schema:
         type: string
     proyeccion:
@@ -2491,6 +2651,7 @@ components:
       description: Devuelve solo aquellas propiedades de la lista suministrada, los
         nombres de las propiedades deben ir separadas por comas.
       required: false
+      allowReserved: true
       schema:
         type: string
   securitySchemes:
