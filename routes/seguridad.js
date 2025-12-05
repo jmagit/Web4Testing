@@ -81,6 +81,11 @@ module.exports.useCORS = (req, res, next) => {
 // Middleware: Autenticación
 module.exports.useAuthentication = (req, res, next) => {
     res.locals.isAuthenticated = false;
+    if (req.url.includes('/logout')) {
+        next();
+        return;
+    }
+
     let token = ''
     if (!req.headers['authorization']) {
         if (!req.cookies['Authorization']) {

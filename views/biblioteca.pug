@@ -22,7 +22,8 @@ block scripts
           <tr>
               <td><input type="button" class="btn btn-link" value="{{titulo}}" onclick="Biblioteca.ver({{id}});"></td>
               <td class="btn-group float-right">
-                  <input type="button" class="btn btn-info" value="Ver" onclick="Biblioteca.ver({{id}});">
+                  <button class="btn btn-info" onclick="Biblioteca.ver({{id}});"><i
+                          class="fas fa-eye"></i></button>
                   <button class="btn btn-success" onclick="Biblioteca.editar({{id}});"><i
                           class="fas fa-pen"></i></button>
                   <button class="btn btn-danger" onclick="Biblioteca.borrar({{id}});"><i
@@ -41,13 +42,13 @@ block scripts
     <div class="form-group">
         <label for="titulo" class="col-xs-12 col-sm-4 col-md-2 col-lg-1">Título:</label>
         <div class="col-xs-12 col-sm-8 col-md-10 col-lg-11">
-            <input class="form-control" type="text" name="titulo" id="titulo" required minlength=2 maxlength="50">
+            <input class="form-control" type="text" name="titulo" id="titulo" required minlength=2 maxlength="100" data-validacion="mayusculas">
         </div>
     </div>
     <div class="form-group">
         <label for="autor" class="col-xs-12 col-sm-4 col-md-2 col-lg-1">Autor:</label>
         <div class="col-xs-12 col-sm-8 col-md-10 col-lg-11">
-            <input class="form-control" type="text" name="autor" data-validacion="minusculas" id="autor" maxlength="50">
+            <input class="form-control" type="text" name="autor" id="autor" maxlength="100">
         </div>
     </div>
     <div class="form-group">

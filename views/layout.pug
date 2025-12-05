@@ -24,6 +24,9 @@ html(lang="es")
               a.nav-link(href="/compras") Compras
             li(class=baseUrl == '/contactos' ? 'nav-item active' : 'nav-item')
               a.nav-link(href="/contactos") Contactos
+            if auth
+              li(class=baseUrl == '/biblioteca' ? 'nav-item active' : 'nav-item')
+                a.nav-link(href="/biblioteca") Biblioteca
             li(class=baseUrl == '/alertas' ? 'nav-item active' : 'nav-item')
               a.nav-link(href="/alertas") Alertas
             li(class=baseUrl == '/fileupload' ? 'nav-item active' : 'nav-item')
@@ -69,7 +72,7 @@ html(lang="es")
                 label.col-form-label(for="_usr_passwordConfirm") Confirmar contraseña:
                 input.form-control(type="password", id="_usr_passwordConfirm", required, name="__passwordConfirm", autocomplete="new-password", data-validacion="equalTo", data-origen="_usr_password")
           .modal-footer
-            button(id="btnSendRegister", type="button", class="btn btn-primary") Enviar
+            button(id="btnSendRegister", type="button", class="btn btn-primary") Registrar
             button(type="button", class="btn btn-secondary", data-dismiss="modal") Cerrar
     div(class="modal fade", id="RegisterEditModal", tabindex="-1", role="dialog", aria-labelledby="RegisterModalLabel", aria-hidden="true")
       .modal-dialog
@@ -87,7 +90,7 @@ html(lang="es")
                 label.col-form-label(for="_edit_nombre", required) Nombre:
                 input.form-control(type="text", id="_edit_nombre", required, name="_usr_nombre", autocomplete="username")
           .modal-footer
-            button(id="btnSendEditRegister", type="button", class="btn btn-primary") Enviar
+            button(id="btnSendEditRegister", type="button", class="btn btn-primary") Guardar
             button(type="button", class="btn btn-secondary", data-dismiss="modal") Cerrar
             button(id="btnEditPwdUser", class="btn btn-danger", type="button", data-toggle="modal", data-target="#RegisterPwdModal", data-whatever="edit", aria-label="cambiar contraseña") Contraseña
     div(class="modal fade", id="RegisterPwdModal", tabindex="-1", role="dialog", aria-labelledby="RegisterModalLabel", aria-hidden="true")
@@ -110,7 +113,7 @@ html(lang="es")
                 label.col-form-label(for="_pwd_passwordConfirm") Confirmar contraseña:
                 input.form-control(type="password", id="_pwd_passwordConfirm", required, name="__passwordConfirm", autocomplete="new-password", data-validacion="equalTo", data-origen="_usr_newPassword")
           .modal-footer
-            button(id="btnSendPwdRegister", type="button", class="btn btn-primary") Enviar
+            button(id="btnSendPwdRegister", type="button", class="btn btn-primary") Guardar
             button(type="button", class="btn btn-secondary", data-dismiss="modal") Cerrar
 
     main(role="main")
@@ -137,6 +140,7 @@ html(lang="es")
           Web4Testing.AuthService.logout();
           $('#loginData').hide();
           $('#loginForm').show();
+          location.reload()
         });
         $('#btnSendLogin').click(function() {
           $('#loginForm').each(function() {
@@ -153,6 +157,7 @@ html(lang="es")
                 $('#userData').text('Hola ' + Web4Testing.AuthService.name);
                 $('#loginData').show();
                 $('#loginForm').hide();
+                location.reload()
               },
               function(msg) {
                 alert(msg);

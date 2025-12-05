@@ -19,7 +19,7 @@ const Contactos = new (
         const decodeError = response => {
             if (response.headers.get('content-type').includes('application/json'))
                 response.json().then(err => {
-                    obj.ponError('ERROR: ' + response.status + ': ' + (err.title || response.statusText))
+                    obj.ponError('ERROR: ' + response.status + ': ' + (err.detail || err.title || response.statusText))
                 })
             else {
                 obj.ponError('ERROR: ' + response.status + ': ' + response.statusText)
@@ -160,7 +160,9 @@ const Contactos = new (
                     if ($('#err_' + name).length) {
                         $('#err_' + name).text(item.validationMessage);
                     } else {
-                        cntr.after('<div id="err_' + name + '" class="text-danger msg-error">' + item.validationMessage + '</div>');
+                        cntr.after('<div id="err_' + name + '" class="text-danger msg-error">' 
+                            + item.validationMessage + (item.title ? (' (' + item.title + ')') : '')
+                            + '</div>');
                         cntr.parent().parent().addClass('has-error');
                     }
                     esValido = false;

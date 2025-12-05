@@ -8,7 +8,7 @@ mixin tarjeta(titulo, cuerpo, imagen, enlace, boton)
         h5.card-title= titulo
         p.card-text= cuerpo
       div.card-body.text-right
-        a.btn.btn-secondary(href=enlace role="button") Ver mas »
+        a.btn.btn-secondary(href=enlace role="button" title=("Ver mas de " + titulo)) Ver mas »
 
 block content
   div.carousel.slide(id="myCarousel", data-ride="carousel")

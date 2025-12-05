@@ -26,7 +26,8 @@ router.use('/files', express.static('uploads'))
 
 router.get('/fileupload', async function (req, res) {
   const files = await fs.readdir(DIR_UPLOADS);
-  res.render('fileupload', { title: 'Ficheros', baseUrl: req.path, files: files });
+  const auth = req.headers['authorization'] || req.cookies['Authorization']
+  res.render('fileupload', { title: 'Ficheros', baseUrl: req.path, auth, files: files });
 })
 
 router.post('/fileupload', upload.array('filestoupload'), function (req, res) {

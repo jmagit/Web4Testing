@@ -150,10 +150,10 @@ Para simular la autenticación con token JWT de cabecera está disponible el ser
 * **Formularios**
   * action="`http://localhost:8181/login`"
   * method="`post`"
-  * body="`username=admin&password=P@$$w0rd`"
+  * body="`username=adm@example.com&password=P@$$w0rd`"
 * **API**
   * Content-Type: application/json
-  * body: `{ "username": "admin", "password": "P@$$w0rd" }`
+  * body: `{ "username": "adm@example.com", "password": "P@$$w0rd" }`
 
 #### Respuesta JSON
 

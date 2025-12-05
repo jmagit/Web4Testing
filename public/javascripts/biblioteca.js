@@ -4,7 +4,7 @@ const Biblioteca = new (
     function () {
         let obj = this;
         obj.currentPage = 1;
-        const FxP = 7;
+        const FxP = 10;
         let idOriginal = null
         let configPage = {
             totalPages: 0,
@@ -39,7 +39,7 @@ const Biblioteca = new (
                     envio[item.name] = item.value;
             });
             envio.id = +envio.id;
-            envio.conflictivo = envio.conflictivo === "true"
+            envio.numPag = +envio.numPag;
             if (!esValido)
                 return;
             return envio

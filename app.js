@@ -150,7 +150,7 @@ app.use(function (_req, _res, next) {
 // error handler
 app.use(function (err, req, res, _next) {
   const status = err.status ?? err.statusCode ??  500
-  if(req.headers.accept && req.accepts('html')) {
+  if(req.xhr !== true && req.headers.accept && req.accepts('html')) {
     // render the error page
     res.locals.message = err.message;
     res.locals.error = req.app.get('env') === 'development' ? err : {};
