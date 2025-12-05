@@ -1,6 +1,10 @@
 const express = require('express');
 const router = express.Router();
 
+function render(req, res, view, title, options = {}) {
+  res.render(view, { title, baseUrl: req.path, auth: res.locals.isAuthenticated, ...options });
+}
+
 /* GET home page. */
 router.get('/', function(req, res) {
   const nuevas = true
@@ -15,39 +19,37 @@ router.get('/', function(req, res) {
   if(res.locals.isAuthenticated) {
     contenido.push({ titulo: 'Biblioteca (solo autenticados)', descripcion: 'Sistema CRUD completo que permite las pruebas de acceso a datos, paginación, trabajo con formularios y validaciones. Las consultas se pueden realizar sin estar autenticado, pero para añadir, modificar y borrar es necesaria la autenticación.', imagen: nuevas ? 'https://picsum.photos/640/480?random=7' : 'https://placeimg.com/640/480/nature', enlace: '/biblioteca', boton: '' })
   }
-  res.render('index', { title: 'Entorno de pruebas Web4Testing', baseUrl: req.path, contenido, auth: res.locals.isAuthenticated});
+  render(req, res, 'index', 'Entorno de pruebas Web4Testing', { contenido });
 });
 
 router.get('/calculadora', function (req, res) {
-  res.render('calculadora', { title: 'Calculadora', baseUrl: req.path, auth: res.locals.isAuthenticated });
+  render(req, res, 'calculadora', 'Calculadora')
 });
 router.get('/compras', function (req, res) {
-  res.render('carrito', { title: 'Carrito de la compra', baseUrl: req.path, auth: res.locals.isAuthenticated });
+  render(req, res, 'carrito', 'Carrito de la compra')
 });
 
 router.get('/biblioteca', function (req, res) {
-  res.render('biblioteca', { title: 'Biblioteca', baseUrl: req.path, auth: res.locals.isAuthenticated });
+  render(req, res, 'biblioteca', 'Biblioteca');
 });
 
 router.get('/contactos', function (req, res) {
-  res.render('contactos', { title: 'Contactos', baseUrl: req.path, auth: res.locals.isAuthenticated });
+  render(req, res, 'contactos', 'Contactos');
 });
 
 router.get('/alertas', function (req, res) {
-  res.render('alertas', { title: 'Alertas', baseUrl: req.path, auth: res.locals.isAuthenticated });
+  render(req, res, 'alertas', 'Alertas')
 });
 
 router.get('/documentacion', function (req, res) {
-  res.render('documentacion', { title: 'Documentación', baseUrl: req.path, auth: res.locals.isAuthenticated });
+  render(req, res, 'documentacion', 'Documentación')
 });
 router.get('/api', function (req, res) {
-  res.render('api', { 
-    title: 'API REST', 
+  render(req, res, 'api', 'API REST', { 
     baseUrl: `${req.protocol}://${req.headers.host}`, 
     base: `${req.protocol}://${req.headers.host}${req.baseUrl}`, 
-    auth: res.locals.isAuthenticated, 
     servicios: [] 
-  });
+  })
 });
 
 
