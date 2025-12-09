@@ -8,11 +8,11 @@ import css from "@eslint/css";
 import jest from "eslint-plugin-jest";
 import nodePlugin from "eslint-plugin-n";
 
-const variableGlobalesBrowser = {'jQuery': true, '$': true, }
+const variableGlobalesBrowser = { 'jQuery': true, '$': true, }
 
 export default defineConfig([
   {
-    ignores: ["coverage/", "public/vendor/", "eslint.config.mjs",".*/"],
+    ignores: ["coverage/", "public/vendor/", "eslint.config.mjs", ".*/"],
   },
   { // Jest
     files: ["**/*.spec.js", "**/*.test.js"],
@@ -41,7 +41,7 @@ export default defineConfig([
         ...variableGlobalesBrowser,
       },
       ecmaVersion: 2015,
-			sourceType: "script",
+      sourceType: "script",
     },
     rules: {
       "no-unused-vars": ["error", { argsIgnorePattern: "^_", }],
@@ -76,8 +76,11 @@ export default defineConfig([
   { files: ["**/*.json"], ignores: ["package-lock.json"], plugins: { json }, language: "json/json", extends: ["json/recommended"] },
   { files: ["**/*.md"], plugins: { markdown }, language: "markdown/gfm", extends: ["markdown/recommended"] },
   { files: ["**/*.css"], plugins: { css }, language: "css/css", extends: ["css/recommended"] },
-  { 
+  {
     ...html.configs["flat/recommended"],
-    files: ["**/*.html"], 
+    files: ["**/*.html"],
+    rules: {
+      "@html-eslint/indent": ["error", 2]
+    }
   },
 ]);
