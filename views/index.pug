@@ -17,33 +17,16 @@ block content
       li(data-target="#myCarousel", data-slide-to="1")
       li(data-target="#myCarousel", data-slide-to="2")
     div.carousel-inner
-      div.carousel-item.active
-        svg(class="bd-placeholder-img" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img")
-          rect(width="100%" height="100%" fill="#777")
-        div.container
-          div.carousel-caption.text-left
-            h1= contenido[0].titulo
-            p= contenido[0].descripcion
-            p
-              a(class="btn btn-lg btn-primary" href=contenido[0].enlace role="button")= contenido[0].boton
-      div.carousel-item
-        svg(class="bd-placeholder-img" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img")
-          rect(width="100%" height="100%" fill="#777")
-        div.container
-          div.carousel-caption
-            h1= contenido[1].titulo
-            p= contenido[1].descripcion
-            p
-              a(class="btn btn-lg btn-primary" href=contenido[1].enlace role="button")= contenido[1].boton
-      div.carousel-item
-        svg(class="bd-placeholder-img" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img")
-          rect(width="100%" height="100%" fill="#777")
-        div.container
-          div.carousel-caption.text-right
-            h1= contenido[3].titulo
-            p= contenido[3].descripcion
-            p
-              a(class="btn btn-lg btn-primary" href=contenido[3].enlace role="button")= contenido[3].boton
+      each item, index in carrusel
+        div(class=index ? 'carousel-item' : 'carousel-item active')
+          svg(class="bd-placeholder-img" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img")
+            rect(width="100%" height="100%" fill="#777")
+          div.container
+            div.carousel-caption.text-left
+              h1= item.titulo
+              p= item.descripcion
+              p
+                a(class="btn btn-lg btn-primary" href=item.enlace role="button")= item.boton
       a.carousel-control-prev(href="#myCarousel", role="button", data-slide="prev")
         span.carousel-control-prev-icon(aria-hidden="true")
         span.sr-only Previous

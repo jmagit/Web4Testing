@@ -18,14 +18,20 @@ block content
       input.btn.btn-outline-success(type="button", data-toggle="modal", data-target="#exampleModal", data-whatever="@mdo", value="Mostra cuadro modeless")
     h1 Temporizadores
     div.alert.alert-success
-      p
-        b Entrada: 
-        span(id="currentDate")
-        | &nbsp;
-        span.badge.badge-pill.badge-info(id="crono") 0 seconds
-        | &nbsp;
-        button.btn.btn-primary(type='button', id='btnParar')
-          | Parar           
+      b Hora: 
+      span(id="currentDate")
+      | &nbsp;
+      output.badge.badge-pill.badge-info(id="crono") 0 seconds
+      | &nbsp;
+      button.btn.btn-primary.btn-sm(type='button', id='btnParar')
+        | Parar
+      | &nbsp;
+      b Oferta: 
+      | &nbsp;
+      output(id="txtOferta") Quedan 5 minutos
+      | &nbsp;
+      button.btn.btn-success.btn-sm(type='button', id='btnComprar')
+        | Compro
     div.modal.fade(id="staticBackdrop", data-backdrop="static", data-keyboard="false", tabindex="-1", role="dialog", aria-labelledby="staticBackdropLabel", aria-hidden="true")
       .modal-dialog
         .modal-content
@@ -56,21 +62,60 @@ block content
           .modal-footer
             button(type="button", class="btn btn-secondary", data-dismiss="modal") Close
             button(type="button", class="btn btn-primary") Send message
+    link(rel='stylesheet', href='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css')
+    h1 Mi ubicación actual en OpenStreetMap
+    ul
+      li 
+        output(id="txtPosicion") Geolocalización
+      li 
+        output(id="txtUbicacion") Geolocalización
+    #map(style='width: 100%; height: 400px;')
+    script(src='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js')
 
 block scripts
   script.
     $(document).ready(function() {
-      $('#currentDate').text(new Date().toJSON())
-      let seconds = 0
-      let intervalo = setInterval(() => { 
-          $('#crono').text(++seconds + ' seconds') 
-          if(seconds % 60 === 0)
-            $('#currentDate').text(new Date().toJSON())
-        }, 1000)
-      $('#btnParar').click(function(ev) {
-        clearInterval(intervalo);
+      $("#currentDate").text(new Date().toISOString().substring(0, 16));
+      setInterval(() => {
+        $("#currentDate").text(new Date().toISOString().substring(0, 16));
+      }, 60000);
+      let seconds = 0;
+      const ponInterval = () => {
+        return setInterval(() => {
+          $("#crono").text(++seconds + " seconds");
+        }, 1000);
+      }
+      let intervalo = ponInterval();
+      $("#btnParar").click(function (ev) {
+        if ($("#btnParar").text() === "Parar") {
+          clearInterval(intervalo);
+          $("#btnParar").text("Continuar");
+        } else {
+          intervalo = ponInterval();
+          $("#btnParar").text("Parar");
+        }
       });
+      let oferta = 5;
+      let ofertaTimer;
+      const ofertafn = () => {
+        if (!--oferta){ 
+          $("#txtOferta").text("Se ha terminado");
+          $("#btnComprar").hide()
+          return
+        }
+        $("#txtOferta").text(
+          oferta > 1 ? "Quedan " + oferta + " minutos" : "Último minuto"
+        );
+        setTimeout(ofertafn, 60000);
+      };
+      ofertaTimer = setTimeout(ofertafn, 60000);
+      $('#btnComprar').click(function(ev) {
+        clearTimeout(ofertaTimer)
+        $("#txtOferta").text("Comprado");
+        $('#btnComprar').hide();
 
+      });
+      
       $('#btnCerrar').click(function(ev) {
         $('#CuadroAlerta').hide();
       });
@@ -117,4 +162,42 @@ block scripts
         modal.find('.modal-title').text('New message to ' + recipient)
         modal.find('.modal-body input').val(recipient)
       })
+      // Crear el mapa
+      if (!navigator.geolocation) {
+        $('#txtPosicion').text('Geolocation is not supported by your browser');
+      } else {
+        $('#txtPosicion').text('Geolocation is supported by your browser');
+        navigator.geolocation.getCurrentPosition((position) => {
+          $('#txtPosicion').text(`Geolocalización (latitude: ${position.coords.latitude}, longitude: ${position.coords.longitude})`)
+          fetch(`https://nominatim.openstreetmap.org/reverse?lat=${position.coords.latitude}&lon=${position.coords.longitude}&format=json&accept-language=es`)
+            .then(response => {
+                    if (response.ok) {
+                        response.json().then(data => $('#txtUbicacion').text(data.display_name))
+                    } else {
+                        $('#txtUbicacion').text(`ERROR`)
+                    }
+                })
+        }, err => {
+          switch(err.code) {
+            case 1: $('#txtPosicion').text(`PERMISSION DENIED: ${err.message}`); break;
+            case 2: $('#txtPosicion').text(`POSITION UNAVAILABLE: ${err.message}`); break;
+            case 3: $('#txtPosicion').text(`TIMEOUT: ${err.message}`); break;
+            default: $('#txtPosicion').text(`ERROR: ${err.message}`); break;
+          }
+        });
+      }
+      const map = L.map("map").setView([0, 0], 2);
+       // Cargar los tiles de OSM
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution: "© OpenStreetMap",
+      }).addTo(map);
+      map.locate({setView: true, maxZoom: 15}); // Intentar geolocalizar al usuario
+      map.on("locationfound", function (e) { // Si encuentra la ubicación
+        L.marker(e.latlng).addTo(map).bindPopup("Estás aquí").openPopup();
+        L.circle(e.latlng, {radius: e.accuracy}).addTo(map);
+      });
+      map.on("locationerror", function () { // Si ocurre un error
+        alert("No se pudo obtener tu ubicación.");
+      });
     });

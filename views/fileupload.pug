@@ -14,9 +14,12 @@ block content
     ul
       each fich in files
         li
-          a(href='/files/'+fich, target="_blank")= fich
-          a.ml-2.align-bottom.text-danger(href='/deleteupload?file='+fich)
-            i.fas.fa-times
+          a.align-center(href='/files/'+fich, target="_blank")= fich
+          button.ml-2.align-center.btn.btn-sm.btn-link(title='Ver ' + fich + ' en el visor de documentos', onclick="$('#visorFrame').attr('src', '/files/"+fich+"');")
+            i.fas.fa-eye
+          a.ml-2.align-center.text-danger(title='Borrar el documento ' + fich, href='/deleteupload?file='+fich)
+            i.fas.fa-trash-alt
+    iframe#visorFrame(style='width: 100%; height: 500px;border: 1px solid black', title='Visor de documentos')
 block scripts
   script.
     $(document).ready(function () {

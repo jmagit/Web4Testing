@@ -27,10 +27,11 @@ Las páginas disponibles son:
 
 * **Inicio**: Pagina muy larga que incorpora animaciones, textos e imagenes
 * **Calculadora**: La calculadora, al disponer de múltiples botones, es ideal para realizar las pruebas de interacciones con el UI y validar los resultados que se van obteniendo.
-* **Carrito de la compra**: El carrito de la compra es un entorno dinámico que permite añadir y quitar productos, comprobar totales e importes filtrar la lista de productos, arrastrar el producto de la lista y soltar en el carrito. Si el producto ya está en la lista, se incrementa la cantidad.
-* **Contactos**: Sistema CRUD completo que permite las pruebas de acceso a datos, paginación, trabajo con formularios y validaciones. Las consultas se pueden realizar sin estar autenticado, pero para añadir, modificar y borrar es necesaria la autenticación.
-* **Alertas**: Entorno de pruebas para los tres tipos nativos de mensajes emergentes ofrecidos por JavaScript: alertas, prompts y confirmaciones, así como los cuadros modales y modeless.
-* **Ficheros**: Entorno de sencillo de pruebas para subir ficheros a un servidor. Permite eliminar los ficheros subidos.
+* **Compras**: El carrito de la compra es un entorno dinámico que permite añadir y quitar productos, comprobar totales e importes filtrar la lista de productos, arrastrar el producto de la lista y soltar en el carrito. Si el producto ya está en la lista, se incrementa la cantidad.
+* **Contactos**: Sistema CRUD completo que permite las pruebas de acceso a datos, paginación, trabajo con formularios y validaciones.
+* **Biblioteca**: Sistema CRUD completo que permite las pruebas de acceso a datos, paginación, trabajo con formularios y validaciones. Las consultas se pueden realizar sin estar autenticado, pero para añadir, modificar y borrar es necesaria la autenticación.
+* **Navegador**: Entorno de pruebas de las APIs del navegador: los tres tipos nativos de mensajes emergentes ofrecidos por JavaScript (alertas, prompts y confirmaciones), los cuadros modales y modeless por CSS, los temporizadores y la geolocalización.
+* **Ficheros**: Entorno sencillo de pruebas para subir ficheros a un servidor. Permite consultar en multiples solapas, en iframe y eliminar los ficheros subidos.
 * **API Rest**: Conjunto de servicios REST completos para servir de back-end y mock de las pruebas de las conexiones AJAX de las aplicaciones front-end. Permite la autenticación JWT.
 * **Atenticación**: Permite el registro de nuevos usuarios a través de formularios emergentes, la autenticación y la edición de los datos de usuario autenticado.
 
@@ -65,7 +66,7 @@ La documentación está disponible en formato HTML, YAML y JSOM:
    | models | string |  Nombre plural de la entidad, por defecto usara el endpoint |
    | *pk* | string |  Propiedad del objeto que actúa como primary key *(Obligatoria)* |
    | *fichero* | string |  Referencia al fichero que actúa de contenedor *(Obligatoria)* |
-   | readonly | boolean | `true` cuando requiera autenticación para los métodos de escritura (POST, PUT, DELETE, PATCH) |Obl
+   | readonly | boolean | `true` cuando requiera autenticación para los métodos de escritura (POST, PUT, DELETE, PATCH) |
    | operations | array[*string*] |  Lista de operaciones `["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]` disponibles para el servicio, si está vacía, estarán todas disponibles |
    | security | boolean o string | `true` para indicar que el usuario debe estar autenticado para acceder al servicio. Acepta una cadena con los roles, separados por comas, a los que se autoriza el acceso (requiere autenticación). |
    | schema | string | Esquema OpenApi para la validación y definición de la documentación |

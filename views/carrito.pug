@@ -17,7 +17,7 @@ block content
             .input-group-append
               button.btn.btn-outline-secondary(type="button", for="txtFiltro", id="btnLimpiaFiltro")
                 span(aria-hidden="true") &times;
-          ul.list-group(id="filtroResult")
+          ul.list-group.contenedor-scroll(id="filtroResult", style="max-height: 73vh;")
 block scripts
   script(src="vendor/mustache.js")
   script(src="javascripts/carrito.js")
@@ -33,7 +33,9 @@ block scripts
     {{/filas}}
   script(id="tmplListadoCarrito", type="x-tmpl-mustache").
       <h3>Carrito de la compra</h3>
+      <div class="contenedor-scroll" style="max-height: 77vh;">
       <table class="table table-striped table-hover" ondrop="mng.drop(event)" ondragover="mng.allowDrop(event)">
+        <thead>
           <tr class="table-info">
               <th>Producto</th>
               <th class="text-center">Cantidad</th>
@@ -44,6 +46,16 @@ block scripts
                   </button>
               </th>
           </tr>
+        </thead>
+        <tfoot>
+          <tr class="table-info">
+              <th></th>
+              <th class="text-right">Total:</th>
+              <th class="text-right">{{total}} €</th>
+              <th></th>
+          </tr>
+        </tfoot>
+        <tbody>
           {{#filas}}
           <tr>
               <td><h6>{{producto}}</h6><small>Precio: {{precio}}€</small></td>
@@ -56,13 +68,9 @@ block scripts
               </td>
           </tr>
           {{/filas}}
-          <tr class="table-info">
-              <th></th>
-              <th class="text-right">Total:</th>
-              <th class="text-right">{{total}} €</th>
-              <th></th>
-          </tr>
+        </tbody>
       </table>
+      </div>
   script.
     let mng = new CarritoManager();
     let delay = null;
