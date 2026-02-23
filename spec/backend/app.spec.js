@@ -61,7 +61,7 @@ describe("Test the root path", () => {
     'compras',
     'biblioteca',
     'contactos',
-    'alertas',
+    'navegador',
     'documentacion',
     'api'
   ])("/%s", (path, done) => {
