@@ -59,6 +59,7 @@ describe("Test the root path", () => {
   it.each([
     'calculadora',
     'compras',
+    'todo',
     'biblioteca',
     'contactos',
     'navegador',

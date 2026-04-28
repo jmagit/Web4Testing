@@ -245,3 +245,10 @@ input:invalid {
 a.octicon:hover {
   display: inline-block;
 }
+
+/* Tarea completada (tachado) */
+
+li div input:checked + label {
+  text-decoration: line-through;
+  opacity: 0.7;
+}

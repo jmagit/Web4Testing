@@ -1,0 +1,12 @@
+extends layout
+
+block content
+    .container.mt-3
+        h1 Lista de Tareas
+        //  Campo de entrada + botón 
+        .input-group
+            input.form-control#taskInput(type='text', placeholder='Añade una tarea...')
+            button.btn.btn-success#addBtn Añadir
+        //  Lista de tareas 
+        ul.list-group#taskList
+    script(src='javascripts/todo.js')

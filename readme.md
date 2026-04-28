@@ -25,15 +25,16 @@ Versión NodeJS del servidor de pruebas para cursos de FrontEnd y con un sitio w
 El sitio web cuenta con un juego de páginas donde se exponen diferentes escenarios de pruebas navegación, interacción con páginas, trabajo con formularios, arrastrar y soltar, autenticación, SPA y AJAX.
 Las páginas disponibles son:
 
-* **Inicio**: Pagina muy larga que incorpora animaciones, textos e imagenes
+* **Inicio**: Pagina muy larga que incorpora animaciones, textos e imágenes
 * **Calculadora**: La calculadora, al disponer de múltiples botones, es ideal para realizar las pruebas de interacciones con el UI y validar los resultados que se van obteniendo.
 * **Compras**: El carrito de la compra es un entorno dinámico que permite añadir y quitar productos, comprobar totales e importes filtrar la lista de productos, arrastrar el producto de la lista y soltar en el carrito. Si el producto ya está en la lista, se incrementa la cantidad.
+* **Tareas**: Ejemplo típico de lista de tareas (ToDo) respaldado por un API Rest.
 * **Contactos**: Sistema CRUD completo que permite las pruebas de acceso a datos, paginación, trabajo con formularios y validaciones.
 * **Biblioteca**: Sistema CRUD completo que permite las pruebas de acceso a datos, paginación, trabajo con formularios y validaciones. Las consultas se pueden realizar sin estar autenticado, pero para añadir, modificar y borrar es necesaria la autenticación.
 * **Navegador**: Entorno de pruebas de las APIs del navegador: los tres tipos nativos de mensajes emergentes ofrecidos por JavaScript (alertas, prompts y confirmaciones), los cuadros modales y modeless por CSS, los temporizadores y la geolocalización.
 * **Ficheros**: Entorno sencillo de pruebas para subir ficheros a un servidor. Permite consultar en multiples solapas, en iframe y eliminar los ficheros subidos.
 * **API Rest**: Conjunto de servicios REST completos para servir de back-end y mock de las pruebas de las conexiones AJAX de las aplicaciones front-end. Permite la autenticación JWT.
-* **Atenticación**: Permite el registro de nuevos usuarios a través de formularios emergentes, la autenticación y la edición de los datos de usuario autenticado.
+* **Autenticación**: Permite el registro de nuevos usuarios a través de formularios emergentes, la autenticación y la edición de los datos de usuario autenticado.
 
 ## Servicios RestFul
 
