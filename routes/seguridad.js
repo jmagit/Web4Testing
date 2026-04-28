@@ -86,6 +86,7 @@ module.exports.useAuthentication = (req, res, next) => {
         return;
     }
 
+    // eslint-disable-next-line no-useless-assignment
     let token = ''
     if (!req.headers['authorization']) {
         if (!req.cookies['Authorization']) {

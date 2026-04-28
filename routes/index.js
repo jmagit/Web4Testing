@@ -1,4 +1,7 @@
 const express = require('express');
+const fs = require('fs/promises');
+const path = require('path');
+const markdownit = require('markdown-it');
 const router = express.Router();
 
 function render(req, res, view, title, options = {}) {
@@ -41,24 +44,25 @@ router.get('/navegador', function (req, res) {
   render(req, res, 'navegador', 'APIs del Navegador')
 });
 
-router.get('/documentacion', function (req, res) {
-  render(req, res, 'documentacion', 'Documentación', { fichero: '../readme.md'})
+router.get('/documentacion', async function (req, res) {
+  const bodyContent = markdownit().render(await fs.readFile(path.join(__dirname, '../readme.md'), 'utf-8'));
+  render(req, res, 'documentacion', 'Documentación', { bodyContent })
 });
 
-router.get('/privacy', function (req, res) {
-  render(req, res, 'documentacion', 'Política de Privacidad', { fichero: 'privacy.md'})
+router.get('/privacy', async function (req, res) {
+  const bodyContent = markdownit().render(await fs.readFile(path.join(__dirname, '../views/privacy.md'), 'utf-8'));
+  render(req, res, 'documentacion', 'Política de Privacidad', { bodyContent })
 });
 
-router.get('/terms', function (req, res) {
-  render(req, res, 'documentacion', 'Términos y Condiciones', { fichero: 'terms.md'})
+router.get('/terms', async function (req, res) {
+  const bodyContent = markdownit().render(await fs.readFile(path.join(__dirname, '../views/terms.md'), 'utf-8'));
+  render(req, res, 'documentacion', 'Términos y Condiciones', { bodyContent })
 });
 
-router.get('/api', function (req, res) {
-  render(req, res, 'api', 'API REST', { 
-    baseUrl: `${req.protocol}://${req.headers.host}`, 
-    base: `${req.protocol}://${req.headers.host}${req.baseUrl}`, 
-    servicios: [] 
-  })
+router.get('/api', async function (req, res) {
+  let bodyContent = markdownit().render(await fs.readFile(path.join(__dirname, '../views/apidoc.md'), 'utf-8'));
+  bodyContent = bodyContent.replace(/http:\/\/localhost:8181/g, `${req.protocol}://${req.headers.host}`)
+  render(req, res, 'documentacion', 'API REST', { bodyContent })
 });
 
 
