@@ -370,7 +370,7 @@ describe('Seguridad', () => {
                     let cookie = response.headers['set-cookie']
 
                     response = await request(app)
-                        .get(`${config.paths.API_AUTH}/register`)
+                        .get(`/`)
                         .set('Cookie', cookie)
                     expect(response.statusCode).toBe(200)
                 });

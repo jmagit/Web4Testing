@@ -64,7 +64,9 @@ describe("Test the root path", () => {
     'contactos',
     'navegador',
     'documentacion',
-    'api'
+    'api',
+    'privacy',
+    'terms'
   ])("/%s", (path, done) => {
     request(app)
       .get(`/${path}`)

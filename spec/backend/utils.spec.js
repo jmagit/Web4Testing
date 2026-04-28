@@ -1,6 +1,6 @@
 const utils = require('../../routes/utils');
 
-const resFake = {protocol: 'http', hostname: 'localhost', connection: { localPort: 8080 }, originalUrl: '/api/fake'}
+const resFake = { protocol: 'http', hostname: 'localhost', connection: { localPort: 8080 }, originalUrl: '/api/fake' }
 
 describe('problem Details', () => {
     it('generateErrorByStatus', () => {
@@ -21,10 +21,15 @@ describe('utils', () => {
     })
 
     it('emptyPropertiesToNull', () => {
-        const result = utils.emptyPropertiesToNull({ lleno: 'dato', nulo: null, blanco: ''})
+        const result = utils.emptyPropertiesToNull({ lleno: 'dato', nulo: null, blanco: '' })
         expect(result.lleno).toBe('dato')
         expect(result.nulo).toBeNull()
         expect(result.blanco).toBeNull()
+    })
+
+    it('emptyPropertiesToNull empty', () => {
+        const result = utils.emptyPropertiesToNull()
+        expect(result).toBeUndefined()
     })
 
     it('generateProjection', () => {
@@ -34,5 +39,10 @@ describe('utils', () => {
         expect(result.nulo).toBeNull()
         expect(result.blanco).toBeUndefined()
         expect(result.dato).toBeTruthy()
+    })
+
+    it('generateProjection empty', () => {
+        const result = utils.generateProjection()
+        expect(result).toBeUndefined()
     })
 });
