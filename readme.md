@@ -57,18 +57,18 @@ La documentación está disponible en formato HTML, YAML y JSOM:
 1. En el subdirectorio `/data`, añadir un fichero .json con el array de objetos con los valores iniciales del resource. Para generar el fichero se pueden utilizar herramientas de generación automatizada de juegos de datos como <http://www.generatedata.com/?lang=es> o <https://www.mockaroo.com/>.
 2. Dar de alta el servicio añadiendo una entrada en el fichero de configuración de servicios `data/__servicios.json` indicando:
 
-   | Propiedad             | Tipo                  | Descripción                               |
+   | Propiedad | Tipo | Descripción |
    | --------------------- | --------------------- | ----------------------------------------- |
    | *endpoint* | string | Nombre en minúsculas del recurso para crear la url con la dirección del servicio *(Obligatoria)* |
    | tag | string | Permite agrupar las operaciones de varios servicios en la documentación (OpenApi), por defecto usara el endpoint pero se pueden definir explícitamente y compartirlas en varios endpoint |
-   | summary | string |  Descripción corta del servicio (OpenApi) |
-   | description | string | Descripción larga del servicio (OpenApi)  |
+   | summary | string | Descripción corta del servicio (OpenApi) |
+   | description | string | Descripción larga del servicio (OpenApi) |
    | *model* | string | Nombre de la entidad mantenida por el servicio *(Obligatoria)* |
-   | models | string |  Nombre plural de la entidad, por defecto usara el endpoint |
-   | *pk* | string |  Propiedad del objeto que actúa como primary key *(Obligatoria)* |
-   | *fichero* | string |  Referencia al fichero que actúa de contenedor *(Obligatoria)* |
+   | models | string | Nombre plural de la entidad, por defecto usara el endpoint |
+   | *pk* | string | Propiedad del objeto que actúa como primary key *(Obligatoria)* |
+   | *fichero* | string | Referencia al fichero que actúa de contenedor *(Obligatoria)* |
    | readonly | boolean | `true` cuando requiera autenticación para los métodos de escritura (POST, PUT, DELETE, PATCH) |
-   | operations | array[*string*] |  Lista de operaciones `["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]` disponibles para el servicio, si está vacía, estarán todas disponibles |
+   | operations | array[*string*] | Lista de operaciones `["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]` disponibles para el servicio, si está vacía, estarán todas disponibles |
    | security | boolean o string | `true` para indicar que el usuario debe estar autenticado para acceder al servicio. Acepta una cadena con los roles, separados por comas, a los que se autoriza el acceso (requiere autenticación). |
    | schema | string | Esquema OpenApi para la validación y definición de la documentación |
 
@@ -185,10 +185,10 @@ Por ejemplo: <http://localhost:8181/eco/personas/1?_page=1&_rows=10>
 
 ### Autenticación
 
-Para simular la autenticación con token JWT de cabecera está disponible el servicio `http://localhost:4321/login` con el método POST.
+Para simular la autenticación con token JWT de cabecera está disponible el servicio `http://localhost:8181/login` con el método POST.
 
 * **Formularios**
-  * action="`http://localhost:4321/login`"
+  * action="`http://localhost:8181/login`"
   * method="`post`"
   * body="`username=adm@example.com&password=P@$$w0rd`"
 * **API**
@@ -214,12 +214,12 @@ Se obtiene un token de acceso (RS256), un token de refresco (HMAC256) y la expir
 
 #### Envío del token de acceso en la cabecera
 
-    GET http://localhost:4321/auth
+    GET http://localhost:8181/auth
     Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIiwicm9sZXMiOlsiVXN1YXJpb3MiLCJBZG1pbmlzdHJhZG9yZXMiXSwiaWF0IjoxNjQ4NTc4NTYxLCJleHAiOjE2NDg1ODIxNjF9.WF-z8UHEOtqh0NSttxkV4VSp8evKEKLvW1fIh4CwEJ0
 
 #### Envío del token de refresco
 
-    POST http://localhost:4321/login/refresh
+    POST http://localhost:8181/login/refresh
 
     {
         "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1AZXhhbXBsZS5jb20iLCJpYXQiOjE2NzAzNDIxNzIsIm5iZiI6MTY3MDM0MjQ3MiwiZXhwIjoxNjcwMzQzMzcyLCJhdWQiOiJhdXRob3JpemF0aW9uIiwiaXNzIjoiTWljcm9zZXJ2aWNpb3NKV1QifQ.8q1Nwd9E6ZgpMyOPGUTFrv7EGRwvk_6J-J6Uzvk4o_A"
@@ -227,7 +227,7 @@ Se obtiene un token de acceso (RS256), un token de refresco (HMAC256) y la expir
 
 #### Obtener la clave publica para validar el token JWT (application/pem-certificate-chain)
 
-    GET http://localhost:4321/login/signature
+    GET http://localhost:8181/login/signature
 
 En texto plano con formato Privacy Enhanced Mail (PEM).
 
@@ -245,7 +245,7 @@ En texto plano con formato Privacy Enhanced Mail (PEM).
 
 En el fichero data/usuarios.json se mantiene la estructura básica de los usuarios registrados que se puede ampliar.
 
-Mediante peticiones AJAX a <http://localhost:4321/register> se pueden:
+Mediante peticiones AJAX a <http://localhost:8181/register> se pueden:
 
 * Registrar usuario (POST).
 * Modificar usuario autenticado (PUT)
@@ -260,9 +260,9 @@ Al registrar un usuario, el usuario queda pendiente de que confirme el correo el
     HTTP/1.1 202 Accepted
 
     {
-        "statusGetUri": "http://localhost:4321/register/status?instance=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
-        "confirmGetUri": "http://localhost:4321/register/confirm?instance=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
-        "rejectGetUri": "http://localhost:4321/register/reject?instance=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+        "statusGetUri": "http://localhost:8181/register/status?instance=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
+        "confirmGetUri": "http://localhost:8181/register/confirm?instance=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
+        "rejectGetUri": "http://localhost:8181/register/reject?instance=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
     }
 
 Con peticiones get a la url statusGetUri se obtiene el estado actual. Devuelve un 202 mientras esté pendiente de confirmación:
@@ -286,9 +286,9 @@ Los webhooks confirmGetUri y rejectGetUri se invocan con peticiones get para pod
 
 #### Contraseñas
 
-La contraseñas sigue el patrón `/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/` (al menos 8 caracteres con minúsculas, mayúsculas, dígitos y símbolos). Para el encriptado de contraseñas en la persistencia se utiliza bcrypt (función de hashing de contraseñas basada en el cifrado Blowfish), utilizado al Registrar usuario y se ignora la contraseña en el resto de los casos. Para cambiar la contraseña se ha habilitado el método PUT <http://localhost:4321/register/password> que requiere el usuario autenticado y la contraseña anterior como medida de seguridad:
+La contraseñas sigue el patrón `/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/` (al menos 8 caracteres con minúsculas, mayúsculas, dígitos y símbolos). Para el encriptado de contraseñas en la persistencia se utiliza bcrypt (función de hashing de contraseñas basada en el cifrado Blowfish), utilizado al Registrar usuario y se ignora la contraseña en el resto de los casos. Para cambiar la contraseña se ha habilitado el método PUT <http://localhost:8181/register/password> que requiere el usuario autenticado y la contraseña anterior como medida de seguridad:
 
-    PUT http://localhost:4321/register/password
+    PUT http://localhost:8181/register/password
     Content-Type: application/json
     Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsIm5hbWUiOiJBZG1pbmlzdHJhZG9yIiwicm9sZXMiOlsiVXN1YXJpb3MiLCJBZG1pbmlzdHJhZG9yZXMiXSwiaWF0IjoxNjQ5MzM5MDgwLCJleHAiOjE2NDkzNDI2ODB9.1XAvQTzCSgEjs6NVhA0rgFt5NeEb_DMMVIn4DfNOjvg
 
@@ -299,9 +299,9 @@ La contraseñas sigue el patrón `/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$
 
 ### Cookies
 
-* Para otros escenarios que requiera autenticación por cookies se puede añadir el parámetro `cookie=true` para que envíe la cookie `Authorization` con una validez de una hora: <http://localhost:4321/login?cookie=true>
-* Para borrar la cookie: <http://localhost:4321/logout>
-* Para obtener la información de la autenticación: <http://localhost:4321/auth>
+* Para otros escenarios que requiera autenticación por cookies se puede añadir el parámetro `cookie=true` para que envíe la cookie `Authorization` con una validez de una hora: <http://localhost:8181/login?cookie=true>
+* Para borrar la cookie: <http://localhost:8181/logout>
+* Para obtener la información de la autenticación: <http://localhost:8181/auth>
 
 ### Cross-Site Request Forgery (XSRF o CSRF)
 

@@ -166,6 +166,17 @@ module.exports.generateXsrfToken = (req) => {
 function generateXsrfCookie(req, res) {
     res.cookie('XSRF-TOKEN', module.exports.generateXsrfToken(req), { httpOnly: false, maxAge: 30 * 60 * 1000 })
 }
+function getAuthorizationCookieOptions(req) {
+    const forwardedProto = req.get('x-forwarded-proto');
+    const isHttps = req.secure || forwardedProto === 'https';
+    return {
+        httpOnly: true,
+        sameSite: 'lax',
+        secure: isHttps,
+        path: '/',
+        maxAge: 3600000,
+    }
+}
 function isInvalidXsrfToken(req) {
     let token = req.headers['x-xsrf-token'] || req.body['xsrftoken']
     let cookie = req.cookies['XSRF-TOKEN']
@@ -226,7 +237,7 @@ async function getUserIndexAndList(username) {
  *         password:
  *           type: string
  *           format: password
- *           example: 'P@$$$w0rd'
+ *           example: 'P@$$w0rd'
  *     RespuestaLogin:
  *       type: object
  *       title: Respuesta Login
@@ -437,7 +448,7 @@ function sendLogin(req, res, element) {
         expires_in: config.security.EXPIRACION_MIN * 60
     }
     if (req.query.cookie)
-        res.cookie('Authorization', token.substring(config.security.AUTHENTICATION_SCHEME.length), { maxAge: 3600000 })
+        res.cookie('Authorization', token.substring(config.security.AUTHENTICATION_SCHEME.length), getAuthorizationCookieOptions(req))
     res.status(200).json(payload)
 
 }
@@ -454,7 +465,11 @@ function sendLogin(req, res, element) {
  *         description: "OK"
  */
 router.all('/logout', function (_req, res) {
-    res.clearCookie('Authorization');
+    res.clearCookie('Authorization', {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+    });
     res.sendStatus(200)
 })
 /**

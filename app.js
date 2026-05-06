@@ -8,6 +8,7 @@ const swaggerUi = require('swagger-ui-express');
 const YAML = require('yaml')
 const OpenApiValidator = require('express-openapi-validator');
 const validator = require('validator');
+const { randomUUID } = require('crypto');
 
 const config = require('./config')
 const indexRouter = require('./routes/index');
@@ -124,6 +125,20 @@ const options = {
 };
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(null, options));
 
+// Chrome DevTools
+if (process.env.NODE_ENV !== 'production') {
+  app.get('/.well-known/appspecific/com.chrome.devtools.json', (req, res) => {
+    const projectRoot = path.resolve(__dirname);
+    const workspaceUuid = randomUUID();
+
+    res.json({
+      workspace: {
+        root: projectRoot,
+        uuid: workspaceUuid,
+      },
+    });
+  });
+}
 app.all('/eco{/*splat}', function (req, res) {
   seguridad.useAuthentication(req, res, () => {})
   res.status(200).json({
