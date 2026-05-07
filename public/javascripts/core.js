@@ -1,36 +1,140 @@
-// if (!Web4Testing)
 const Web4Testing = new Object();
 
-Web4Testing.AuthService = new (function() {
+Web4Testing.AuthService = new (function () {
     let obj = this;
     obj.isAuth = false;
     obj.authToken = '';
     obj.name = '';
     obj.roles = [];
 
-    if (localStorage && localStorage.AuthService) {
-        let rslt = JSON.parse(localStorage.AuthService);
-        obj.isAuth = rslt.isAuth;
-        obj.authToken = rslt.authToken;
-        obj.name = rslt.name;
-        obj.roles = rslt.roles;
-    }
-    function cacheaEnLocalStorage() {
-        if (localStorage) {
-            localStorage.AuthService = JSON.stringify({ isAuth: obj.isAuth, authToken: obj.authToken, name: obj.name, roles: obj.roles });
+    const hasLocalStorage = () => typeof localStorage !== 'undefined' && localStorage;
+    const isJsonResponse = (response) => response.headers.get('content-type').includes('application/json');
+    const getFieldSelector = (idForm, name) => '#' + idForm + ' [name="' + name + '"';
+    const getErrorSelector = (idForm, name) => '#err_' + idForm + '_' + name;
+
+    const updateAuthState = (state = {}) => {
+        obj.isAuth = state.isAuth ?? false;
+        obj.authToken = state.authToken ?? '';
+        obj.name = state.name ?? '';
+        obj.roles = state.roles ?? [];
+    };
+
+    const cacheaEnLocalStorage = () => {
+        if (!hasLocalStorage()) return;
+        localStorage.AuthService = JSON.stringify({
+            isAuth: obj.isAuth,
+            authToken: obj.authToken,
+            name: obj.name,
+            roles: obj.roles,
+        });
+    };
+
+    const inicializaDesdeLocalStorage = () => {
+        if (!hasLocalStorage() || !localStorage.AuthService) return;
+        updateAuthState(JSON.parse(localStorage.AuthService));
+    };
+
+    const rejectWithResponseError = async (response) => {
+        if (!isJsonResponse(response)) {
+            return Promise.reject('ERROR: ' + response.status + ': ' + response.statusText);
         }
-    }
-    const decodeError = response => {
-        if (response.headers.get('content-type').includes('application/json'))
-            response.json().then(err => {
-                alert('ERROR: ' + response.status + ': ' + (err.detail || err.title || response.statusText))
-            })
-        else {
-            alert('ERROR: ' + response.status + ': ' + response.statusText)
+        const err = await response.json();
+        return Promise.reject('ERROR: ' + response.status + ': ' + (err.title || response.statusText));
+    };
+
+    const decodeError = async (response) => {
+        if (!isJsonResponse(response)) {
+            alert('ERROR: ' + response.status + ': ' + response.statusText);
+            return;
         }
-    }
-    obj.getHeaders = function () {
-        let headers = new Headers()
+        const err = await response.json();
+        alert('ERROR: ' + response.status + ': ' + (err.detail || err.title || response.statusText));
+    };
+
+    const requestJson = async (url, options) => {
+        try {
+            const response = await fetch(url, options);
+            if (!response.ok) {
+                await rejectWithResponseError(response);
+            }
+            return response.json();
+        } catch (error) {
+            if (typeof error === 'string') return Promise.reject(error);
+            return Promise.reject('Error de red: ' + error.status + ' ' + error.statusText);
+        }
+    };
+
+    const getControl = (idForm, name) => $(getFieldSelector(idForm, name));
+    const getValidationError = (idForm, name) => $(getErrorSelector(idForm, name));
+
+    const setValidationMessage = (idForm, control, item) => {
+        switch (item.dataset.validacion) {
+            case 'equalTo':
+                item.setCustomValidity($(getFieldSelector(idForm, item.dataset.origen)).val() != control.val() ? 'No es igual' : '');
+                break;
+            case 'uppercase':
+                item.setCustomValidity(control.val() != control.val().toUpperCase() ? 'Tiene que estar en mayúsculas' : '');
+                break;
+            case 'lowercase':
+                item.setCustomValidity(control.val() !== control.val().toLowerCase() ? 'Tiene que estar en minúsculas' : '');
+                break;
+        }
+    };
+
+    const showFieldError = (idForm, name, control, message) => {
+        const error = getValidationError(idForm, name);
+        if (error.length) {
+            error.text(message);
+            return;
+        }
+        control.after('<div id="err_' + idForm + '_' + name + '" class="text-danger msg-error">' + message + '</div>');
+        control.parent().parent().addClass('has-error');
+    };
+
+    const clearFieldError = (idForm, name, control) => {
+        control.parent().parent().removeClass('has-error');
+        getValidationError(idForm, name).remove();
+    };
+
+    const capturaFrom = (idForm) => {
+        const datos = $('#' + idForm).serializeArray();
+        let esValido = true;
+        let envio = {};
+
+        datos.forEach((item) => {
+            if (!obj.validar(idForm, item.name)) {
+                esValido = false;
+                return;
+            }
+            if (!item.name.startsWith('__')) {
+                envio[item.name.replace('_usr_', '')] = item.value;
+            }
+        });
+
+        return esValido ? envio : null;
+    };
+
+    const enviarRegistro = (url, method, idForm, onSuccess) => {
+        let envio = capturaFrom(idForm);
+        if (!envio) return;
+
+        fetch(url, {
+            method,
+            headers: obj.getHeaders(),
+            body: JSON.stringify(envio)
+        }).then((response) => {
+            if (response.ok) {
+                onSuccess(envio);
+            } else {
+                decodeError(response);
+            }
+        });
+    };
+
+    inicializaDesdeLocalStorage();
+
+    obj.getHeaders = () => {
+        let headers = new Headers();
         headers.append('Content-Type', 'application/json');
         headers.append('X-Requested-With', 'XMLHttpRequest');
         let matches = document.cookie.match(/(?:^|; )XSRF-TOKEN=([^;]*)/);
@@ -38,174 +142,92 @@ Web4Testing.AuthService = new (function() {
             headers.append('X-XSRF-TOKEN', decodeURIComponent(matches[1]));
         }
         if (obj.isAuth && obj.authToken) {
-            headers.append('Authorization', obj.authToken)
+            headers.append('Authorization', obj.authToken);
         }
-        return headers
-    }
-    obj.login = function (usr, pwd) {
-        return new Promise(function (resolve, reject) {
-            fetch('/api/login?cookie=true', {
-                method: 'POST',
-                headers: obj.getHeaders(),
-                body: JSON.stringify({ username: usr, "password": pwd })
-            }).then((response) => {
-                if (response.ok) {
-                    response.json().then(function (resp) {
-                        if (!resp.success) {
-                            reject("Usuario o contraseña incorrectos.");
-                            return;
-                        }
-                        obj.isAuth = true;
-                        obj.authToken = resp.token;
-                        obj.name = resp.name;
-                        obj.roles = resp.roles;
-                        cacheaEnLocalStorage();
-                        resolve(resp);
-                    })
-                } else {
-                    if (response.headers.get('content-type').includes('application/json'))
-                        response.json().then(err => {
-                            reject('ERROR: ' + response.status + ': ' + (err.title || response.statusText))
-                        })
-                    else {
-                        reject('ERROR: ' + response.status + ': ' + response.statusText)
-                    }
-                }
-            }).catch(
-                function (error) {
-                    reject("Error de red: " + error.status + " " + error.statusText);
-                }
-            )
-        })
-    }
-    obj.logout = function () {
-        obj.isAuth = false;
-        obj.authToken = '';
-        obj.name = '';
-        if (localStorage) {
+        return headers;
+    };
+
+    obj.login = async (usr, pwd) => {
+        const resp = await requestJson('/api/login?cookie=true', {
+            method: 'POST',
+            headers: obj.getHeaders(),
+            body: JSON.stringify({ username: usr, password: pwd })
+        });
+
+        if (!resp.success) {
+            return Promise.reject('Usuario o contraseña incorrectos.');
+        }
+
+        updateAuthState({
+            isAuth: true,
+            authToken: resp.token,
+            name: resp.name,
+            roles: resp.roles,
+        });
+        cacheaEnLocalStorage();
+        return resp;
+    };
+
+    obj.logout = () => {
+        updateAuthState();
+        if (hasLocalStorage()) {
             localStorage.removeItem('AuthService');
         }
         fetch('/api/logout', {
             method: 'GET',
             headers: obj.getHeaders()
-        }).then()
-    }
-    obj.getUser = function () {
-        return new Promise(function (resolve, reject) {
-            if (!obj.isAuth) {
-                reject("No esta autenticado.");
-                return;
-            }
-            fetch('/api/register', {
-                method: 'GET',
-                headers: obj.getHeaders()
-            }).then((response) => {
-                if (response.ok) {
-                    response.json().then(function (resp) {
-                        resolve(resp);
-                    })
-                } else {
-                    if (response.headers.get('content-type').includes('application/json'))
-                        response.json().then(err => {
-                            reject('ERROR: ' + response.status + ': ' + (err.title || response.statusText))
-                        })
-                    else {
-                        reject('ERROR: ' + response.status + ': ' + response.statusText)
-                    }
-                }
-            }).catch(
-                function (error) {
-                    reject("Error de red: " + error.status + " " + error.statusText);
-                }
-            )
-        })
-    }
-    obj.validar = function (idForm, name) {
-        let cntr = $('#' + idForm + ' [name="' + name + '"');
+        }).then();
+    };
+
+    obj.getUser = async () => {
+        if (!obj.isAuth) {
+            return Promise.reject('No esta autenticado.');
+        }
+        return requestJson('/api/register', {
+            method: 'GET',
+            headers: obj.getHeaders()
+        });
+    };
+
+    obj.validar = (idForm, name) => {
+        let control = getControl(idForm, name);
         let esValido = true;
-        cntr.each(function (_i, item) {
-            switch (item.dataset.validacion) {
-                case 'equalTo':
-                    item.setCustomValidity($('#' + idForm + ' [name="' + item.dataset.origen + '"').val() != cntr.val() ? 'No es igual' : '');
-                    break;
-            }
+
+        control.each((_i, item) => {
+            setValidationMessage(idForm, control, item);
             if (item.validationMessage) {
-                if ($('#err_' + idForm + '_' + name).length) {
-                    $('#err_' + idForm + '_' + name).text(item.validationMessage);
-                } else {
-                    cntr.after('<div id="err_' + idForm + '_' + name + '" class="text-danger msg-error">' + item.validationMessage + '</div>');
-                    cntr.parent().parent().addClass('has-error');
-                }
+                showFieldError(idForm, name, control, item.validationMessage);
                 esValido = false;
             } else {
-                cntr.parent().parent().removeClass('has-error');
-                $('#err_' + idForm + '_' + name).remove();
+                clearFieldError(idForm, name, control);
             }
         });
+
         return esValido;
     };
 
-    function capturaFrom(idForm) {
-        let datos = $('#' + idForm).serializeArray();
-        let esValido = true;
-        let envio = {};
-        datos.forEach(function (item) {
-            if (!obj.validar(idForm, item.name)) {
-                esValido = false;
-                return;
-            }
-            if (!item.name.startsWith('__'))
-                envio[item.name.replace('_usr_', '')] = item.value;
+    obj.enviarRegistroNuevo = (idForm, cierraModal) => {
+        enviarRegistro('/api/register', 'POST', idForm, () => {
+            cierraModal();
+            alert('Usuario registrado. Ya puede iniciar sesión.');
         });
-        return esValido ? envio : null
-    }
-
-    obj.enviarRegistroNuevo = function (idForm, cierraModal) {
-        let envio = capturaFrom(idForm);
-        if (!envio) return;
-
-        fetch('/api/register', {
-            method: 'POST',
-            headers: obj.getHeaders(),
-            body: JSON.stringify(envio)
-        }).then((response) => {
-            if (response.ok) {
-                cierraModal();
-                alert('Usuario registrado. Ya puede iniciar sesión.');
-            } else decodeError(response)
-        })
     };
 
-    obj.enviarRegistroModificado = function (idForm, cierraModal) {
-        let envio = capturaFrom(idForm);
-        if (!envio) return;
-
-        fetch('/api/register', {
-            method: 'PUT',
-            headers: obj.getHeaders(),
-            body: JSON.stringify(envio)
-        }).then((response) => {
-            if (response.ok) {
-                obj.name = envio.nombre;
-                cacheaEnLocalStorage();
-                cierraModal();
-            } else decodeError(response)
-        })
+    obj.enviarRegistroModificado = (idForm, cierraModal) => {
+        enviarRegistro('/api/register', 'PUT', idForm, (envio) => {
+            obj.name = envio.nombre;
+            cacheaEnLocalStorage();
+            cierraModal();
+        });
     };
 
-    obj.enviarRegistroPassword = function (idForm, cierraModal) {
-        let envio = capturaFrom(idForm);
-        if (!envio) return;
-
-        fetch('/api/register/password', {
-            method: 'PUT',
-            headers: obj.getHeaders(),
-            body: JSON.stringify(envio)
-        }).then((response) => {
-            if (response.ok) {
-                cierraModal();
-                alert('Contraseña modificada.');
-            } else decodeError(response)
-        })
+    obj.enviarRegistroPassword = (idForm, cierraModal) => {
+        enviarRegistro('/api/register/password', 'PUT', idForm, () => {
+            cierraModal();
+            alert('Contraseña modificada.');
+        });
     };
-})
+})();
+
+
+if (typeof module !== 'undefined') module.exports = Web4Testing;

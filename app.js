@@ -32,7 +32,6 @@ const shutdown = () => {
   process.kill(process.pid, 'SIGTERM');
 }
 
-// eslint-disable-next-line no-unused-vars
 const extraeURL = req => (
   {
     protocol: req.protocol,
@@ -175,5 +174,11 @@ app.use(function (err, req, res, _next) {
     res.status(status).json(err.payload ? err.payload : generateErrorByError(req, err, status).payload)
   }
 });
+
+// Expone las funciones privadas para poder hacer las pruebas
+app.__testHooks = {
+  shutdown,
+  extraeURL,
+}
 
 module.exports = app;

@@ -39,7 +39,7 @@ router.post('/fileupload', upload.array('filestoupload'), function (req, res) {
       res.redirect('/fileupload');
     }
   } catch (error) {
-    res.status(500).json(generateErrorByError(req, 500, error)).end();
+    res.status(500).json(generateErrorByError(req, error, 500).payload).end();
   }
 })
 

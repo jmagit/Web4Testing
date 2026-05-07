@@ -13,7 +13,7 @@ const headers = {
 async function obtenerTareas() {
     const res = await fetch(`${API_BASE}/todo`, { headers });
     if (!res.ok) throw new Error('Error al obtener tareas');
-    return await res.json();   // devuelve array de objetos “Todo” según el OpenAPI [1]
+    return await res.json(); 
 }
 
 /* Añadir una nueva tarea */
@@ -24,7 +24,6 @@ async function crearTarea(titulo) {
         body: JSON.stringify({ id: 0, todo: titulo, completed: false })
     });
     if (!res.ok) throw new Error('Error al crear tarea');
-    return;
 }
 
 /* Marcar/Desmarcar como completada */
@@ -91,7 +90,6 @@ async function renderTareas() {
         checkboxGroup.appendChild(label);
          checkboxGroup.appendChild(delBtn);
        li.appendChild(checkboxGroup);
-        // li.appendChild(delBtn);
         taskList.appendChild(li);
     });
 }

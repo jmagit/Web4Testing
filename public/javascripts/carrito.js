@@ -54,7 +54,6 @@ const carrito = new (function () {
     };
 })();
 
-// eslint-disable-next-line no-unused-vars
 function CarritoManager() {
     let obj = this;
     let listaProductos;
@@ -66,7 +65,6 @@ function CarritoManager() {
     }
     function PintaCarrito() {
         let tmpl = $('#tmplListadoCarrito').html();
-        // let rslt = Mustache.render(tmpl, { filas: carrito.lineas, total: carrito.lineas.reduce(function(sum, f) {return sum + f.importe;})});
         let rslt = Mustache.render(tmpl, {
             filas: carrito.lineas, total: carrito.lineas.length === 0 ? 0 :
                 carrito.lineas.map(function (f) { return f.importe; }).reduce(function (sum, f) { return sum + f; })
@@ -131,3 +129,5 @@ function CarritoManager() {
         console.error(msg);
     };
 }
+
+if (typeof module !== 'undefined') module.exports = { LineaPedido, carrito, CarritoManager };

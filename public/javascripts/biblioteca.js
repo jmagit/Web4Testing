@@ -1,5 +1,4 @@
 /* global Mustache Web4Testing */
-// eslint-disable-next-line no-unused-vars
 const Biblioteca = new (
     function () {
         let obj = this;
@@ -227,3 +226,5 @@ const Biblioteca = new (
         };
     }
 )();
+
+if (typeof module !== 'undefined') module.exports = Biblioteca;

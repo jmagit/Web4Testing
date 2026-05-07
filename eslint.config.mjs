@@ -40,7 +40,7 @@ export default defineConfig([
         ...globals.browser,
         ...variableGlobalesBrowser,
       },
-      ecmaVersion: 2015,
+      ecmaVersion: 2020,
       sourceType: "script",
     },
     rules: {

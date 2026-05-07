@@ -1,5 +1,4 @@
 /* global Mustache Web4Testing */
-// eslint-disable-next-line no-unused-vars
 const Contactos = new (
     function () {
         let obj = this;
@@ -220,3 +219,5 @@ const Contactos = new (
         };
     }
 )();
+
+if (typeof module !== 'undefined') module.exports = Contactos;
