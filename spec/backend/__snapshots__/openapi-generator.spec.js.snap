@@ -648,7 +648,7 @@ exports[`Pruebas unitarias Generar OpenApi 1`] = `
         "description": "Credenciales de autenticación",
         "properties": {
           "password": {
-            "example": "P@$$$w0rd",
+            "example": "P@$$w0rd",
             "format": "password",
             "type": "string",
           },
