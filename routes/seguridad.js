@@ -2,9 +2,9 @@ const express = require('express');
 const router = express.Router();
 const { createHash, createPrivateKey, createPublicKey } = require('crypto')
 const jwt = require('jsonwebtoken')
-const bcrypt = require('bcrypt')
 const fs = require('fs/promises');
 const validator = require('validator');
+const argon2 = require('argon2');
 const config = require('../config')
 const { generateErrorByStatus, generateError, generateErrorByError } = require('./utils')
 
@@ -12,8 +12,10 @@ module.exports = router
 
 // Criptografía
 async function encriptaPassword(password) {
-    const salt = await bcrypt.genSalt(10)
-    return bcrypt.hash(password, salt)
+    return await argon2.hash(password)
+}
+async function verificaPassword(password, hash) {
+    return await argon2.verify(hash, password)
 }
 
 const generarRealm = () => {
@@ -331,7 +333,7 @@ router.post('/login', function (req, res, next) {
     (async () => {
         try {
             const { element } = await getUserElementAndList(usr)
-            if (element && element.activo && (await bcrypt.compare(pwd, element[config.security.PROP_PASSWORD]))) {
+            if (element && element.activo && (await verificaPassword(pwd, element[config.security.PROP_PASSWORD]))) {
                 sendLogin(req, res, element)
             } else {
                 res.status(200).json({ success: false })
@@ -881,7 +883,7 @@ autenticados.put('/password', function (req, res, next) {
         const { index, list } = await getUserIndexAndList(res.locals.usr)
         if (index == -1) {
             return next(generateErrorByStatus(req, 404))
-        } else if (config.security.PASSWORD_PATTERN.test(element.newPassword) && (await bcrypt.compare(element.oldPassword, list[index][config.security.PROP_PASSWORD]))) {
+        } else if (config.security.PASSWORD_PATTERN.test(element.newPassword) && (await verificaPassword(element.oldPassword, list[index][config.security.PROP_PASSWORD]))) {
             list[index][config.security.PROP_PASSWORD] = await encriptaPassword(element.newPassword)
             fs.writeFile(config.security.USR_FILENAME, JSON.stringify(list))
                 .then(() => { res.sendStatus(204) })
