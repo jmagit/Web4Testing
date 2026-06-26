@@ -560,19 +560,19 @@ exports[`Pruebas unitarias Generar OpenApi 1`] = `
             "type": "string",
           },
           "fecha": {
-            "example": "1605",
+            "example": 1605,
             "title": "Fecha",
-            "type": "string",
+            "type": "number",
           },
           "idLibro": {
-            "example": "1",
+            "example": 1,
             "title": "Idlibro",
-            "type": "string",
+            "type": "number",
           },
           "paginas": {
-            "example": "377",
+            "example": 377,
             "title": "Paginas",
-            "type": "string",
+            "type": "number",
           },
           "pais": {
             "example": "España",
@@ -2601,7 +2601,7 @@ exports[`Pruebas unitarias Generar OpenApi 1`] = `
           "name": "id",
           "required": true,
           "schema": {
-            "type": "string",
+            "type": "number",
           },
         },
       ],
